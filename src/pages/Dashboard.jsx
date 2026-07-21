@@ -14,6 +14,7 @@ import {
     UserPlus,
     Coins
 } from 'lucide-react';
+import heroImage from '../assets/hero.png';
 import {
     ResponsiveContainer,
     BarChart,
@@ -157,16 +158,16 @@ export const Dashboard = () => {
         <div className="space-y-10">
             {/* Hero Dashboard Header */}
             <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(59,130,246,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(250,204,21,0.12),_transparent_30%)]" />
-                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(15,23,42,0.9),rgba(30,41,59,0.65))]" />
-                <div className="relative grid gap-6 lg:grid-cols-[1.3fr_1fr] p-6 md:p-8 xl:p-10">
-                    <div className="space-y-6">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-200/80 shadow-sm shadow-white/5">
-                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)]"></span>
-                            Academy Experience
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.16),transparent_20%),radial-gradient(circle_at_bottom_left,_rgba(167,139,250,0.16),transparent_20%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(140deg,rgba(15,23,42,0.92),rgba(30,41,59,0.8))]" />
+                <div className="relative grid gap-6 lg:grid-cols-[1.3fr_1fr] p-8 md:p-10 xl:p-12">
+                    <div className="space-y-6 max-w-2xl">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-300 shadow-sm shadow-slate-950/40">
+                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_16px_rgba(52,211,153,0.3)]"></span>
+                            Academy Strategy Center
                         </div>
-                        <div className="max-w-xl space-y-4">
-                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
+                        <div className="space-y-4">
+                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
                                 Chess has never looked like this
                             </h1>
                             <p className="text-base sm:text-lg text-slate-300 leading-8">
@@ -176,39 +177,39 @@ export const Dashboard = () => {
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                             <button
                                 onClick={() => navigate('/dashboard')}
-                                className="inline-flex items-center justify-center rounded-3xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition"
+                                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-500 via-indigo-600 to-sky-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:brightness-110 transition"
                             >
                                 Watch live now
                             </button>
                             <button
                                 onClick={() => navigate('/reports')}
-                                className="inline-flex items-center justify-center rounded-3xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/15 transition"
+                                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10 transition"
                             >
                                 See it in action
                             </button>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-3">
-                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
-                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Pending Fees</p>
-                                <p className="mt-3 text-2xl font-black text-white">${pendingCollection}</p>
+                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                                <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Pending Fees</p>
+                                <p className="mt-4 text-3xl font-black text-white">${pendingCollection}</p>
                             </div>
-                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
-                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Active Students</p>
-                                <p className="mt-3 text-2xl font-black text-white">{activeStudents}</p>
+                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                                <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Active Students</p>
+                                <p className="mt-4 text-3xl font-black text-white">{activeStudents}</p>
                             </div>
-                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
-                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Total Classes</p>
-                                <p className="mt-3 text-2xl font-black text-white">{totalClasses}</p>
+                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                                <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Total Classes</p>
+                                <p className="mt-4 text-3xl font-black text-white">{totalClasses}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 shadow-2xl">
-                        <img src="/src/assets/hero.png" alt="Chess hero" className="h-full w-full object-cover object-center opacity-90" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/20 to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-slate-950/80 p-4 backdrop-blur-sm">
-                            <p className="text-xs uppercase tracking-[0.28em] text-slate-300">Premium Strategy Center</p>
-                            <p className="mt-2 text-sm font-semibold text-white">Live boards, actionable insights, and polished chess academy analytics.</p>
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-2xl">
+                        <img src={heroImage} alt="Chess hero" className="h-full w-full object-cover object-center brightness-[0.85]" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/10 to-transparent" />
+                        <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-slate-950/75 p-5 backdrop-blur-sm">
+                            <p className="text-[10px] uppercase tracking-[0.32em] text-slate-400">Premium Strategy Center</p>
+                            <p className="mt-3 text-sm font-semibold text-white">Live boards, actionable insights, and polished chess academy analytics.</p>
                         </div>
                     </div>
                 </div>

@@ -38,33 +38,65 @@ export const Login = () => {
     ];
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-slate-950 px-4">
-            {/* Decorative Gradient Blobs */}
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-400/20 blur-[120px] dark:bg-indigo-900/10 pointer-events-none"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-400/20 blur-[120px] dark:bg-purple-900/10 pointer-events-none"></div>
+        <div className="min-h-screen relative overflow-hidden bg-slate-950 text-slate-100">
+            <div className="absolute inset-0 bg-chessboard opacity-25 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950/95 to-slate-900/85 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.16),transparent_30%)] pointer-events-none"></div>
 
-            {/* Styled Grid Overlay */}
-            <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-60 pointer-events-none"></div>
+            <div className="relative z-10 mx-auto grid w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 shadow-2xl shadow-slate-950/40 sm:grid-cols-[1.1fr_0.9fr]">
+                <div className="relative hidden overflow-hidden border-r border-white/10 bg-slate-950/90 p-8 sm:flex flex-col justify-between">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_30%)] pointer-events-none"></div>
+                    <div className="absolute right-[-8%] top-1/4 h-[280px] w-[280px] rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+                    <div className="relative z-10 flex h-full flex-col justify-between gap-8">
+                        <div>
+                            <span className="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.26em] text-slate-300">
+                                Ratnapura Chess Academy
+                            </span>
+                            <h1 className="mt-8 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+                                A premium chess institute for aspiring champions
+                            </h1>
+                            <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300/80">
+                                Sign in to manage students, classes, fees and attendance from one premium chess academy workspace.
+                            </p>
+                        </div>
 
-            {/* Login Card wrapper */}
-            <div className="w-full max-w-xl z-10 animate-slide-in">
-                <div className="glassmorphism rounded-3xl shadow-2xl overflow-hidden border border-white/40 dark:border-slate-800 p-8 md:p-10">
+                        <div className="grid gap-6">
+                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/75 p-6 shadow-inner shadow-slate-950/25">
+                                <div className="text-[7rem] font-black leading-none text-white/10 select-none">♚</div>
+                                <p className="mt-4 text-sm text-slate-300/80">
+                                    Inspired by the royal king — every move is planned with precision and poise.
+                                </p>
+                            </div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+                                    <span className="text-[0.65rem] uppercase tracking-[0.26em] text-slate-400">Active Students</span>
+                                    <p className="mt-3 text-3xl font-extrabold text-white">1.2k+</p>
+                                </div>
+                                <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+                                    <span className="text-[0.65rem] uppercase tracking-[0.26em] text-slate-400">Lessons Today</span>
+                                    <p className="mt-3 text-3xl font-extrabold text-white">24</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    {/* Logo Headers */}
-                    <div className="text-center mb-8">
-                        <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="mx-auto w-16 h-16 rounded-2xl shadow-xl shadow-indigo-600/20 mb-4" />
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-                            Ratnapura Chess Academy
-                        </h2>
-                        <p className="text-sm text-slate-500 dark:text-slate-455 font-semibold mt-1">
-                            Complete education & institute management engine.
-                        </p>
+                <div className="relative bg-slate-950/90 p-8 sm:p-10">
+                    <div className="mb-8 flex items-center gap-4">
+                        <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="h-14 w-14 rounded-2xl object-cover ring-2 ring-white/10" />
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Ratnapura Chess Academy</p>
+                            <h2 className="text-3xl font-extrabold text-white">Welcome back</h2>
+                        </div>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        {/* Role Select Buttons */}
+                    <p className="max-w-xl text-sm leading-6 text-slate-300/80 mb-8">
+                        Log in to your academy workspace and run attendance, fees, grades and notifications with royal precision.
+                    </p>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         <div>
-                            <label className="block text-xs font-bold text-slate-455 dark:text-slate-400 uppercase tracking-widest mb-3 text-center">
+                            <label className="block text-xs font-bold uppercase tracking-[0.24em] text-slate-400 mb-3 text-center sm:text-left">
                                 Select Your Role
                             </label>
                             <div className="grid grid-cols-3 gap-3">
@@ -76,27 +108,25 @@ export const Login = () => {
                                             key={role.id}
                                             type="button"
                                             onClick={() => setSelectedRole(role.id)}
-                                            className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all duration-200 cursor-pointer ${isSelected
-                                                    ? 'border-indigo-650 bg-indigo-50/50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                                                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-450 hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
-                                                }`}
+                                            className={`flex flex-col items-center justify-center gap-1 rounded-3xl border px-3 py-4 text-center text-sm font-semibold transition-all duration-200 ${isSelected
+                                                ? 'border-indigo-500 bg-indigo-500/15 text-indigo-100 shadow-lg shadow-indigo-500/10'
+                                                : 'border-slate-700 bg-slate-900/80 text-slate-300 hover:border-slate-500 hover:bg-slate-900/95'
+                                            }`}
                                         >
-                                            <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'scale-110' : ''}`} />
-                                            <span className="text-xs font-bold">{role.label}</span>
-                                            <span className="text-[9px] opacity-75 mt-0.5 hidden sm:block">{role.desc}</span>
+                                            <Icon className={`w-5 h-5 ${isSelected ? 'text-indigo-200' : 'text-slate-400'}`} />
+                                            <span>{role.label}</span>
                                         </button>
                                     );
                                 })}
                             </div>
                         </div>
 
-                        {/* Email/Username field */}
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label className="text-xs font-bold text-slate-300">
                                 Email Address or Username
                             </label>
                             <div className="relative">
-                                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
                                     <Mail className="w-4 h-4" />
                                 </span>
                                 <input
@@ -109,23 +139,22 @@ export const Login = () => {
                                     })}
                                     type="text"
                                     placeholder="admin, receptionist, or email"
-                                    className={`pl-10 pr-4 py-3 w-full rounded-2xl border bg-white/50 dark:bg-slate-900/50 text-sm font-semibold focus:outline-none focus:ring-4 transition-all ${errors.emailOrUsername
-                                            ? 'border-rose-500 focus:ring-rose-500/10 focus:border-rose-500'
-                                            : 'border-slate-200 dark:border-slate-750 focus:ring-indigo-500/10 focus:border-indigo-550 dark:focus:border-indigo-500'
-                                        }`}
+                                    className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
+                                        ? 'border-rose-500 ring-2 ring-rose-500/10'
+                                        : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
+                                    }`}
                                 />
                             </div>
                             {errors.emailOrUsername && (
-                                <p className="text-rose-550 text-xs font-semibold mt-1">
+                                <p className="text-rose-400 text-xs font-semibold mt-1">
                                     {errors.emailOrUsername.message}
                                 </p>
                             )}
                         </div>
 
-                        {/* Password field */}
                         <div className="space-y-1">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                <label className="text-xs font-bold text-slate-300">
                                     Account Password
                                 </label>
                                 <a
@@ -134,13 +163,13 @@ export const Login = () => {
                                         e.preventDefault();
                                         alert('Simulation Note: Default setup passwords are: "admin" / "password123". For reception: "receptionist" / "password123".');
                                     }}
-                                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 hover:underline"
+                                    className="text-xs font-semibold text-indigo-300 hover:text-indigo-100"
                                 >
                                     Forgot Password?
                                 </a>
                             </div>
                             <div className="relative">
-                                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
                                     <Lock className="w-4 h-4" />
                                 </span>
                                 <input
@@ -153,51 +182,46 @@ export const Login = () => {
                                     })}
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
-                                    className={`pl-10 pr-10 py-3 w-full rounded-2xl border bg-white/50 dark:bg-slate-900/50 text-sm font-semibold focus:outline-none focus:ring-4 transition-all ${errors.password
-                                            ? 'border-rose-500 focus:ring-rose-500/10 focus:border-rose-500'
-                                            : 'border-slate-200 dark:border-slate-750 focus:ring-indigo-500/10 focus:border-indigo-550 dark:focus:border-indigo-500'
-                                        }`}
+                                    className={`pl-10 pr-10 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.password
+                                        ? 'border-rose-500 ring-2 ring-rose-500/10'
+                                        : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
+                                    }`}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200"
                                 >
                                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
                             </div>
                             {errors.password && (
-                                <p className="text-rose-550 text-xs font-semibold mt-1">
+                                <p className="text-rose-400 text-xs font-semibold mt-1">
                                     {errors.password.message}
                                 </p>
                             )}
                         </div>
 
-                        {/* Remember Me Box */}
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-2 text-sm text-slate-400">
                             <input
                                 {...register('rememberMe')}
                                 id="remember_me"
                                 type="checkbox"
-                                className="h-4 w-4 rounded-md border-slate-350 dark:border-slate-600 text-indigo-650 focus:ring-indigo-500 cursor-pointer"
+                                className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
                             />
-                            <label
-                                htmlFor="remember_me"
-                                className="ml-2 block text-xs font-bold text-slate-600 dark:text-slate-400 cursor-pointer"
-                            >
+                            <label htmlFor="remember_me" className="font-semibold text-slate-300">
                                 Remember my credentials on this browser
                             </label>
                         </div>
 
-                        {/* Login Action Button */}
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-2xl shadow-lg text-sm font-extrabold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 active:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            className="w-full rounded-3xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 py-3.5 text-sm font-extrabold text-white shadow-2xl shadow-indigo-500/20 transition hover:from-indigo-500 hover:to-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
-                                <span className="flex items-center gap-2">
-                                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                <span className="flex items-center justify-center gap-2">
+                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                                     Verifying Session...
                                 </span>
                             ) : (
@@ -205,6 +229,10 @@ export const Login = () => {
                             )}
                         </button>
                     </form>
+
+                    <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
+                        <p>New here? Register with your academy credentials or contact support for account setup.</p>
+                    </div>
                 </div>
             </div>
         </div>

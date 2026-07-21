@@ -90,13 +90,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
     const sidebarWidthStyles = isCollapsed ? 'w-20' : 'w-64';
 
     const sidebarContent = (
-        <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transition-all duration-300">
+        <div className="flex flex-col h-full bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-sm">
             {/* Brand Header */}
-                    <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between h-20 px-5 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/95">
                 <div className="flex items-center gap-3 overflow-hidden">
-                    <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="w-10 h-10 rounded-2xl bg-slate-900 object-cover" />
+                    <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="w-12 h-12 rounded-2xl bg-slate-900 object-cover shadow-lg shadow-slate-200/10" />
                     {!isCollapsed && (
-                        <span className="font-extrabold text-lg bg-gradient-to-r from-indigo-650 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide whitespace-nowrap">
+                        <span className="text-base font-semibold tracking-wide text-slate-900 dark:text-white">
                             Ratnapura Chess Academy
                         </span>
                     )}
@@ -104,7 +104,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                 {!isMobileOpen && (
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="hidden md:flex items-center justify-center w-8 h-8 rounded-2xl bg-slate-100 dark:bg-slate-900 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 shrink-0 cursor-pointer"
+                        className="hidden md:flex items-center justify-center w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-900 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 shrink-0 cursor-pointer"
                     >
                         {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                     </button>
@@ -121,13 +121,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                             to={item.path}
                             onClick={() => setIsMobileOpen(false)}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 group relative ${isActive
-                                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 shadow-sm shadow-indigo-100 dark:shadow-none border-l-4 border-indigo-600 dark:border-indigo-400'
-                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-slate-100'
+                                `flex items-center gap-3 px-4 py-3 rounded-3xl text-sm font-semibold transition-all duration-200 group relative ${isActive
+                                    ? 'bg-violet-100/90 text-violet-700 shadow-[0_10px_30px_-20px_rgba(79,70,229,0.45)] border-l-4 border-violet-500'
+                                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900/80 hover:text-slate-900'
                                 }`
                             }
                         >
-                            <Icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
+                            <Icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-violet-600' : 'text-slate-500'}" />
                             {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
 
                             {/* Badge count */}
