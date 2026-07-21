@@ -186,18 +186,18 @@ export const Dashboard = () => {
                         </div>
                         <div className="grid gap-4 sm:grid-cols-3">
                             <button
-                                onClick={() => navigate('/students')}
+                                onClick={() => navigate('/students?action=add')}
                                 className="flex items-center justify-center gap-2 rounded-full bg-[#4F46E5] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_50px_-30px_rgba(79,70,229,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#4338ca]"
                             >
                                 <Plus className="w-4 h-4 text-white" />
-                                Add Student
+                                Enroll New Student
                             </button>
                             <button
-                                onClick={() => navigate('/fees')}
+                                onClick={() => navigate('/fees?action=add')}
                                 className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:border-[#D4AF37] hover:bg-white/15"
                             >
                                 <Coins className="w-4 h-4 text-[#D4AF37]" />
-                                Add Fee Payment
+                                Record Payment
                             </button>
                             <button
                                 onClick={() => navigate('/attendance')}

@@ -240,14 +240,14 @@ export const Settings = () => {
 
                             {/* Password blocks */}
                             <div className="bg-slate-50/50 dark:bg-slate-850/40 p-4 rounded-xl border border-slate-102 dark:border-slate-800 space-y-3">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                    <Lock className="w-3 h-3 text-slate-455" />
+                                <span className="text-[10px] font-bold text-[#F6D778] uppercase tracking-widest flex items-center gap-1.5">
+                                    <Lock className="w-3 h-3 text-[#F6D778]" />
                                     Credentials Lock Override
                                 </span>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-slate-655 dark:text-slate-400">Current Password</label>
+                                        <label className="text-[10px] font-bold text-[#F8FAFC]">Current Password</label>
                                         <input
                                             {...registerProfile('currentPassword')}
                                             type="password"
@@ -257,7 +257,7 @@ export const Settings = () => {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-slate-655 dark:text-slate-400">New Password</label>
+                                        <label className="text-[10px] font-bold text-[#F8FAFC]">New Password</label>
                                         <input
                                             {...registerProfile('newPassword')}
                                             type="password"
@@ -267,7 +267,7 @@ export const Settings = () => {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-slate-655 dark:text-slate-400">Confirm Password</label>
+                                        <label className="text-[10px] font-bold text-[#F8FAFC]">Confirm Password</label>
                                         <input
                                             {...registerProfile('confirmPassword')}
                                             type="password"
@@ -304,9 +304,9 @@ export const Settings = () => {
 
                         <button
                             onClick={() => setResetModalOpen(true)}
-                            className="flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-650 border border-rose-103/50 text-xs font-bold rounded-xl cursor-pointer shadow-sm active:translate-y-0.5 transition-all"
+                            className="flex items-center gap-1.5 px-4 py-2 bg-[rgba(212,175,55,0.06)] hover:bg-[rgba(212,175,55,0.10)] text-[#D4AF37] border border-[rgba(212,175,55,0.12)] text-xs font-bold rounded-xl cursor-pointer shadow-sm active:translate-y-0.5 transition-all"
                         >
-                            <RefreshCw className="w-3.5 h-3.5" />
+                            <RefreshCw className="w-3.5 h-3.5 text-[#D4AF37]" />
                             Reset Local Storage Database
                         </button>
                     </div>

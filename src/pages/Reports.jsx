@@ -172,17 +172,17 @@ export const Reports = () => {
                 </div>
             </div>
 
-            {/* Filters box */}
-            <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
+            {/* Filters box (gold-accented) */}
+            <div className="bg-[rgba(212,175,55,0.03)] dark:bg-[#071018]/60 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 
                     {/* Year option */}
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Historical Year</label>
+                        <label className="text-xs font-bold text-[#0b1220] dark:text-[#F8FAFC]">Historical Year</label>
                         <select
                             value={filterYear}
                             onChange={(e) => setFilterYear(e.target.value)}
-                            className="px-3 py-2 w-full rounded-xl border border-slate-202 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                            className="px-3 py-2 w-full rounded-xl border border-[rgba(212,175,55,0.12)] bg-white/5 dark:bg-[#0B1020]/60 text-[#0b1220] dark:text-[#F8FAFC] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                         >
                             <option value="2026">2026</option>
                             <option value="2025">2025</option>
@@ -191,11 +191,11 @@ export const Reports = () => {
 
                     {/* Class option */}
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Selected Class Course</label>
+                        <label className="text-xs font-bold text-[#0b1220] dark:text-[#F8FAFC]">Selected Class Course</label>
                         <select
                             value={filterClass}
                             onChange={(e) => setFilterClass(e.target.value)}
-                            className="px-3 py-2 w-full rounded-xl border border-slate-202 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                            className="px-3 py-2 w-full rounded-xl border border-[rgba(212,175,55,0.12)] bg-white/5 dark:bg-[#0B1020]/60 text-[#0b1220] dark:text-[#F8FAFC] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                         >
                             <option value="All">All Classes Combined</option>
                             {classes.map((c) => (
@@ -204,9 +204,9 @@ export const Reports = () => {
                         </select>
                     </div>
 
-                    <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-xl border border-slate-101 dark:border-none flex items-center justify-between self-end font-semibold text-xs text-slate-455">
-                        <span>Current Year Filters Active</span>
-                        <span className="text-indigo-500 font-bold">{filterYear} Cycle</span>
+                    <div className="bg-[rgba(212,175,55,0.08)] dark:bg-[rgba(212,175,55,0.06)] p-3 rounded-xl border border-[rgba(212,175,55,0.12)] flex items-center justify-between self-end text-xs">
+                        <span className="text-sm font-semibold text-[#1f2937] dark:text-[#F8FAFC]">Current Year Filters Active</span>
+                        <span className="text-sm font-bold text-[#8C641A] dark:text-[#F6D778]">{filterYear} Cycle</span>
                     </div>
 
                 </div>
@@ -269,7 +269,7 @@ export const Reports = () => {
 
                     {/* Monthly financial cash flow */}
                     <div className="bg-white dark:bg-slate-905 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs lg:col-span-2">
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest mb-6 block">
+                        <h4 className="text-xs font-bold text-[#F6D778] uppercase tracking-widest mb-6 block">
                             Invoiced Billing vs Cleared Cash
                         </h4>
                         <div className="w-full h-80">
@@ -289,7 +289,7 @@ export const Reports = () => {
 
                     {/* Subject collection distribution */}
                     <div className="bg-white dark:bg-slate-905 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest mb-6 block">
+                        <h4 className="text-xs font-bold text-[#F6D778] uppercase tracking-widest mb-6 block">
                             Subject Collection Share
                         </h4>
 
@@ -335,7 +335,7 @@ export const Reports = () => {
 
                     {/* Class Attendance Comparisons bar charts */}
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs lg:col-span-3">
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-105 uppercase tracking-widest mb-6 block">
+                        <h4 className="text-xs font-bold text-[#F6D778] uppercase tracking-widest mb-6 block">
                             Class Attendance rate performance comparison
                         </h4>
                         <div className="w-full h-80">

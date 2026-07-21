@@ -95,8 +95,8 @@ export const AppContent = () => {
           {/* Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Student Management */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
+          {/* Student Management: allow Teachers to enroll and view payments */}
+          <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
             <Route path="/students" element={<Students />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/fees" element={<FeePayments />} />
