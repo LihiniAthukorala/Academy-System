@@ -1,0 +1,918 @@
+import React, { useState, useEffect } from 'react';
+import { useAcademy } from '../context/AcademyContext';
+import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
+import {
+    Search,
+    Plus,
+    Edit2,
+    Trash2,
+    Printer,
+    X,
+    CreditCard,
+    Phone,
+    Calendar,
+    AlertCircle,
+    FileSpreadsheet,
+    Coins,
+    Download,
+    Notebook
+} from 'lucide-react';
+import StatusBadge from '../components/StatusBadge';
+import ConfirmationModal from '../components/ConfirmationModal';
+
+export const FeePayments = () => {
+    const {
+        students,
+        classes,
+        payments,
+        addPayment,
+        updatePayment,
+        deletePayment,
+        settings
+    } = useAcademy();
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Search & Filter state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterMonth, setFilterMonth] = useState('All');
+    const [filterClass, setFilterClass] = useState('All');
+    const [filterStatus, setFilterStatus] = useState('All');
+    const [filterMethod, setFilterMethod] = useState('All');
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
+    // Modals state
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingPaymentId, setEditingPaymentId] = useState(null);
+    const [selectedReceipt, setSelectedReceipt] = useState(null);
+
+    // Delete modal state
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [paymentToDelete, setPaymentToDelete] = useState(null);
+
+    // Form setup
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        watch,
+        formState: { errors }
+    } = useForm();
+
+    // Watch fields to dynamically calculate amounts
+    const watchMonthlyFee = watch('monthlyFee', 0);
+    const watchRegistrationFee = watch('registrationFee', 0);
+    const watchAdditionalCharges = watch('additionalCharges', 0);
+    const watchDiscount = watch('discount', 0);
+    const watchPaidAmount = watch('paidAmount', 0);
+
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [remainingBalance, setRemainingBalance] = useState(0);
+
+    // Compute values dynamically
+    useEffect(() => {
+        const total =
+            Number(watchMonthlyFee || 0) +
+            Number(watchRegistrationFee || 0) +
+            Number(watchAdditionalCharges || 0) -
+            Number(watchDiscount || 0);
+
+        const balance = total - Number(watchPaidAmount || 0);
+
+        setTotalAmount(total >= 0 ? total : 0);
+        setRemainingBalance(balance >= 0 ? balance : 0);
+    }, [watchMonthlyFee, watchRegistrationFee, watchAdditionalCharges, watchDiscount, watchPaidAmount]);
+
+    // Handle open actions from Dashboard quick buttons
+    useEffect(() => {
+        const action = searchParams.get('action');
+        if (action === 'add') {
+            openAddForm();
+            searchParams.delete('action');
+            setSearchParams(searchParams);
+        }
+    }, [searchParams]);
+
+    // Sync Student default parameters when student selected in Form
+    const watchStudentId = watch('studentId');
+    useEffect(() => {
+        if (watchStudentId && watchStudentId !== '') {
+            const student = students.find((s) => s.id === watchStudentId);
+            if (student) {
+                setValue('classId', student.classId || '');
+                setValue('monthlyFee', student.monthlyFee || 120);
+            }
+        }
+    }, [watchStudentId, students, setValue]);
+
+    const openAddForm = () => {
+        reset({
+            studentId: '',
+            classId: '',
+            month: 'July',
+            year: '2026',
+            monthlyFee: 120,
+            registrationFee: 0,
+            additionalCharges: 0,
+            discount: 0,
+            paidAmount: 0,
+            paymentDate: new Date().toISOString().split('T')[0],
+            paymentMethod: 'Cash',
+            status: 'Pending',
+            referenceNumber: '',
+            notes: ''
+        });
+        setEditingPaymentId(null);
+        setIsFormOpen(true);
+    };
+
+    const openEditForm = (p) => {
+        reset({
+            studentId: p.studentId,
+            classId: p.classId,
+            month: p.month,
+            year: p.year,
+            monthlyFee: p.monthlyFee,
+            registrationFee: p.registrationFee,
+            additionalCharges: p.additionalCharges,
+            discount: p.discount,
+            paidAmount: p.paidAmount,
+            paymentDate: p.paymentDate,
+            paymentMethod: p.paymentMethod,
+            status: p.status,
+            referenceNumber: p.referenceNumber || '',
+            notes: p.notes || ''
+        });
+        setEditingPaymentId(p.id);
+        setIsFormOpen(true);
+    };
+
+    const handleFormSubmit = (data) => {
+        const payload = {
+            ...data,
+            monthlyFee: Number(data.monthlyFee || 0),
+            registrationFee: Number(data.registrationFee || 0),
+            additionalCharges: Number(data.additionalCharges || 0),
+            discount: Number(data.discount || 0),
+            paidAmount: Number(data.paidAmount || 0)
+        };
+
+        if (editingPaymentId) {
+            updatePayment(editingPaymentId, payload);
+        } else {
+            addPayment(payload);
+        }
+        setIsFormOpen(false);
+    };
+
+    const confirmDelete = (p) => {
+        setPaymentToDelete(p);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (paymentToDelete) {
+            deletePayment(paymentToDelete.id);
+        }
+        setDeleteModalOpen(false);
+        setPaymentToDelete(null);
+    };
+
+    const getClassName = (classId) => {
+        const cls = classes.find((c) => c.id === classId);
+        return cls ? cls.name : 'Unknown Class';
+    };
+
+    // Filter Fee Payments
+    const filteredPayments = payments.filter((p) => {
+        const matchesSearch =
+            p.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.studentId.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesMonth = filterMonth === 'All' || p.month === filterMonth;
+        const matchesClass = filterClass === 'All' || p.classId === filterClass;
+        const matchesStatus = filterStatus === 'All' || p.status === filterStatus;
+        const matchesMethod = filterMethod === 'All' || p.paymentMethod === filterMethod;
+
+        return matchesSearch && matchesMonth && matchesClass && matchesStatus && matchesMethod;
+    });
+
+    // Pagging calculations
+    const totalItems = filteredPayments.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentPaymentsList = filteredPayments.slice(indexOfFirstItem, indexOfLastItem);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterMonth, filterClass, filterStatus, filterMethod]);
+
+    const handlePrintReceipt = () => {
+        window.print();
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* Print-Only Styles Injection */}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #print-receipt-modal, #print-receipt-modal * {
+            visibility: visible;
+          }
+          #print-receipt-modal {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: auto;
+            border: none;
+            box-shadow: none;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}} />
+
+            {/* Header sections */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                <div>
+                    <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 my-0">
+                        Fee & Invoicing Ledger
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-0.5">
+                        Track class invoicing charges, settled paid accounts, and outstanding student arrears.
+                    </p>
+                </div>
+                <button
+                    onClick={openAddForm}
+                    className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md cursor-pointer shrink-0 transition-transform active:scale-98"
+                >
+                    <Plus className="w-4 h-4" />
+                    Create Invoice / Record Payment
+                </button>
+            </div>
+
+            {/* Filters ledger board */}
+            <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                    {/* Search ledger */}
+                    <div className="relative sm:col-span-2">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                        <input
+                            type="text"
+                            placeholder="Search receipt ID, student name..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                        />
+                    </div>
+
+                    {/* Month filter */}
+                    <div>
+                        <select
+                            value={filterMonth}
+                            onChange={(e) => setFilterMonth(e.target.value)}
+                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2"
+                        >
+                            <option value="All">All Months</option>
+                            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m) => (
+                                <option key={m} value={m}>{m}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Class filter */}
+                    <div>
+                        <select
+                            value={filterClass}
+                            onChange={(e) => setFilterClass(e.target.value)}
+                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2"
+                        >
+                            <option value="All">All Classes</option>
+                            {classes.map((c) => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Status filter */}
+                    <div>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none"
+                        >
+                            <option value="All">All Statuses</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Partially Paid">Partially Paid</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Method filter option strip */}
+                <div className="flex gap-2 items-center flex-wrap pt-1 text-xs">
+                    <span className="font-bold text-slate-400 mr-2 uppercase tracking-wider text-[10px]">
+                        Payment Method:
+                    </span>
+                    {['All', 'Cash', 'Bank Transfer', 'Card', 'Online Payment'].map((method) => (
+                        <button
+                            key={method}
+                            onClick={() => setFilterMethod(method)}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${filterMethod === method
+                                    ? 'border-indigo-605 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 dark:text-indigo-400'
+                                    : 'border-slate-100 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-450'
+                                }`}
+                        >
+                            {method}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Ledger Table */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50/50 dark:bg-slate-850/50 border-b border-slate-100 dark:border-slate-800">
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Receipt No</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Student Name</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Subject Class</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Month Cycle</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Invoiced</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Collected</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Arrears Due</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Process Date</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Method</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                            {currentPaymentsList.length === 0 ? (
+                                <tr>
+                                    <td colSpan="11" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
+                                        No invoicing transaction logs found matching the filter specs.
+                                    </td>
+                                </tr>
+                            ) : (
+                                currentPaymentsList.map((p) => (
+                                    <tr
+                                        key={p.id}
+                                        className="hover:bg-slate-50/30 dark:hover:bg-slate-850/20 transition-colors"
+                                    >
+                                        <td className="p-4 font-bold text-indigo-605 dark:text-indigo-400 font-mono text-xs">
+                                            {p.id}
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-sm font-extrabold text-slate-800 dark:text-slate-205 leading-none block">
+                                                {p.studentName}
+                                            </span>
+                                            <span className="text-[9px] text-slate-400 font-bold block mt-1 font-mono">
+                                                {p.studentId}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-xs font-semibold text-slate-700 dark:text-slate-350">
+                                            {getClassName(p.classId)}
+                                        </td>
+                                        <td className="p-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                            {p.month} {p.year}
+                                        </td>
+                                        <td className="p-4 text-sm font-bold text-slate-800 dark:text-slate-200 text-right font-mono">
+                                            ${p.totalAmount}
+                                        </td>
+                                        <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right font-mono">
+                                            ${p.paidAmount}
+                                        </td>
+                                        <td className="p-4 text-sm font-bold text-right font-mono">
+                                            <span className={p.balance > 0 ? 'text-rose-650' : 'text-slate-400'}>
+                                                ${p.balance}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-xs font-semibold text-slate-600 dark:text-slate-400 font-mono">
+                                            {p.paymentDate || '—'}
+                                        </td>
+                                        <td className="p-4 text-xs font-semibold text-slate-550 dark:text-slate-400">
+                                            {p.paymentMethod}
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <StatusBadge status={p.status} />
+                                        </td>
+                                        <td className="p-4 text-right">
+                                            <div className="flex gap-1.5 justify-end">
+                                                <button
+                                                    onClick={() => setSelectedReceipt(p)}
+                                                    className="p-2 rounded-lg text-slate-450 hover:text-indigo-650 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                    title="Generate payment receipt printout"
+                                                >
+                                                    <Printer className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditForm(p)}
+                                                    className="p-2 rounded-lg text-slate-450 hover:text-amber-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                    title="Edit invoice record"
+                                                >
+                                                    <Edit2 className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => confirmDelete(p)}
+                                                    className="p-2 rounded-lg text-slate-450 hover:text-rose-650 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                    title="Delete transaction log"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagging Footer */}
+                {totalPages > 1 && (
+                    <div className="px-6 py-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-850/10">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-455">
+                            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalItems)} of {totalItems} entries
+                        </span>
+                        <div className="flex gap-1">
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-1.5 rounded-lg border border-slate-202 dark:border-slate-700 text-xs font-bold text-slate-650 hover:bg-slate-55 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                                Previous
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${currentPage === page
+                                            ? 'bg-indigo-650 border-indigo-600 text-white shadow-xs'
+                                            : 'border-slate-202 dark:border-slate-700 text-slate-650 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                        }`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-1.5 rounded-lg border border-slate-202 dark:border-slate-700 text-xs font-bold text-slate-650 hover:bg-slate-55 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* CRUD Form Modal overlay */}
+            {isFormOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onClick={() => setIsFormOpen(false)}></div>
+                    <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-850 p-6 md:p-8 animate-slide-in">
+
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-850 dark:text-slate-150">
+                                    {editingPaymentId ? 'Modify Payment Record' : 'Record Student Fee Invoice'}
+                                </h3>
+                                <p className="text-xs text-slate-455 mt-0.5">
+                                    Set billable parameters and record collected payments. Remainder balance calculations are handled live.
+                                </p>
+                            </div>
+                            <button onClick={() => setIsFormOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+
+                            {/* Row 1: Student and Class */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                                        Select Enrolled Student *
+                                    </label>
+                                    <select
+                                        {...register('studentId', { required: 'Student selection is required' })}
+                                        disabled={editingPaymentId !== null}
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    >
+                                        <option value="">Choose Student</option>
+                                        {students.map((s) => (
+                                            <option key={s.id} value={s.id}>
+                                                {s.name} ({s.id})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.studentId && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.studentId.message}</p>}
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350 font-mono">
+                                        Target Class / Course
+                                    </label>
+                                    <select
+                                        {...register('classId', { required: 'Class association is required' })}
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-752 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    >
+                                        <option value="">Select Enrolled Class</option>
+                                        {classes.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Row 2: Month, Year, Payment Date */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Invoicing Year</label>
+                                    <input
+                                        {...register('year', { required: 'Required' })}
+                                        type="number"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Invoicing Month</label>
+                                    <select
+                                        {...register('month')}
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    >
+                                        {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m) => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Payment Date</label>
+                                    <input
+                                        {...register('paymentDate')}
+                                        type="date"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Row 3: Finances Calculation Fields */}
+                            <div className="bg-slate-50/50 dark:bg-slate-850/40 p-5 rounded-2xl space-y-4">
+                                <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                                    Financial Invoicing Calculator
+                                </span>
+
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                    {/* Monthly course cost */}
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Monthly Fee</label>
+                                        <input
+                                            {...register('monthlyFee', { required: true, min: 0 })}
+                                            type="number"
+                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        />
+                                    </div>
+
+                                    {/* Reg cost */}
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Registration Fee</label>
+                                        <input
+                                            {...register('registrationFee', { min: 0 })}
+                                            type="number"
+                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        />
+                                    </div>
+
+                                    {/* Additional charge */}
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Add Charges</label>
+                                        <input
+                                            {...register('additionalCharges', { min: 0 })}
+                                            type="number"
+                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        />
+                                    </div>
+
+                                    {/* Discount */}
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Discount Applied</label>
+                                        <input
+                                            {...register('discount', { min: 0 })}
+                                            type="number"
+                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-3 border-t border-slate-200 dark:border-slate-800">
+                                    {/* Total Invoiced */}
+                                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                                        <span className="text-xs text-slate-400 font-bold">Total Invoiced:</span>
+                                        <span className="text-sm font-black text-slate-850 dark:text-slate-100 font-mono">${totalAmount}</span>
+                                    </div>
+
+                                    {/* Paid Amount Input */}
+                                    <div className="space-y-1">
+                                        <input
+                                            {...register('paidAmount', {
+                                                required: 'Paid amount is required',
+                                                min: { value: 0, message: 'Cannot be negative' },
+                                                validate: (value) =>
+                                                    Number(value) <= totalAmount || 'Paid amount cannot exceed total invoiced amount'
+                                            })}
+                                            type="number"
+                                            placeholder="Enter amount paid"
+                                            className="px-3.5 py-2.5 w-full rounded-xl border border-slate-350 dark:border-slate-750 bg-white dark:bg-slate-905 text-xs font-black text-emerald-600 dark:text-emerald-400 font-mono focus:outline-none text-right"
+                                        />
+                                        {errors.paidAmount && <p className="text-rose-550 text-[10px] font-semibold text-center">{errors.paidAmount.message}</p>}
+                                    </div>
+
+                                    {/* Remaining Balance */}
+                                    <div className={`p-3 rounded-xl border flex justify-between items-center ${remainingBalance > 0 ? 'bg-rose-50/20 border-rose-100/50' : 'bg-emerald-50/20 border-emerald-100/50'}`}>
+                                        <span className="text-xs text-slate-400 font-bold">Balance Due:</span>
+                                        <span className={`text-sm font-black font-mono ${remainingBalance > 0 ? 'text-rose-650' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                                            ${remainingBalance}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 4: Method, Reference, Status */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Payment Method</label>
+                                    <select
+                                        {...register('paymentMethod')}
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    >
+                                        <option value="Cash">Cash</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Online Payment">Online Payment</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Reference Number</label>
+                                    <input
+                                        {...register('referenceNumber')}
+                                        type="text"
+                                        placeholder="e.g. TXN ID, Slip No"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Billing Status Override</label>
+                                    <select
+                                        {...register('status')}
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    >
+                                        <option value="Paid">Paid (Settled)</option>
+                                        <option value="Partially Paid">Partially Paid</option>
+                                        <option value="Pending">Pending Invoice</option>
+                                        <option value="Overdue">Overdue Arrears</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Notes */}
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Add Billing Notes</label>
+                                <textarea
+                                    {...register('notes')}
+                                    rows="3"
+                                    className="p-3 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                ></textarea>
+                            </div>
+
+                            {/* Footer submission */}
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsFormOpen(false)}
+                                    className="px-4 py-2 border border-slate-205 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-705 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md cursor-pointer"
+                                >
+                                    Save Transaction
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Printable invoice Receipt Preview Modal */}
+            {selectedReceipt && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 no-print bg-slate-900/60 backdrop-blur-xs">
+                    <div className="absolute inset-0 bg-slate-900/60" onClick={() => setSelectedReceipt(null)}></div>
+
+                    <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 p-6 md:p-8 z-10 overflow-y-auto max-h-[95vh] animate-slide-in">
+                        {/* Modal actions close */}
+                        <div className="absolute top-4 right-4 flex gap-2 no-print">
+                            <button
+                                onClick={handlePrintReceipt}
+                                className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-650 cursor-pointer transition-colors"
+                                title="Print Receipt"
+                            >
+                                <Printer className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => setSelectedReceipt(null)}
+                                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer transition-colors"
+                                title="Close"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Printable Frame Area */}
+                        <div id="print-receipt-modal" className="text-slate-800 dark:text-slate-200 p-2 font-sans">
+
+                            {/* Receipt Header details */}
+                            <div className="flex justify-between items-start border-b-2 border-dashed border-slate-200 dark:border-slate-800 pb-5">
+                                <div>
+                                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white shadow-md mb-2">
+                                        <Coins className="w-6 h-6 animate-pulse" />
+                                    </div>
+                                    <h3 className="text-lg font-black tracking-tight">{settings.academyName}</h3>
+                                    <p className="text-[10px] text-slate-455 font-bold uppercase tracking-wider font-mono">Official Payment Receipt</p>
+                                </div>
+                                <div className="text-right text-xs space-y-1">
+                                    <p className="font-extrabold text-slate-800 dark:text-slate-100 text-sm font-mono">{selectedReceipt.id}</p>
+                                    <p className="text-slate-400 font-semibold">{settings.address}</p>
+                                    <p className="text-slate-405 font-bold">{settings.phone}</p>
+                                    <p className="text-slate-405 font-bold">{settings.email}</p>
+                                </div>
+                            </div>
+
+                            {/* Student details */}
+                            <div className="grid grid-cols-2 gap-4 py-4 text-xs border-b border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span className="text-slate-400 font-bold block mb-1">Student Details</span>
+                                    <p className="font-extrabold text-slate-850 dark:text-slate-205">{selectedReceipt.studentName}</p>
+                                    <p className="text-slate-400 font-bold mt-1">ID: {selectedReceipt.studentId}</p>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-slate-400 font-bold block mb-1">Receipt Details</span>
+                                    <p className="font-semibold text-slate-805 dark:text-slate-300">Class: {getClassName(selectedReceipt.classId)}</p>
+                                    <p className="font-semibold text-slate-805 dark:text-slate-300 mt-1">Billing Month: {selectedReceipt.month} {selectedReceipt.year}</p>
+                                </div>
+                            </div>
+
+                            {/* Invoice Table list */}
+                            <div className="py-5">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+                                    Billing Breakdown
+                                </span>
+                                <div className="space-y-2.5 text-xs">
+                                    <div className="flex justify-between items-center py-1">
+                                        <span className="text-slate-600 dark:text-slate-400 font-medium">Monthly Tuition Fee</span>
+                                        <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.monthlyFee}</span>
+                                    </div>
+
+                                    {selectedReceipt.registrationFee > 0 && (
+                                        <div className="flex justify-between items-center py-1">
+                                            <span className="text-slate-600 dark:text-slate-400 font-medium">Registration Fee</span>
+                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.registrationFee}</span>
+                                        </div>
+                                    )}
+
+                                    {selectedReceipt.additionalCharges > 0 && (
+                                        <div className="flex justify-between items-center py-1">
+                                            <span className="text-slate-600 dark:text-slate-400 font-medium">Additional Study Materials</span>
+                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.additionalCharges}</span>
+                                        </div>
+                                    )}
+
+                                    {selectedReceipt.discount > 0 && (
+                                        <div className="flex justify-between items-center py-1 text-emerald-600 dark:text-emerald-450 font-bold">
+                                            <span>Applied Promocode / Scholarship Discount</span>
+                                            <span className="font-mono">-${selectedReceipt.discount}</span>
+                                        </div>
+                                    )}
+
+                                    <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center text-sm font-black">
+                                        <span className="text-slate-800 dark:text-slate-200 font-extrabold">Total Amount Invoiced</span>
+                                        <span className="font-mono">${selectedReceipt.totalAmount}</span>
+                                    </div>
+
+                                    <div className="flex justify-between items-center text-sm font-black text-emerald-600 dark:text-emerald-400 pt-1">
+                                        <span className="font-extrabold">Amount Cleared / Paid</span>
+                                        <span className="font-mono">-${selectedReceipt.paidAmount}</span>
+                                    </div>
+
+                                    <div className={`flex justify-between items-center text-sm font-black py-2.5 px-3 rounded-lg border my-2 ${selectedReceipt.balance > 0
+                                            ? 'bg-rose-50/20 border-rose-100/50 text-rose-650'
+                                            : 'bg-emerald-50/20 border-emerald-100/50 text-emerald-600 dark:text-emerald-400'
+                                        }`}>
+                                        <span className="font-extrabold">Net Arrears Balance Due</span>
+                                        <span className="font-mono">${selectedReceipt.balance}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Invoicing info */}
+                            <div className="grid grid-cols-2 gap-4 py-4 text-xs border-t border-b border-dashed border-slate-200 dark:border-slate-800">
+                                <div className="space-y-1.5">
+                                    <p className="font-semibold text-slate-500 dark:text-slate-400">
+                                        Payment Gateway: <span className="font-bold text-slate-800 dark:text-slate-200">{selectedReceipt.paymentMethod}</span>
+                                    </p>
+                                    {selectedReceipt.referenceNumber && (
+                                        <p className="font-semibold text-slate-505 dark:text-slate-400">
+                                            TXN Reference No: <span className="font-bold font-mono text-slate-800 dark:text-slate-200">{selectedReceipt.referenceNumber}</span>
+                                        </p>
+                                    )}
+                                    {selectedReceipt.paymentDate && (
+                                        <p className="font-semibold text-slate-505 dark:text-slate-400">
+                                            Payment Date: <span className="font-bold text-slate-800 dark:text-slate-200">{selectedReceipt.paymentDate}</span>
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-semibold text-slate-500 dark:text-slate-400">
+                                        Billing Status: <span className="font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200">{selectedReceipt.status}</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Receipt Footer */}
+                            <div className="mt-6 text-center text-[10px] text-slate-400 font-semibold italic max-w-sm mx-auto leading-relaxed">
+                                {settings.receiptFooter}
+                            </div>
+
+                            {/* Signatures block */}
+                            <div className="mt-12 grid grid-cols-2 gap-8 text-xs pt-6 border-t border-slate-50 dark:border-slate-800">
+                                <div>
+                                    <div className="h-6 w-32 border-b border-slate-300 dark:border-slate-700 mx-auto"></div>
+                                    <p className="text-[10px] text-slate-400 mt-2 font-bold text-center uppercase tracking-wider">Received By (Officer)</p>
+                                </div>
+                                <div>
+                                    <div className="h-6 w-32 border-b border-slate-300 dark:border-slate-700 mx-auto"></div>
+                                    <p className="text-[10px] text-slate-400 mt-2 font-bold text-center uppercase tracking-wider">Parent / Payer Signature</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* Print action buttons */}
+                        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4 no-print">
+                            <button
+                                onClick={() => setSelectedReceipt(null)}
+                                className="px-4 py-2 border border-slate-250 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-305 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                            >
+                                Close View
+                            </button>
+                            <button
+                                onClick={handlePrintReceipt}
+                                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-650 hover:bg-indigo-700 shadow-md cursor-pointer"
+                            >
+                                <Printer className="w-4 h-4" />
+                                Print Invoice
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
+            {/* Confirmation modal for delete actions */}
+            <ConfirmationModal
+                isOpen={deleteModalOpen}
+                title="Remove Invoiced Receipt Log"
+                message={`Are you sure you want to delete receipt entry ${paymentToDelete?.id} for student ${paymentToDelete?.studentName}? All associated collection ledger calculations will adjust accordingly.`}
+                confirmText="Remove Receipt"
+                type="danger"
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => setDeleteModalOpen(false)}
+            />
+        </div>
+    );
+};
+
+export default FeePayments;
