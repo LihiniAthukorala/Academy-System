@@ -213,18 +213,18 @@ export const Students = () => {
                 </button>
             </div>
 
-            {/* Filter and Search Box panel */}
-            <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
+            {/* Filter and Search Box panel (gold-accented) */}
+            <div className="bg-white/5 dark:bg-slate-900/40 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs space-y-4 backdrop-blur-sm">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                     {/* Search box */}
                     <div className="md:col-span-2 relative">
-                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                        <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
                         <input
                             type="text"
                             placeholder="Search by student name or record ID..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] transition-colors"
                         />
                     </div>
 
@@ -282,8 +282,8 @@ export const Students = () => {
                             key={gender}
                             onClick={() => setFilterGender(gender)}
                             className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${filterGender === gender
-                                    ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 dark:text-indigo-400'
-                                    : 'border-slate-100 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-450'
+                                    ? 'border-[#D4AF37] bg-[#F6D778]/10 text-[#8C641A]'
+                                    : 'border-[#2D3A56] hover:bg-[#F6D778]/6 text-[#E6D8A3]'
                                 }`}
                         >
                             {gender}
@@ -297,18 +297,18 @@ export const Students = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50/50 dark:bg-slate-850 border-b border-slate-100 dark:border-slate-800">
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Student</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Student ID</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Enrolled Class</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Guardian Phone</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Fees Status</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Attendance %</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                            <tr className="bg-transparent dark:bg-transparent border-b border-[rgba(212,175,55,0.12)]">
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student ID</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Enrolled Class</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Guardian Phone</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Fees Status</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Attendance %</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Status</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        <tbody className="divide-y divide-[rgba(212,175,55,0.06)] dark:divide-[rgba(140,100,26,0.06)]">
                             {currentStudentsList.length === 0 ? (
                                 <tr>
                                     <td colSpan="8" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
@@ -321,7 +321,7 @@ export const Students = () => {
                                     return (
                                         <tr
                                             key={std.id}
-                                            className="hover:bg-slate-50/30 dark:hover:bg-slate-850/20 transition-colors"
+                                            className="transition-colors hover:bg-[rgba(212,175,55,0.06)] dark:hover:bg-[rgba(212,175,55,0.04)]"
                                         >
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">

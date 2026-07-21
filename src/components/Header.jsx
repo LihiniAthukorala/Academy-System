@@ -96,15 +96,7 @@ export const Header = ({ isCollapsed, setIsMobileOpen }) => {
             {/* Quick Search, Notifications, Theme & Profile */}
             <div className="flex items-center gap-2 md:gap-4">
 
-                {/* Search Input Bar (Desktop only) */}
-                <div className="hidden lg:flex items-center relative">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
-                    <input
-                        type="text"
-                        placeholder="Quick search student or ID..."
-                        className="pl-9 pr-4 py-2 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
-                    />
-                </div>
+                {/* Search Input Bar removed per request */}
 
                 {/* Theme Toggle */}
                 <button

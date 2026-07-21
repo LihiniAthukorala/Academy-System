@@ -121,14 +121,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                             to={item.path}
                             onClick={() => setIsMobileOpen(false)}
                             className={({ isActive }) =>
-                                `relative flex items-center gap-3 px-4 py-3 rounded-3xl text-sm font-semibold transition-all duration-200 group ${isActive
+                                `flex items-center gap-3 px-4 py-3 rounded-3xl text-sm font-semibold transition-all duration-200 group relative ${isActive
                                     ? 'bg-violet-100/90 text-violet-700 shadow-[0_10px_30px_-20px_rgba(79,70,229,0.45)] border-l-4 border-violet-500'
-                                    : 'text-slate-700 dark:text-slate-300 hover:bg-[rgba(255,255,255,0.07)] hover:text-[#F8FAFC] dark:hover:text-[#F8FAFC] hover:border hover:border-[rgba(212,175,55,0.15)]'
+                                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900/80 hover:text-slate-900'
                                 }`
                             }
                         >
-                            <span className="pointer-events-none absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-transparent transition-all duration-200 group-hover:bg-[#D4AF37] opacity-0 group-hover:opacity-100" />
-                            <Icon className={isActive ? 'w-5 h-5 shrink-0 text-violet-600 transition-transform duration-200 group-hover:scale-110' : 'w-5 h-5 shrink-0 text-slate-500 transition-transform duration-200 group-hover:scale-110 group-hover:text-[#D4AF37]'} />
+                            <Icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-violet-600' : 'text-slate-500'}" />
                             {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
 
                             {/* Badge count */}

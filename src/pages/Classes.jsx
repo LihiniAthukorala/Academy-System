@@ -170,18 +170,18 @@ export const Classes = () => {
                 </button>
             </div>
 
-            {/* Class filters panel */}
-            <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
+            {/* Class filters panel (gold-accented) */}
+            <div className="bg-white/5 dark:bg-slate-900/40 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs space-y-4 backdrop-blur-sm">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     {/* Search box */}
                     <div className="relative md:col-span-2">
-                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                        <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
                         <input
                             type="text"
                             placeholder="Search classes by name or subject specialty..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] transition-colors"
                         />
                     </div>
 
@@ -190,7 +190,7 @@ export const Classes = () => {
                         <select
                             value={filterTeacher}
                             onChange={(e) => setFilterTeacher(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-905 text-xs font-semibold focus:outline-none"
+                            className="px-3 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                         >
                             <option value="All">All Instructors</option>
                             {teachers.map((t) => (
@@ -204,7 +204,7 @@ export const Classes = () => {
                         <select
                             value={filterSubject}
                             onChange={(e) => setFilterSubject(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-slate-202 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-905 text-xs font-semibold focus:outline-none"
+                            className="px-3 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                         >
                             <option value="All">All Subjects</option>
                             {subjects.map((sub) => (
@@ -307,8 +307,8 @@ export const Classes = () => {
 
                                 </div>
 
-                                {/* Card controls footer panel */}
-                                <div className="px-6 py-4 bg-slate-50 dark:bg-slate-850/40 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
+                                {/* Card controls footer panel (gold-tinted) */}
+                                <div className="px-6 py-4 bg-[rgba(212,175,55,0.02)] dark:bg-[rgba(212,175,55,0.02)] border-t border-[rgba(212,175,55,0.06)] flex justify-end gap-2">
                                     <button
                                         onClick={() => openEditForm(cls)}
                                         className="p-1.5 rounded-lg border border-slate-202 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-500 hover:text-amber-500 transition-colors cursor-pointer"

@@ -119,8 +119,8 @@ export const Settings = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                {/* Column 1: Institute Settings */}
-                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xs p-6 md:p-8 space-y-6">
+                {/* Column 1: Institute Settings (gold-accented) */}
+                <div className="bg-white/5 dark:bg-slate-900/40 rounded-3xl border border-[rgba(212,175,55,0.12)] shadow-xs p-6 md:p-8 space-y-6 backdrop-blur-sm">
                     <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 pb-2 border-b border-slate-50 dark:border-slate-820">
                         <Building className="w-4 h-4 text-indigo-505 shrink-0" />
                         Academy Profile Configuration
@@ -136,7 +136,7 @@ export const Settings = () => {
                             <input
                                 {...registerSettings('academyName', { required: 'Name is required' })}
                                 type="text"
-                                className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                             />
                             {settingsErrors.academyName && <p className="text-rose-550 text-[10px] font-semibold">{settingsErrors.academyName.message}</p>}
                         </div>
@@ -145,19 +145,19 @@ export const Settings = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono">Contact Email *</label>
-                                <input
-                                    {...registerSettings('email', { required: 'Required' })}
-                                    type="email"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    <input
+                                        {...registerSettings('email', { required: 'Required' })}
+                                        type="email"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                 />
                             </div>
 
                             <div className="space-y-1 font-mono">
                                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Contact Telephone *</label>
-                                <input
-                                    {...registerSettings('phone', { required: 'Required' })}
-                                    type="text"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    <input
+                                        {...registerSettings('phone', { required: 'Required' })}
+                                        type="text"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                 />
                             </div>
                         </div>
@@ -168,7 +168,7 @@ export const Settings = () => {
                             <input
                                 {...registerSettings('address', { required: 'Required' })}
                                 type="text"
-                                className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                             />
                         </div>
 
@@ -177,7 +177,7 @@ export const Settings = () => {
                             <label className="text-xs font-bold text-slate-707 dark:text-slate-300">Accounting Currency Display</label>
                             <select
                                 {...registerSettings('currency')}
-                                className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/55 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                             >
                                 <option value="USD">USD ($)</option>
                                 <option value="LKR">LKR (Rs.)</option>
@@ -190,7 +190,7 @@ export const Settings = () => {
                             <textarea
                                 {...registerSettings('receiptFooter')}
                                 rows="3"
-                                className="p-3 w-full rounded-xl border border-slate-201 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                className="p-3 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                             ></textarea>
                         </div>
 
@@ -224,7 +224,7 @@ export const Settings = () => {
                                 <input
                                     {...registerProfile('name', { required: 'Name is required' })}
                                     type="text"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                 />
                             </div>
 
@@ -234,7 +234,7 @@ export const Settings = () => {
                                 <input
                                     {...registerProfile('email', { required: 'Email coordinates are required' })}
                                     type="email"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                 />
                             </div>
 
@@ -252,7 +252,7 @@ export const Settings = () => {
                                             {...registerProfile('currentPassword')}
                                             type="password"
                                             placeholder="••••••"
-                                            className="px-2.5 py-2 w-full rounded-lg border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                            className="px-2.5 py-2 w-full rounded-lg border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                         />
                                     </div>
 
@@ -262,7 +262,7 @@ export const Settings = () => {
                                             {...registerProfile('newPassword')}
                                             type="password"
                                             placeholder="••••••"
-                                            className="px-2.5 py-2 w-full rounded-lg border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                            className="px-2.5 py-2 w-full rounded-lg border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                         />
                                     </div>
 
@@ -272,7 +272,7 @@ export const Settings = () => {
                                             {...registerProfile('confirmPassword')}
                                             type="password"
                                             placeholder="••••••"
-                                            className="px-2.5 py-2 w-full rounded-lg border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                            className="px-2.5 py-2 w-full rounded-lg border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                                         />
                                     </div>
                                 </div>

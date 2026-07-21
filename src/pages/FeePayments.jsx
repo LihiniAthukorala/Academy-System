@@ -264,18 +264,18 @@ export const FeePayments = () => {
                 </button>
             </div>
 
-            {/* Filters ledger board */}
-            <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
+            {/* Filters ledger board (gold-accented) */}
+            <div className="bg-white/5 dark:bg-slate-900/40 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs space-y-4 backdrop-blur-sm">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
                     {/* Search ledger */}
                     <div className="relative sm:col-span-2">
-                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                        <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
                         <input
                             type="text"
                             placeholder="Search receipt ID, student name..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] transition-colors"
                         />
                     </div>
 
@@ -323,9 +323,9 @@ export const FeePayments = () => {
                     </div>
                 </div>
 
-                {/* Method filter option strip */}
+                {/* Method filter option strip (gold-accented) */}
                 <div className="flex gap-2 items-center flex-wrap pt-1 text-xs">
-                    <span className="font-bold text-slate-400 mr-2 uppercase tracking-wider text-[10px]">
+                    <span className="font-bold text-[#F6D778] mr-2 uppercase tracking-wider text-[10px]">
                         Payment Method:
                     </span>
                     {['All', 'Cash', 'Bank Transfer', 'Card', 'Online Payment'].map((method) => (
@@ -333,8 +333,8 @@ export const FeePayments = () => {
                             key={method}
                             onClick={() => setFilterMethod(method)}
                             className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${filterMethod === method
-                                    ? 'border-indigo-605 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 dark:text-indigo-400'
-                                    : 'border-slate-100 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-450'
+                                    ? 'border-[#D4AF37] bg-[#F6D778]/10 text-[#8C641A]'
+                                    : 'border-[#2D3A56] hover:bg-[#F6D778]/6 text-[#E6D8A3]'
                                 }`}
                         >
                             {method}
@@ -348,21 +348,21 @@ export const FeePayments = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50/50 dark:bg-slate-850/50 border-b border-slate-100 dark:border-slate-800">
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Receipt No</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Student Name</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Subject Class</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Month Cycle</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Invoiced</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Collected</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Arrears Due</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Process Date</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Method</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                            <tr className="bg-transparent border-b border-[rgba(212,175,55,0.12)]">
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Receipt No</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student Name</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Subject Class</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Month Cycle</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Invoiced</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Collected</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Arrears Due</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Process Date</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Method</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Status</th>
+                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        <tbody className="divide-y divide-[rgba(212,175,55,0.06)] dark:divide-[rgba(140,100,26,0.06)]">
                             {currentPaymentsList.length === 0 ? (
                                 <tr>
                                     <td colSpan="11" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
@@ -372,9 +372,9 @@ export const FeePayments = () => {
                             ) : (
                                 currentPaymentsList.map((p) => (
                                     <tr
-                                        key={p.id}
-                                        className="hover:bg-slate-50/30 dark:hover:bg-slate-850/20 transition-colors"
-                                    >
+                                            key={p.id}
+                                            className="transition-colors hover:bg-[rgba(212,175,55,0.06)] dark:hover:bg-[rgba(212,175,55,0.04)]"
+                                        >
                                         <td className="p-4 font-bold text-indigo-605 dark:text-indigo-400 font-mono text-xs">
                                             {p.id}
                                         </td>
