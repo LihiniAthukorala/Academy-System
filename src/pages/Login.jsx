@@ -52,11 +52,9 @@ export const Login = () => {
 
                     {/* Logo Headers */}
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-650 to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 text-white shadow-xl shadow-indigo-600/20 mb-4 animate-bounce">
-                            <BookOpenCheck className="w-8 h-8" />
-                        </div>
+                        <img src="/src/assets/ratnapura-logo.svg" alt="Ratnapura Chess Academy logo" className="mx-auto w-16 h-16 rounded-2xl shadow-xl shadow-indigo-600/20 mb-4" />
                         <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-                            Excel Tuition Academy
+                            Ratnapura Chess Academy
                         </h2>
                         <p className="text-sm text-slate-500 dark:text-slate-455 font-semibold mt-1">
                             Complete education & institute management engine.
@@ -181,7 +179,7 @@ export const Login = () => {
                                 {...register('rememberMe')}
                                 id="remember_me"
                                 type="checkbox"
-                                className="h-4 w-4 rounded-md border-slate-350 dark:border-slate-600 text-indigo-650 focus:ring-indigo-500 cursor-pointerAccent"
+                                className="h-4 w-4 rounded-md border-slate-350 dark:border-slate-600 text-indigo-650 focus:ring-indigo-500 cursor-pointer"
                             />
                             <label
                                 htmlFor="remember_me"

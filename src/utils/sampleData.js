@@ -512,12 +512,12 @@ export const SAMPLE_NOTIFICATIONS = [
 ];
 
 export const DEFAULT_SETTINGS = {
-    academyName: "Excel Tuition Academy",
-    academyLogo: "", // Let's use a nice dynamic text + book placeholder logo in UI
+    academyName: "Ratnapura Chess Academy",
+    academyLogo: "/src/assets/ratnapura-logo.svg",
     address: "102 High Street, Academy Plaza, Sector 4",
     phone: "+1-555-9000",
-    email: "info@excelacademy.edu",
-    receiptFooter: "Thank you for choosing Excel Tuition Academy. For inquiries or updates, email info@excelacademy.edu.",
+    email: "info@ratnapurachessacademy.edu",
+    receiptFooter: "Thank you for choosing Ratnapura Chess Academy. For inquiries or updates, email info@ratnapurachessacademy.edu.",
     defaultMonthlyFee: 120,
     currency: "USD",
     academicYear: "2026"

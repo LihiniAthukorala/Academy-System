@@ -46,7 +46,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-905 flex text-slate-800 dark:text-slate-205 transition-colors duration-300">
+    <div className="min-h-screen bg-[#F6F8FC] dark:bg-[#0F172A] flex text-slate-950 dark:text-slate-100 transition-colors duration-300">
       {/* Sidebar Nav */}
       <Sidebar
         isCollapsed={isCollapsed}

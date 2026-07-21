@@ -167,31 +167,31 @@ export const Dashboard = () => {
                 </div>
 
                 {/* Quick Actions Buttons */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                     <button
                         onClick={() => navigate('/students?action=add')}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-650/10 active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-650 active:translate-y-0.5 transition-all cursor-pointer"
                     >
                         <UserPlus className="w-3.5 h-3.5" />
                         Add Student
                     </button>
                     <button
                         onClick={() => navigate('/attendance?action=mark')}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-650/10 active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-650 active:translate-y-0.5 transition-all cursor-pointer"
                     >
                         <CalendarDays className="w-3.5 h-3.5" />
                         Mark Attendance
                     </button>
                     <button
                         onClick={() => navigate('/fees?action=add')}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-750 rounded-xl shadow-md shadow-purple-650/10 active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-750 rounded-xl shadow-md shadow-purple-650 active:translate-y-0.5 transition-all cursor-pointer"
                     >
                         <Coins className="w-3.5 h-3.5" />
                         Add Fee Payment
                     </button>
                     <button
                         onClick={() => navigate('/classes?action=add')}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 rounded-xl shadow-xs active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 rounded-xl shadow-xs active:translate-y-0.5 transition-all cursor-pointer"
                     >
                         <Plus className="w-3.5 h-3.5 text-slate-500" />
                         Create Class
@@ -200,7 +200,7 @@ export const Dashboard = () => {
             </div>
 
             {/* Stats Summary Grid Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-4">
                 {stats.map((stat, i) => {
                     const Icon = stat.icon;
                     return (
@@ -233,7 +233,7 @@ export const Dashboard = () => {
 
                 {/* Income Chart */}
                 <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
                         <div>
                             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
                                 Academy Cash Flow Trend
@@ -277,7 +277,7 @@ export const Dashboard = () => {
 
                 {/* Attendance Rates */}
                 <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
                         <div>
                             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
                                 Attendance By Subject
@@ -309,11 +309,11 @@ export const Dashboard = () => {
             </div>
 
             {/* Bottom widgets lists grids */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 {/* Recents Registry students */}
                 <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
-                    <div className="flex items-center justify-between mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
                         <h3 className="text-xs font-bold text-slate-850 dark:text-slate-200 uppercase tracking-wider">
                             Recent Registrations
                         </h3>
@@ -327,7 +327,7 @@ export const Dashboard = () => {
                     </div>
                     <div className="space-y-4">
                         {recentStudents.map((std) => (
-                            <div key={std.id} className="flex items-center gap-3">
+                            <div key={std.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
                                 <img
                                     src={std.profileImage}
                                     alt={std.name}
@@ -349,7 +349,7 @@ export const Dashboard = () => {
 
                 {/* Recent Fee Invoices */}
                 <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
-                    <div className="flex items-center justify-between mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
                         <h3 className="text-xs font-bold text-slate-855 dark:text-slate-200 uppercase tracking-wider">
                             Recent Payments
                         </h3>
@@ -363,7 +363,7 @@ export const Dashboard = () => {
                     </div>
                     <div className="space-y-4">
                         {recentPayments.map((p) => (
-                            <div key={p.id} className="flex items-center gap-3">
+                            <div key={p.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate leading-none">
                                         {p.studentName}
@@ -388,7 +388,7 @@ export const Dashboard = () => {
 
                 {/* Pending Invoices Reminders */}
                 <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
-                    <div className="flex items-center justify-between mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 border-b border-slate-50 dark:border-slate-800 pb-2">
                         <h3 className="text-xs font-bold text-slate-850 dark:text-slate-200 uppercase tracking-wider">
                             Pending Fees Alert
                         </h3>
@@ -407,7 +407,7 @@ export const Dashboard = () => {
                             </p>
                         ) : (
                             pendingInvoices.map((p) => (
-                                <div key={p.id} className="flex items-center gap-3">
+                                <div key={p.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate leading-none">
                                             {p.studentName}

@@ -92,22 +92,19 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
     const sidebarContent = (
         <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transition-all duration-300">
             {/* Brand Header */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-600 text-white shrink-0 shadow-md shadow-indigo-600/20">
-                        <BookOpenCheck className="w-5 h-5 animate-pulse" />
-                    </div>
+                    <img src="/src/assets/ratnapura-logo.svg" alt="Ratnapura Chess Academy logo" className="w-10 h-10 rounded-2xl bg-slate-900 object-cover" />
                     {!isCollapsed && (
                         <span className="font-extrabold text-lg bg-gradient-to-r from-indigo-650 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide whitespace-nowrap">
-                            Excel Academy
+                            Ratnapura Chess Academy
                         </span>
                     )}
                 </div>
-                {/* Toggle Collapse Button (Desktop only) */}
                 {!isMobileOpen && (
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="hidden md:flex items-center justify-center w-6 h-6 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 shrink-0 cursor-pointer"
+                        className="hidden md:flex items-center justify-center w-8 h-8 rounded-2xl bg-slate-100 dark:bg-slate-900 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 shrink-0 cursor-pointer"
                     >
                         {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                     </button>
@@ -124,9 +121,9 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                             to={item.path}
                             onClick={() => setIsMobileOpen(false)}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group relative ${isActive
-                                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 shadow-sm shadow-indigo-100 dark:shadow-none'
-                                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-slate-205'
+                                `flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 group relative ${isActive
+                                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 shadow-sm shadow-indigo-100 dark:shadow-none border-l-4 border-indigo-600 dark:border-indigo-400'
+                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-slate-100'
                                 }`
                             }
                         >
