@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAcademy } from '../context/AcademyContext';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import {
     Search,
     Plus,
@@ -25,6 +26,7 @@ export const Teachers = () => {
         deleteTeacher,
         classes
     } = useAcademy();
+    const [searchParams] = useSearchParams();
 
     // Search state
     const [searchTerm, setSearchTerm] = useState('');
@@ -121,6 +123,12 @@ export const Teachers = () => {
     useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm]);
+
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            openAddForm();
+        }
+    }, [searchParams]);
 
     return (
         <div className="space-y-6">
