@@ -223,24 +223,29 @@ export const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="relative hidden overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/5 p-6 shadow-[0_40px_120px_-50px_rgba(0,0,0,0.8)] backdrop-blur-xl lg:block">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_45%)]" />
+                    <div className="group relative hidden overflow-hidden rounded-[2.25rem] border border-[rgba(212,175,55,0.18)] bg-slate-950/25 p-6 shadow-[0_40px_120px_-50px_rgba(0,0,0,0.8)] backdrop-blur-xl lg:block transition-transform duration-300 hover:-translate-y-0.5">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(212,175,55,0.14),transparent_28%)]" />
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(79,70,229,0.14),transparent_35%)]" />
+                        <div className="absolute top-6 right-6 h-36 w-36 rounded-full bg-[#F6D778]/15 blur-3xl opacity-90 pointer-events-none" />
+                        <div className="absolute top-20 right-16 h-24 w-24 rounded-full bg-[#D4AF37]/10 blur-3xl opacity-80 pointer-events-none" />
+                        <div className="absolute left-10 top-32 h-1 w-1 rounded-full bg-[#D4AF37]/40 blur-sm opacity-90" />
+                        <div className="absolute right-14 bottom-20 h-1 w-1 rounded-full bg-[#F6D778]/40 blur-sm opacity-90" />
+                        <div className="absolute left-20 bottom-16 h-2 w-2 rounded-full bg-[#D4AF37]/40 blur-sm opacity-90" />
                         <div className="relative flex h-full items-center justify-center">
-                            <div className="relative h-80 w-60 rounded-[2.25rem] border border-white/15 bg-white/10 shadow-[0_30px_70px_-30px_rgba(255,255,255,0.15)] backdrop-blur-2xl">
-                                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-b from-white/15 to-transparent" />
-                                <div className="absolute left-1/2 top-6 -translate-x-1/2 text-[5.5rem] text-white/90">♔</div>
-                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm uppercase tracking-[0.3em] text-slate-300">Glass King</div>
+                            <div className="relative h-80 w-60 rounded-[2.25rem] border border-[rgba(212,175,55,0.2)] bg-white/10 shadow-[0_30px_70px_-30px_rgba(212,175,55,0.18)] backdrop-blur-2xl transition-transform duration-300 group-hover:-translate-y-1">
+                                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-b from-[#F6D778]/15 to-transparent" />
+                                <div className="absolute left-1/2 top-6 -translate-x-1/2 text-[5.5rem] text-[#D4AF37] drop-shadow-[0_0_30px_rgba(212,175,55,0.35)]">♔</div>
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm uppercase tracking-[0.3em] text-[#F6D778]">Glass King</div>
                             </div>
-                            <div className="absolute right-5 top-12 h-44 w-36 rounded-[2rem] border border-white/15 bg-white/10 shadow-[0_20px_40px_-20px_rgba(255,255,255,0.18)] backdrop-blur-2xl">
-                                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/10 to-transparent" />
-                                <div className="absolute left-1/2 top-8 -translate-x-1/2 text-[5rem] text-white/80">♕</div>
-                                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[0.66rem] uppercase tracking-[0.24em] text-slate-400">Glass Queen</div>
+                            <div className="absolute right-5 top-12 h-44 w-36 rounded-[2rem] border border-[rgba(212,175,55,0.18)] bg-white/10 shadow-[0_20px_40px_-20px_rgba(212,175,55,0.2)] backdrop-blur-2xl transition-transform duration-300 group-hover:-translate-y-1">
+                                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-[#F6D778]/12 to-transparent" />
+                                <div className="absolute left-1/2 top-8 -translate-x-1/2 text-[5rem] text-[#D4AF37]/95 drop-shadow-[0_0_22px_rgba(212,175,55,0.28)]">♕</div>
+                                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[0.66rem] uppercase tracking-[0.24em] text-[#F6D778]">Glass Queen</div>
                             </div>
                         </div>
-                        <div className="absolute left-6 bottom-10 text-[4rem] text-white/10">♘</div>
-                        <div className="absolute right-8 bottom-24 text-[4.5rem] text-white/10">♖</div>
-                        <div className="absolute left-14 top-24 text-[4rem] text-white/10">♗</div>
+                        <div className="absolute left-6 bottom-10 text-[4rem] text-[#8C641A]/10">♘</div>
+                        <div className="absolute right-8 bottom-24 text-[4.5rem] text-[#8C641A]/10">♖</div>
+                        <div className="absolute left-14 top-24 text-[4rem] text-[#8C641A]/10">♗</div>
                     </div>
                 </div>
             </section>
