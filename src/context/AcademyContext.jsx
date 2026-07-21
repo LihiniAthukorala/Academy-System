@@ -83,8 +83,8 @@ export const AcademyProvider = ({ children }) => {
         const userData = {
             username: emailOrUsername.split('@')[0],
             email: email,
-            role: role, // 'Administrator' | 'Teacher' | 'Receptionist'
-            name: role === 'Administrator' ? 'Principal Admin' : role === 'Teacher' ? 'Dr. Robert Carter' : 'Alice Receptionist',
+            role: role, // 'Administrator' | 'Teacher'
+            name: role === 'Administrator' ? 'Principal Admin' : 'Dr. Robert Carter',
             avatarUrl: role === 'Teacher'
                 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
                 : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'

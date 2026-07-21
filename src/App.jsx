@@ -90,13 +90,13 @@ export const AppContent = () => {
       <Route path="/contact" element={<Contact />} />
 
       {/* Secured Shell Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher', 'Receptionist']} />}>
+      <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
         <Route element={<Layout />}>
           {/* Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
 
           {/* Student Management */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Receptionist']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
             <Route path="/students" element={<Students />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/fees" element={<FeePayments />} />

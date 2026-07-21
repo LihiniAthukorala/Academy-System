@@ -8,7 +8,7 @@ export const Login = () => {
     const { login } = useAcademy();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher' | 'Receptionist'
+    const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher'
 
     const {
         register,
@@ -33,8 +33,7 @@ export const Login = () => {
 
     const roles = [
         { id: 'Administrator', label: 'Admin', icon: Shield, desc: 'Full control' },
-        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' },
-        { id: 'Receptionist', label: 'Reception', icon: UserCircle, desc: 'Students & fees' }
+        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' }
     ];
 
     return (
@@ -99,7 +98,7 @@ export const Login = () => {
                             <label className="block text-xs font-bold uppercase tracking-[0.24em] text-slate-400 mb-3 text-center sm:text-left">
                                 Select Your Role
                             </label>
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-3">
                                 {roles.map((role) => {
                                     const Icon = role.icon;
                                     const isSelected = selectedRole === role.id;
@@ -138,7 +137,7 @@ export const Login = () => {
                                         }
                                     })}
                                     type="text"
-                                    placeholder="admin, receptionist, or email"
+                                    placeholder="admin, teacher, or email"
                                     className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
                                         ? 'border-rose-500 ring-2 ring-rose-500/10'
                                         : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
@@ -161,7 +160,7 @@ export const Login = () => {
                                     href="#forgot"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        alert('Simulation Note: Default setup passwords are: "admin" / "password123". For reception: "receptionist" / "password123".');
+                                        alert('Simulation Note: Default setup passwords are: "admin" / "password123" or "teacher" / "password123".');
                                     }}
                                     className="text-xs font-semibold text-indigo-300 hover:text-indigo-100"
                                 >

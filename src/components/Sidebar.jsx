@@ -29,25 +29,25 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/dashboard',
             label: 'Dashboard',
             icon: LayoutDashboard,
-            roles: ['Administrator', 'Teacher', 'Receptionist']
+            roles: ['Administrator', 'Teacher']
         },
         {
             path: '/students',
             label: 'Students',
             icon: Users,
-            roles: ['Administrator', 'Receptionist']
+            roles: ['Administrator']
         },
         {
             path: '/attendance',
             label: 'Attendance',
             icon: CheckSquare,
-            roles: ['Administrator', 'Teacher', 'Receptionist']
+            roles: ['Administrator', 'Teacher']
         },
         {
             path: '/fees',
             label: 'Fee Payments',
             icon: DollarSign,
-            roles: ['Administrator', 'Receptionist']
+            roles: ['Administrator']
         },
         {
             path: '/classes',
@@ -71,14 +71,14 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/notifications',
             label: 'Notifications',
             icon: Bell,
-            roles: ['Administrator', 'Teacher', 'Receptionist'],
+            roles: ['Administrator', 'Teacher'],
             badge: unreadNotifCount > 0 ? unreadNotifCount : null
         },
         {
             path: '/settings',
             label: 'Settings',
             icon: Settings,
-            roles: ['Administrator', 'Teacher', 'Receptionist']
+            roles: ['Administrator', 'Teacher']
         }
     ];
 

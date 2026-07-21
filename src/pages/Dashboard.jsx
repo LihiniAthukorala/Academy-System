@@ -14,7 +14,6 @@ import {
     UserPlus,
     Coins
 } from 'lucide-react';
-import heroImage from '../assets/hero.png';
 import {
     ResponsiveContainer,
     BarChart,
@@ -157,60 +156,91 @@ export const Dashboard = () => {
     return (
         <div className="space-y-10">
             {/* Hero Dashboard Header */}
-            <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.16),transparent_20%),radial-gradient(circle_at_bottom_left,_rgba(167,139,250,0.16),transparent_20%)]" />
-                <div className="absolute inset-0 bg-[linear-gradient(140deg,rgba(15,23,42,0.92),rgba(30,41,59,0.8))]" />
-                <div className="relative grid gap-6 lg:grid-cols-[1.3fr_1fr] p-8 md:p-10 xl:p-12">
-                    <div className="space-y-6 max-w-2xl">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-300 shadow-sm shadow-slate-950/40">
-                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_16px_rgba(52,211,153,0.3)]"></span>
-                            Academy Strategy Center
+            <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0B1020] via-[#090B16] to-black text-white shadow-2xl">
+                <div className="absolute inset-0 bg-chessboard opacity-8 pointer-events-none mix-blend-overlay" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(212,175,55,0.08),transparent_20%),radial-gradient(circle_at_bottom_left,_rgba(79,70,229,0.09),transparent_25%)] pointer-events-none" />
+                <div className="absolute top-0 right-0 h-72 w-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+                <div className="absolute top-12 right-16 h-48 w-48 rounded-full bg-[#4F46E5]/10 blur-3xl pointer-events-none" />
+                <div className="absolute top-6 right-6 h-96 w-96 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-40 blur-3xl pointer-events-none" />
+                <div className="absolute inset-0 pointer-events-none">
+                    <span className="absolute top-20 left-16 text-[5rem] font-black text-white/5">♖</span>
+                    <span className="absolute top-40 right-24 text-[4rem] font-black text-white/5">♘</span>
+                    <span className="absolute bottom-20 left-28 text-[4.5rem] font-black text-white/5">♗</span>
+                    <span className="absolute bottom-32 right-10 text-[5rem] font-black text-white/5">♜</span>
+                </div>
+
+                <div className="relative grid gap-8 lg:grid-cols-[1.15fr_0.85fr] p-8 md:p-10 xl:p-12">
+                    <div className="space-y-8 max-w-3xl">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-300 shadow-sm shadow-slate-950/40">
+                            Premium Chess Academy
                         </div>
                         <div className="space-y-4">
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-                                Chess has never looked like this
+                            <h1 className="text-4xl sm:text-5xl lg:text-[4.75rem] font-black leading-tight tracking-tight">
+                                Master Every Move.
+                                <br />
+                                Manage Every Champion.
                             </h1>
-                            <p className="text-base sm:text-lg text-slate-300 leading-8">
-                                Real-time academy performance and insights wrapped in a premium chess-style control center for Ratnapura Chess Academy.
+                            <p className="max-w-2xl text-base sm:text-lg leading-8 text-slate-300">
+                                Manage students, attendance, classes, and fee payments from one premium academy dashboard designed for professional chess coaching.
                             </p>
                         </div>
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="grid gap-4 sm:grid-cols-3">
                             <button
-                                onClick={() => navigate('/dashboard')}
-                                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-500 via-indigo-600 to-sky-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:brightness-110 transition"
+                                onClick={() => navigate('/students')}
+                                className="flex items-center justify-center gap-2 rounded-full bg-[#4F46E5] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_50px_-30px_rgba(79,70,229,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#4338ca]"
                             >
-                                Watch live now
+                                <Plus className="w-4 h-4 text-white" />
+                                Add Student
                             </button>
                             <button
-                                onClick={() => navigate('/reports')}
-                                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10 transition"
+                                onClick={() => navigate('/fees')}
+                                className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:border-[#D4AF37] hover:bg-white/15"
                             >
-                                See it in action
+                                <Coins className="w-4 h-4 text-[#D4AF37]" />
+                                Add Fee Payment
+                            </button>
+                            <button
+                                onClick={() => navigate('/attendance')}
+                                className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:border-[#4F46E5] hover:bg-slate-900/70"
+                            >
+                                <UserPlus className="w-4 h-4 text-[#D4AF37]" />
+                                Mark Attendance
                             </button>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-3">
-                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                            <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-[0_30px_70px_-40px_rgba(255,255,255,0.12)] backdrop-blur-xl transition hover:shadow-[0_35px_90px_-40px_rgba(255,255,255,0.16)]">
                                 <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Pending Fees</p>
                                 <p className="mt-4 text-3xl font-black text-white">${pendingCollection}</p>
                             </div>
-                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                            <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-[0_30px_70px_-40px_rgba(255,255,255,0.12)] backdrop-blur-xl transition hover:shadow-[0_35px_90px_-40px_rgba(255,255,255,0.16)]">
                                 <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Active Students</p>
                                 <p className="mt-4 text-3xl font-black text-white">{activeStudents}</p>
                             </div>
-                            <div className="rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)]">
+                            <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-[0_30px_70px_-40px_rgba(255,255,255,0.12)] backdrop-blur-xl transition hover:shadow-[0_35px_90px_-40px_rgba(255,255,255,0.16)]">
                                 <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Total Classes</p>
                                 <p className="mt-4 text-3xl font-black text-white">{totalClasses}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-2xl">
-                        <img src={heroImage} alt="Chess hero" className="h-full w-full object-cover object-center brightness-[0.85]" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/10 to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-slate-950/75 p-5 backdrop-blur-sm">
-                            <p className="text-[10px] uppercase tracking-[0.32em] text-slate-400">Premium Strategy Center</p>
-                            <p className="mt-3 text-sm font-semibold text-white">Live boards, actionable insights, and polished chess academy analytics.</p>
+                    <div className="relative hidden overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/5 p-6 shadow-[0_40px_120px_-50px_rgba(0,0,0,0.8)] backdrop-blur-xl lg:block">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_45%)]" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(79,70,229,0.14),transparent_35%)]" />
+                        <div className="relative flex h-full items-center justify-center">
+                            <div className="relative h-80 w-60 rounded-[2.25rem] border border-white/15 bg-white/10 shadow-[0_30px_70px_-30px_rgba(255,255,255,0.15)] backdrop-blur-2xl">
+                                <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-b from-white/15 to-transparent" />
+                                <div className="absolute left-1/2 top-6 -translate-x-1/2 text-[5.5rem] text-white/90">♔</div>
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm uppercase tracking-[0.3em] text-slate-300">Glass King</div>
+                            </div>
+                            <div className="absolute right-5 top-12 h-44 w-36 rounded-[2rem] border border-white/15 bg-white/10 shadow-[0_20px_40px_-20px_rgba(255,255,255,0.18)] backdrop-blur-2xl">
+                                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/10 to-transparent" />
+                                <div className="absolute left-1/2 top-8 -translate-x-1/2 text-[5rem] text-white/80">♕</div>
+                                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[0.66rem] uppercase tracking-[0.24em] text-slate-400">Glass Queen</div>
+                            </div>
                         </div>
+                        <div className="absolute left-6 bottom-10 text-[4rem] text-white/10">♘</div>
+                        <div className="absolute right-8 bottom-24 text-[4.5rem] text-white/10">♖</div>
+                        <div className="absolute left-14 top-24 text-[4rem] text-white/10">♗</div>
                     </div>
                 </div>
             </section>
