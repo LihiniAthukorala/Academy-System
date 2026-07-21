@@ -6,6 +6,7 @@ import { Home } from './pages/Home';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Students } from './pages/Students';
+import { EnrollStudent } from './pages/EnrollStudent';
 import { StudentProfile } from './pages/StudentProfile';
 import { FeePayments } from './pages/FeePayments';
 import { Attendance } from './pages/Attendance';
@@ -98,6 +99,7 @@ export const AppContent = () => {
           {/* Student Management: allow Teachers to enroll and view payments */}
           <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
             <Route path="/students" element={<Students />} />
+            <Route path="/students/enroll" element={<EnrollStudent />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/fees" element={<FeePayments />} />
           </Route>

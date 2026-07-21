@@ -64,53 +64,15 @@ export const Students = () => {
         formState: { errors }
     } = useForm();
 
-    // Handle opening action via quick links
+    // Handle redirect from legacy quick links
     useEffect(() => {
         const action = searchParams.get('action');
         if (action === 'add') {
-            openAddForm();
-            // Remove query param to avoid re-opening on reload
-            searchParams.delete('action');
-            setSearchParams(searchParams);
+            navigate('/students/enroll');
         }
-    }, [searchParams]);
+    }, [searchParams, navigate]);
 
     // Synchronize class fee when class changes in Form
-    const selectedClassId = watch('classId');
-    useEffect(() => {
-        if (selectedClassId && selectedClassId !== '') {
-            const cls = classes.find(c => c.id === selectedClassId);
-            if (cls) {
-                setValue('monthlyFee', cls.monthlyFee);
-            }
-        }
-    }, [selectedClassId, classes, setValue]);
-
-    // Open Form for Adding
-    const openAddForm = () => {
-        reset({
-            name: '',
-            nameInitials: '',
-            dob: '',
-            gender: 'Male',
-            school: '',
-            grade: 'Grade 10',
-            address: '',
-            phone: '',
-            parentName: '',
-            parentPhone: '',
-            email: '',
-            joinedDate: new Date().toISOString().split('T')[0],
-            classId: classes[0]?.id || '',
-            monthlyFee: classes[0]?.monthlyFee || 120,
-            status: 'Active',
-            profileImage: '',
-            notes: ''
-        });
-        setEditingStudentId(null);
-        setIsFormOpen(true);
-    };
-
     // Open Form for Editing
     const openEditForm = (student) => {
         reset({
@@ -205,7 +167,7 @@ export const Students = () => {
                     </p>
                 </div>
                 <button
-                    onClick={openAddForm}
+                    onClick={() => navigate('/students/enroll')}
                     className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md cursor-pointer shrink-0 transition-transform active:scale-98"
                 >
                     <UserPlus className="w-4 h-4" />

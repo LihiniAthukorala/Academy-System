@@ -184,7 +184,7 @@ export const Dashboard = () => {
                     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         {[
                             { label: 'Add Staff', icon: Users, route: '/teachers?action=add' },
-                            { label: 'Add Student', icon: Plus, route: '/students?action=add' },
+                            { label: 'Add Student', icon: Plus, route: '/students/enroll' },
                             { label: 'Take Attendance', icon: UserPlus, route: '/attendance?action=mark' },
                             { label: 'Collect Fees', icon: Coins, route: '/fees?action=add' },
                             { label: 'Add Notice', icon: Bell, route: null },
