@@ -94,7 +94,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             {/* Brand Header */}
                     <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3 overflow-hidden">
-                    <img src="/src/assets/ratnapura-logo.svg" alt="Ratnapura Chess Academy logo" className="w-10 h-10 rounded-2xl bg-slate-900 object-cover" />
+                    <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="w-10 h-10 rounded-2xl bg-slate-900 object-cover" />
                     {!isCollapsed && (
                         <span className="font-extrabold text-lg bg-gradient-to-r from-indigo-650 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide whitespace-nowrap">
                             Ratnapura Chess Academy

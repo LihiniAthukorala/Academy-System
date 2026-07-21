@@ -154,50 +154,65 @@ export const Dashboard = () => {
     const recentStudents = students.slice(0, 4);
 
     return (
-        <div className="space-y-6">
-            {/* Quick Action Dashboard Header Panel */}
-            <div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
-                <div>
-                    <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 my-0">
-                        Welcome to Academy Engine
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-0.5">
-                        Overview of classes, attendance logs, and fee payments for the current academic year.
-                    </p>
-                </div>
+        <div className="space-y-10">
+            {/* Hero Dashboard Header */}
+            <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(59,130,246,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(250,204,21,0.12),_transparent_30%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(15,23,42,0.9),rgba(30,41,59,0.65))]" />
+                <div className="relative grid gap-6 lg:grid-cols-[1.3fr_1fr] p-6 md:p-8 xl:p-10">
+                    <div className="space-y-6">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-200/80 shadow-sm shadow-white/5">
+                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)]"></span>
+                            Academy Experience
+                        </div>
+                        <div className="max-w-xl space-y-4">
+                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
+                                Chess has never looked like this
+                            </h1>
+                            <p className="text-base sm:text-lg text-slate-300 leading-8">
+                                Real-time academy performance and insights wrapped in a premium chess-style control center for Ratnapura Chess Academy.
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                            <button
+                                onClick={() => navigate('/dashboard')}
+                                className="inline-flex items-center justify-center rounded-3xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition"
+                            >
+                                Watch live now
+                            </button>
+                            <button
+                                onClick={() => navigate('/reports')}
+                                className="inline-flex items-center justify-center rounded-3xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/15 transition"
+                            >
+                                See it in action
+                            </button>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
+                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Pending Fees</p>
+                                <p className="mt-3 text-2xl font-black text-white">${pendingCollection}</p>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
+                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Active Students</p>
+                                <p className="mt-3 text-2xl font-black text-white">{activeStudents}</p>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.8)]">
+                                <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">Total Classes</p>
+                                <p className="mt-3 text-2xl font-black text-white">{totalClasses}</p>
+                            </div>
+                        </div>
+                    </div>
 
-                {/* Quick Actions Buttons */}
-                <div className="flex flex-col sm:flex-row flex-wrap gap-2">
-                    <button
-                        onClick={() => navigate('/students?action=add')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-650 active:translate-y-0.5 transition-all cursor-pointer"
-                    >
-                        <UserPlus className="w-3.5 h-3.5" />
-                        Add Student
-                    </button>
-                    <button
-                        onClick={() => navigate('/attendance?action=mark')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-650 active:translate-y-0.5 transition-all cursor-pointer"
-                    >
-                        <CalendarDays className="w-3.5 h-3.5" />
-                        Mark Attendance
-                    </button>
-                    <button
-                        onClick={() => navigate('/fees?action=add')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-750 rounded-xl shadow-md shadow-purple-650 active:translate-y-0.5 transition-all cursor-pointer"
-                    >
-                        <Coins className="w-3.5 h-3.5" />
-                        Add Fee Payment
-                    </button>
-                    <button
-                        onClick={() => navigate('/classes?action=add')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 rounded-xl shadow-xs active:translate-y-0.5 transition-all cursor-pointer"
-                    >
-                        <Plus className="w-3.5 h-3.5 text-slate-500" />
-                        Create Class
-                    </button>
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 shadow-2xl">
+                        <img src="/src/assets/hero.png" alt="Chess hero" className="h-full w-full object-cover object-center opacity-90" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/20 to-transparent" />
+                        <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-slate-950/80 p-4 backdrop-blur-sm">
+                            <p className="text-xs uppercase tracking-[0.28em] text-slate-300">Premium Strategy Center</p>
+                            <p className="mt-2 text-sm font-semibold text-white">Live boards, actionable insights, and polished chess academy analytics.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             {/* Stats Summary Grid Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-4">

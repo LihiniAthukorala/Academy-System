@@ -513,7 +513,7 @@ export const SAMPLE_NOTIFICATIONS = [
 
 export const DEFAULT_SETTINGS = {
     academyName: "Ratnapura Chess Academy",
-    academyLogo: "/src/assets/ratnapura-logo.svg",
+    academyLogo: "/ratnapura-logo.jpeg",
     address: "102 High Street, Academy Plaza, Sector 4",
     phone: "+1-555-9000",
     email: "info@ratnapurachessacademy.edu",

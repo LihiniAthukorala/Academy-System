@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AcademyProvider, useAcademy } from './context/AcademyContext';
 import { Login } from './pages/Login';
+import { Home } from './pages/Home';
+import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Students } from './pages/Students';
 import { StudentProfile } from './pages/StudentProfile';
@@ -12,6 +14,7 @@ import { Teachers } from './pages/Teachers';
 import { Reports } from './pages/Reports';
 import { Notifications } from './pages/Notifications';
 import { Settings } from './pages/Settings';
+import { Contact } from './pages/Contact';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
@@ -80,10 +83,11 @@ export const AppContent = () => {
   return (
     <Routes>
       {/* Public Route */}
-      <Route
-        path="/login"
-        element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />}
-      />
+      <Route path="/" element={currentUser ? <Navigate to="/dashboard" replace /> : <Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/login" element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* Secured Shell Routes */}
       <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher', 'Receptionist']} />}>

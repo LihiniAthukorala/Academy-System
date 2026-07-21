@@ -52,7 +52,7 @@ export const Login = () => {
 
                     {/* Logo Headers */}
                     <div className="text-center mb-8">
-                        <img src="/src/assets/ratnapura-logo.svg" alt="Ratnapura Chess Academy logo" className="mx-auto w-16 h-16 rounded-2xl shadow-xl shadow-indigo-600/20 mb-4" />
+                        <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="mx-auto w-16 h-16 rounded-2xl shadow-xl shadow-indigo-600/20 mb-4" />
                         <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
                             Ratnapura Chess Academy
                         </h2>
