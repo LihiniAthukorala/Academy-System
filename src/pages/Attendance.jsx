@@ -529,11 +529,11 @@ export const Attendance = () => {
 
                                             {/* Small breakdown panel */}
                                             <div className="grid grid-cols-2 gap-2 text-center">
-                                                <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-lg text-white border-2 border-green-600 shadow-md">
+                                                <div className="bg-gradient-to-br from-emerald-300 to-emerald-400 p-3 rounded-lg text-emerald-900 border-2 border-emerald-400 shadow-md">
                                                     <span className="font-bold text-lg block">{stats.present}</span>
                                                     <span className="text-xs font-bold uppercase">Present</span>
                                                 </div>
-                                                <div className="bg-gradient-to-br from-red-500 to-red-600 p-3 rounded-lg text-white border-2 border-red-600 shadow-md">
+                                                <div className="bg-gradient-to-br from-rose-300 to-rose-400 p-3 rounded-lg text-rose-900 border-2 border-rose-400 shadow-md">
                                                     <span className="font-bold text-lg block">{stats.absent}</span>
                                                     <span className="text-xs font-bold uppercase">Absent</span>
                                                 </div>

@@ -41,50 +41,39 @@ export const Login = () => {
             <div className="absolute inset-0 bg-[url('/bc.png')] bg-center bg-cover opacity-10 pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(79,70,229,0.08),transparent_35%)] pointer-events-none" />
             <div className="absolute inset-0 bg-chessboard opacity-6 pointer-events-none" />
-            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-4 py-12">
+            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-4 py-6">
                 <div className="grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-8 shadow-2xl shadow-slate-950/40">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-slate-950/40">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.1),transparent_40%)] opacity-80" />
                         <div className="absolute right-[-8%] top-1/4 h-[260px] w-[260px] rounded-full bg-[#4F46E5]/10 blur-3xl" />
                         <div className="absolute left-[-8%] bottom-10 h-[240px] w-[240px] rounded-full bg-[#D4AF37]/10 blur-3xl" />
-                        <div className="relative z-10 flex min-h-[620px] flex-col justify-between gap-8">
+                        <div className="relative z-10 flex min-h-auto flex-col justify-between gap-4">
                             <div>
                                 <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.26em] text-slate-300">
                                     <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy" className="h-8 w-8 rounded-xl object-cover" />
                                     Ratnapura Chess Academy
                                 </div>
-                                <h1 className="mt-10 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                                <h1 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
                                     A premium chess institute for aspiring champions
                                 </h1>
-                                <p className="mt-6 max-w-xl text-sm leading-7 text-slate-300">
+                                <p className="mt-3 max-w-xl text-xs leading-5 text-slate-300">
                                     Sign in to manage students, classes, fees and attendance from one premium chess academy workspace.
                                 </p>
                             </div>
 
-                            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/65 p-6 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
+                            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/65 p-4 shadow-2xl shadow-slate-950/30 backdrop-blur-xl flex-1">
                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_30%)]" />
                                 <img
                                     src="/bc.png"
                                     alt="Chess hero"
-                                    className="mx-auto h-72 w-full rounded-[1.75rem] object-cover opacity-90"
+                                    className="mx-auto h-80 w-full rounded-[1.75rem] object-cover opacity-90"
                                 />
-                                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950 to-transparent" />
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-[1.75rem] border border-white/10 bg-white/10 p-5 shadow-[0_30px_70px_-40px_rgba(255,255,255,0.12)] backdrop-blur-xl">
-                                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Active Students</p>
-                                    <p className="mt-3 text-3xl font-black text-white">1.2k+</p>
-                                </div>
-                                <div className="rounded-[1.75rem] border border-white/10 bg-white/10 p-5 shadow-[0_30px_70px_-40px_rgba(255,255,255,0.12)] backdrop-blur-xl">
-                                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-slate-400">Lessons Today</p>
-                                    <p className="mt-3 text-3xl font-black text-white">24</p>
-                                </div>
+                                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-950 to-transparent" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 p-8 shadow-2xl shadow-slate-950/40">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-slate-950/40">
                         <button
                             type="button"
                             onClick={() => navigate('/')}
