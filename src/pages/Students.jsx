@@ -293,7 +293,7 @@ export const Students = () => {
                                                         className="w-10 h-10 rounded-xl object-cover bg-slate-100 ring-2 ring-slate-100 dark:ring-slate-800 shadow-xs"
                                                     />
                                                     <div>
-                                                        <p className="text-sm font-extrabold text-slate-800 dark:text-slate-205 leading-none">
+                                                        <p className="text-sm font-extrabold text-indigo-600 dark:text-indigo-300 leading-none">
                                                             {std.name}
                                                         </p>
                                                         <span className="text-[10px] text-slate-400 font-semibold block mt-1">

@@ -353,9 +353,9 @@ export const FeePayments = () => {
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student Name</th>
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Subject Class</th>
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Month Cycle</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Invoiced</th>
+                                
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Collected</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Arrears Due</th>
+                                
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Process Date</th>
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Method</th>
                                 <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Status</th>
@@ -365,7 +365,7 @@ export const FeePayments = () => {
                         <tbody className="divide-y divide-[rgba(212,175,55,0.06)] dark:divide-[rgba(140,100,26,0.06)]">
                             {currentPaymentsList.length === 0 ? (
                                 <tr>
-                                    <td colSpan="11" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
+                                    <td colSpan="9" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
                                         No invoicing transaction logs found matching the filter specs.
                                     </td>
                                 </tr>
@@ -379,9 +379,9 @@ export const FeePayments = () => {
                                             {p.id}
                                         </td>
                                         <td className="p-4">
-                                            <span className="text-sm font-extrabold text-slate-800 dark:text-slate-205 leading-none block">
-                                                {p.studentName}
-                                            </span>
+                                                <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-300 leading-none block">
+                                                    {p.studentName}
+                                                </span>
                                             <span className="text-[9px] text-slate-400 font-bold block mt-1 font-mono">
                                                 {p.studentId}
                                             </span>
@@ -392,16 +392,8 @@ export const FeePayments = () => {
                                         <td className="p-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
                                             {p.month} {p.year}
                                         </td>
-                                        <td className="p-4 text-sm font-bold text-slate-800 dark:text-slate-200 text-right font-mono">
-                                            ${p.totalAmount}
-                                        </td>
                                         <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right font-mono">
                                             ${p.paidAmount}
-                                        </td>
-                                        <td className="p-4 text-sm font-bold text-right font-mono">
-                                            <span className={p.balance > 0 ? 'text-rose-650' : 'text-slate-400'}>
-                                                ${p.balance}
-                                            </span>
                                         </td>
                                         <td className="p-4 text-xs font-semibold text-slate-600 dark:text-slate-400 font-mono">
                                             {p.paymentDate || '—'}
@@ -486,7 +478,7 @@ export const FeePayments = () => {
             {isFormOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onClick={() => setIsFormOpen(false)}></div>
-                    <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-850 p-6 md:p-8 animate-slide-in">
+                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-850 p-6 md:p-8 animate-slide-in">
 
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                             <div>
@@ -543,8 +535,8 @@ export const FeePayments = () => {
                                 </div>
                             </div>
 
-                            {/* Row 2: Month, Year, Payment Date */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {/* Row 2: Month, Year, Payment Date, Paid Amount */}
+                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Invoicing Year</label>
                                     <input
@@ -574,88 +566,23 @@ export const FeePayments = () => {
                                         className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
                                     />
                                 </div>
-                            </div>
 
-                            {/* Row 3: Finances Calculation Fields */}
-                            <div className="bg-slate-50/50 dark:bg-slate-850/40 p-5 rounded-2xl space-y-4">
-                                <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
-                                    Financial Invoicing Calculator
-                                </span>
-
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                    {/* Monthly course cost */}
-                                    <div className="space-y-1">
-                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Monthly Fee</label>
-                                        <input
-                                            {...register('monthlyFee', { required: true, min: 0 })}
-                                            type="number"
-                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* Reg cost */}
-                                    <div className="space-y-1">
-                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Registration Fee</label>
-                                        <input
-                                            {...register('registrationFee', { min: 0 })}
-                                            type="number"
-                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* Additional charge */}
-                                    <div className="space-y-1">
-                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Add Charges</label>
-                                        <input
-                                            {...register('additionalCharges', { min: 0 })}
-                                            type="number"
-                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* Discount */}
-                                    <div className="space-y-1">
-                                        <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Discount Applied</label>
-                                        <input
-                                            {...register('discount', { min: 0 })}
-                                            type="number"
-                                            className="px-3.5 py-2 w-full rounded-xl border border-slate-205 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-3 border-t border-slate-200 dark:border-slate-800">
-                                    {/* Total Invoiced */}
-                                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-between items-center">
-                                        <span className="text-xs text-slate-400 font-bold">Total Invoiced:</span>
-                                        <span className="text-sm font-black text-slate-850 dark:text-slate-100 font-mono">${totalAmount}</span>
-                                    </div>
-
-                                    {/* Paid Amount Input */}
-                                    <div className="space-y-1">
-                                        <input
-                                            {...register('paidAmount', {
-                                                required: 'Paid amount is required',
-                                                min: { value: 0, message: 'Cannot be negative' },
-                                                validate: (value) =>
-                                                    Number(value) <= totalAmount || 'Paid amount cannot exceed total invoiced amount'
-                                            })}
-                                            type="number"
-                                            placeholder="Enter amount paid"
-                                            className="px-3.5 py-2.5 w-full rounded-xl border border-slate-350 dark:border-slate-750 bg-white dark:bg-slate-905 text-xs font-black text-emerald-600 dark:text-emerald-400 font-mono focus:outline-none text-right"
-                                        />
-                                        {errors.paidAmount && <p className="text-rose-550 text-[10px] font-semibold text-center">{errors.paidAmount.message}</p>}
-                                    </div>
-
-                                    {/* Remaining Balance */}
-                                    <div className={`p-3 rounded-xl border flex justify-between items-center ${remainingBalance > 0 ? 'bg-rose-50/20 border-rose-100/50' : 'bg-emerald-50/20 border-emerald-100/50'}`}>
-                                        <span className="text-xs text-slate-400 font-bold">Balance Due:</span>
-                                        <span className={`text-sm font-black font-mono ${remainingBalance > 0 ? 'text-rose-650' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                                            ${remainingBalance}
-                                        </span>
-                                    </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Paid Amount</label>
+                                    <input
+                                        {...register('paidAmount', {
+                                            required: 'Paid amount is required',
+                                            min: { value: 0, message: 'Cannot be negative' }
+                                        })}
+                                        type="number"
+                                        placeholder="Enter amount paid"
+                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    />
+                                    {errors.paidAmount && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.paidAmount.message}</p>}
                                 </div>
                             </div>
+
+                            {/* Financial Invoicing Calculator removed as requested */}
 
                             {/* Row 4: Method, Reference, Status */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
