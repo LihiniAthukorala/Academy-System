@@ -342,13 +342,6 @@ export const Attendance = () => {
                                         >
                                             ✗ All Absent
                                         </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => markAllStatus('Late')}
-                                            className="px-3 py-2 text-xs font-bold bg-yellow-600 text-white border-2 border-yellow-700 rounded-lg hover:bg-yellow-700 cursor-pointer shadow-md"
-                                        >
-                                            ⏰ All Late
-                                        </button>
                                     </div>
                                 </div>
 
@@ -387,9 +380,7 @@ export const Attendance = () => {
                                                             <div className="inline-flex gap-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-lg border-2 border-slate-300 dark:border-slate-600">
                                                                 {[
                                                                     { value: 'Present', icon: CheckCircle, activeClass: 'bg-green-600 text-white shadow-lg', hoverClass: 'hover:bg-green-500 text-green-600' },
-                                                                    { value: 'Absent', icon: XCircle, activeClass: 'bg-red-600 text-white shadow-lg', hoverClass: 'hover:bg-red-500 text-red-600' },
-                                                                    { value: 'Late', icon: Clock, activeClass: 'bg-yellow-600 text-white shadow-lg', hoverClass: 'hover:bg-yellow-500 text-yellow-600' },
-                                                                    { value: 'Excused', icon: HelpCircle, activeClass: 'bg-blue-600 text-white shadow-lg', hoverClass: 'hover:bg-blue-500 text-blue-600' }
+                                                                    { value: 'Absent', icon: XCircle, activeClass: 'bg-red-600 text-white shadow-lg', hoverClass: 'hover:bg-red-500 text-red-600' }
                                                                 ].map((opt) => {
                                                                     const IconComponent = opt.icon;
                                                                     return (
@@ -537,7 +528,7 @@ export const Attendance = () => {
                                             </div>
 
                                             {/* Small breakdown panel */}
-                                            <div className="grid grid-cols-4 gap-2 text-center">
+                                            <div className="grid grid-cols-2 gap-2 text-center">
                                                 <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-lg text-white border-2 border-green-600 shadow-md">
                                                     <span className="font-bold text-lg block">{stats.present}</span>
                                                     <span className="text-xs font-bold uppercase">Present</span>
@@ -545,14 +536,6 @@ export const Attendance = () => {
                                                 <div className="bg-gradient-to-br from-red-500 to-red-600 p-3 rounded-lg text-white border-2 border-red-600 shadow-md">
                                                     <span className="font-bold text-lg block">{stats.absent}</span>
                                                     <span className="text-xs font-bold uppercase">Absent</span>
-                                                </div>
-                                                <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-3 rounded-lg text-white border-2 border-yellow-600 shadow-md">
-                                                    <span className="font-bold text-lg block">{stats.late}</span>
-                                                    <span className="text-xs font-bold uppercase">Late</span>
-                                                </div>
-                                                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-lg text-white border-2 border-blue-600 shadow-md">
-                                                    <span className="font-bold text-lg block">{stats.excused}</span>
-                                                    <span className="text-xs font-bold uppercase">Excused</span>
                                                 </div>
                                             </div>
 
