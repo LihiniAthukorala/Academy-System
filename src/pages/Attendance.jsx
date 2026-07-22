@@ -15,7 +15,8 @@ import {
     Eye,
     FileCheck2,
     Trash2,
-    X
+    X,
+    AlertCircle
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmationModal from '../components/ConfirmationModal';
@@ -200,34 +201,34 @@ export const Attendance = () => {
             {/* Header title */}
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 <div>
-                    <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-105 my-0">
-                        Attendance Log Registry
+                    <h2 className="text-2xl font-black text-blue-900 dark:text-blue-300 my-0">
+                        📋 Attendance Log Registry
                     </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-0.5">
+                    <p className="text-sm text-blue-700 dark:text-blue-400 font-semibold mt-1">
                         Log daily student lessons, track lateness parameters, and audit historical registers.
                     </p>
                 </div>
 
                 {/* View togglers button */}
-                <div className="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl shrink-0">
+                <div className="flex bg-slate-200 dark:bg-slate-700 p-1.5 rounded-xl shrink-0">
                     <button
                         onClick={() => setActiveView('mark')}
-                        className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all ${activeView === 'mark'
-                                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
-                                : 'text-slate-500 hover:text-slate-700'
+                        className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all ${activeView === 'mark'
+                                ? 'bg-blue-600 text-white shadow-lg'
+                                : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
                             }`}
                     >
-                        <UserCheck className="w-3.5 h-3.5" />
+                        <UserCheck className="w-4 h-4" />
                         Mark Sheets
                     </button>
                     <button
                         onClick={() => setActiveView('history')}
-                        className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all ${activeView === 'history'
-                                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
-                                : 'text-slate-500 hover:text-slate-700'
+                        className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all ${activeView === 'history'
+                                ? 'bg-blue-600 text-white shadow-lg'
+                                : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
                             }`}
                     >
-                        <Clock className="w-3.5 h-3.5" />
+                        <Clock className="w-4 h-4" />
                         Archive Sheets Log
                     </button>
                 </div>
@@ -243,14 +244,14 @@ export const Attendance = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 
                                 {/* Select Class */}
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">
-                                        Acknowledge Subject Class *
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-blue-900 dark:text-blue-300">
+                                        📚 Acknowledge Subject Class *
                                     </label>
                                     <select
                                         value={selectedClassId}
                                         onChange={(e) => setSelectedClassId(e.target.value)}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="px-4 py-3 w-full rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-blue-900 dark:text-white"
                                     >
                                         <option value="">Choose Class</option>
                                         {classes.map((c) => (
@@ -262,15 +263,15 @@ export const Attendance = () => {
                                 </div>
 
                                 {/* Select Date */}
-                                <div className="space-y-1 font-mono">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-355">
-                                        Target Log Date *
+                                <div className="space-y-2 font-mono">
+                                    <label className="text-sm font-bold text-blue-900 dark:text-blue-300">
+                                        📅 Target Log Date *
                                     </label>
                                     <input
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="px-4 py-3 w-full rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-blue-900 dark:text-white"
                                     />
                                 </div>
 
@@ -304,49 +305,49 @@ export const Attendance = () => {
 
                         {/* Checklist Records list */}
                         {selectedClassId === '' ? (
-                            <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-2xl border border-slate-100 dark:border-slate-850 shadow-xs">
-                                <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2 animate-bounce" />
-                                <h3 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-widest">Mark Sheet Workspace</h3>
-                                <p className="text-xs text-slate-450 dark:text-slate-500 mt-2 max-w-sm mx-auto">
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-blue-900 p-12 text-center rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg">
+                                <BookOpen className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3 animate-bounce" />
+                                <h3 className="text-lg font-bold text-blue-900 dark:text-blue-300 uppercase tracking-widest">Mark Sheet Workspace</h3>
+                                <p className="text-sm text-blue-800 dark:text-blue-400 mt-3 max-w-sm mx-auto font-semibold">
                                     Select a class from the list above and set the target log date. The student registry will automatically load.
                                 </p>
                             </div>
                         ) : records.length === 0 ? (
-                            <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-2xl border border-slate-100 dark:border-slate-850 shadow-xs">
-                                <AlertCircle className="w-8 h-8 text-rose-400 mx-auto mb-2" />
-                                <h3 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-widest text-rose-500">No Enrolled Students</h3>
-                                <p className="text-xs text-slate-450 dark:text-slate-550 mt-2 max-w-sm mx-auto">
+                            <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950 dark:to-red-900 p-12 text-center rounded-xl border-2 border-red-300 dark:border-red-700 shadow-lg">
+                                <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-3" />
+                                <h3 className="text-lg font-bold text-red-900 dark:text-red-300 uppercase tracking-widest">No Enrolled Students</h3>
+                                <p className="text-sm text-red-800 dark:text-red-400 mt-3 max-w-sm mx-auto font-semibold">
                                     There are no active students enrolled in class "{getClassName(selectedClassId)}". Please enroll students first.
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {/* Header selectors */}
-                                <div className="flex gap-2 justify-between items-center bg-slate-50/50 dark:bg-slate-850/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                        Quick Global Actions
+                                <div className="flex gap-2 justify-between items-center bg-blue-50 dark:bg-blue-950 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                                    <span className="text-sm font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">
+                                        ⚡ Quick Global Actions
                                     </span>
-                                    <div className="flex gap-1.5 flex-wrap">
+                                    <div className="flex gap-2 flex-wrap">
                                         <button
                                             type="button"
                                             onClick={() => markAllStatus('Present')}
-                                            className="px-2.5 py-1 text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100/50 rounded-lg hover:bg-emerald-100/30 cursor-pointer"
+                                            className="px-3 py-2 text-xs font-bold bg-green-600 text-white border-2 border-green-700 rounded-lg hover:bg-green-700 cursor-pointer shadow-md"
                                         >
-                                            All Present
+                                            ✓ All Present
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => markAllStatus('Absent')}
-                                            className="px-2.5 py-1 text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100/50 rounded-lg hover:bg-rose-100/30 cursor-pointer"
+                                            className="px-3 py-2 text-xs font-bold bg-red-600 text-white border-2 border-red-700 rounded-lg hover:bg-red-700 cursor-pointer shadow-md"
                                         >
-                                            All Absent
+                                            ✗ All Absent
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => markAllStatus('Late')}
-                                            className="px-2.5 py-1 text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100/50 rounded-lg hover:bg-amber-100/30 cursor-pointer"
+                                            className="px-3 py-2 text-xs font-bold bg-yellow-600 text-white border-2 border-yellow-700 rounded-lg hover:bg-yellow-700 cursor-pointer shadow-md"
                                         >
-                                            All Late
+                                            ⏰ All Late
                                         </button>
                                     </div>
                                 </div>
@@ -356,39 +357,39 @@ export const Attendance = () => {
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left">
                                             <thead>
-                                                <tr className="bg-slate-50/30 dark:bg-slate-850 border-b border-slate-100 dark:border-slate-800">
-                                                    <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</th>
-                                                    <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">ID</th>
-                                                    <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
-                                                    <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Lesson Notes</th>
+                                                <tr className="bg-blue-600 dark:bg-blue-700 border-b-2 border-blue-700">
+                                                    <th className="p-4 text-xs font-bold text-white uppercase tracking-wider">Student Name</th>
+                                                    <th className="p-4 text-xs font-bold text-white uppercase tracking-wider">ID</th>
+                                                    <th className="p-4 text-xs font-bold text-white uppercase tracking-wider text-center">Status</th>
+                                                    <th className="p-4 text-xs font-bold text-white uppercase tracking-wider">Lesson Notes</th>
                                                 </tr>
                                             </thead>
-                                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                            <tbody className="divide-y-2 divide-blue-200 dark:divide-blue-800">
                                                 {records.map((r) => (
-                                                    <tr key={r.studentId} className="hover:bg-slate-50/20 dark:hover:bg-slate-850/10">
+                                                    <tr key={r.studentId} className="hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
                                                         <td className="p-4">
                                                             <div className="flex items-center gap-3">
                                                                 <img
                                                                     src={r.profileImage}
                                                                     alt={r.studentName}
-                                                                    className="w-9 h-9 rounded-xl object-cover shadow-sm bg-slate-100 ring-2 ring-slate-100 dark:ring-slate-800"
+                                                                    className="w-10 h-10 rounded-lg object-cover shadow-md bg-slate-100 ring-2 ring-blue-400 dark:ring-blue-600"
                                                                 />
-                                                                <span className="text-xs font-extrabold text-slate-800 dark:text-slate-205">
+                                                                <span className="text-sm font-bold text-slate-900 dark:text-white">
                                                                     {r.studentName}
                                                                 </span>
                                                             </div>
                                                         </td>
-                                                        <td className="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 font-mono">
+                                                        <td className="p-4 text-sm font-bold text-blue-900 dark:text-blue-300 font-mono">
                                                             {r.studentId}
                                                         </td>
                                                         <td className="p-4 text-center">
                                                             {/* Custom Radio groups options style */}
-                                                            <div className="inline-flex gap-1.5 p-1 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-100 dark:border-slate-800/80">
+                                                            <div className="inline-flex gap-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-lg border-2 border-slate-300 dark:border-slate-600">
                                                                 {[
-                                                                    { value: 'Present', icon: CheckCircle, activeClass: 'bg-emerald-650 text-white shadow-xs', hoverClass: 'hover:text-emerald-500 text-emerald-500/70' },
-                                                                    { value: 'Absent', icon: XCircle, activeClass: 'bg-rose-650 text-white shadow-xs', hoverClass: 'hover:text-rose-500 text-rose-500/70' },
-                                                                    { value: 'Late', icon: Clock, activeClass: 'bg-amber-600 text-white shadow-xs', hoverClass: 'hover:text-amber-500 text-amber-500/70' },
-                                                                    { value: 'Excused', icon: HelpCircle, activeClass: 'bg-blue-600 text-white shadow-xs', hoverClass: 'hover:text-blue-500 text-blue-500/70' }
+                                                                    { value: 'Present', icon: CheckCircle, activeClass: 'bg-green-600 text-white shadow-lg', hoverClass: 'hover:bg-green-500 text-green-600' },
+                                                                    { value: 'Absent', icon: XCircle, activeClass: 'bg-red-600 text-white shadow-lg', hoverClass: 'hover:bg-red-500 text-red-600' },
+                                                                    { value: 'Late', icon: Clock, activeClass: 'bg-yellow-600 text-white shadow-lg', hoverClass: 'hover:bg-yellow-500 text-yellow-600' },
+                                                                    { value: 'Excused', icon: HelpCircle, activeClass: 'bg-blue-600 text-white shadow-lg', hoverClass: 'hover:bg-blue-500 text-blue-600' }
                                                                 ].map((opt) => {
                                                                     const IconComponent = opt.icon;
                                                                     return (
@@ -396,13 +397,13 @@ export const Attendance = () => {
                                                                             key={opt.value}
                                                                             type="button"
                                                                             onClick={() => handleStatusChange(r.studentId, opt.value)}
-                                                                            className={`flex items-center gap-1 px-3 py-1.5 text-[10px] font-bold rounded-lg cursor-pointer transition-all ${r.status === opt.value
+                                                                            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all border-2 ${r.status === opt.value
                                                                                     ? opt.activeClass
-                                                                                    : `text-slate-505 dark:text-slate-400 ${opt.hoverClass}`
+                                                                                    : `border-slate-400 dark:border-slate-500 text-slate-700 dark:text-slate-300 ${opt.hoverClass}`
                                                                                 }`}
                                                                         >
-                                                                            <IconComponent className="w-3.5 h-3.5 shrink-0" />
-                                                                            {opt.value}
+                                                                            <IconComponent className="w-4 h-4 shrink-0" />
+                                                                            <span>{opt.value}</span>
                                                                         </button>
                                                                     );
                                                                 })}
@@ -414,7 +415,7 @@ export const Attendance = () => {
                                                                 placeholder="Lateness reason, parent alert..."
                                                                 value={r.notes}
                                                                 onChange={(e) => handleNotesChange(r.studentId, e.target.value)}
-                                                                className="px-3 py-1.5 w-full max-w-sm rounded-lg border border-slate-205 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                                                className="px-3 py-2 w-full max-w-sm rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-slate-900 dark:text-white placeholder-slate-400"
                                                             />
                                                         </td>
                                                     </tr>
@@ -425,19 +426,19 @@ export const Attendance = () => {
                                 </div>
 
                                 {/* Form submit */}
-                                <div className="flex justify-end gap-3 pt-2">
+                                <div className="flex justify-end gap-3 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => { setSelectedClassId(''); setRecords([]); }}
-                                        className="px-4 py-2 border border-slate-250 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-bold text-slate-650 hover:bg-slate-50 rounded-xl cursor-pointer"
+                                        className="px-5 py-3 border-2 border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg cursor-pointer transition-all"
                                     >
                                         Clear Workspace
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex items-center gap-1.5 px-6 py-2 rounded-xl text-xs font-bold text-white bg-indigo-650 hover:bg-indigo-700 shadow-md cursor-pointer"
+                                        className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg cursor-pointer transition-all border-2 border-blue-700"
                                     >
-                                        <FileCheck2 className="w-4 h-4" />
+                                        <FileCheck2 className="w-5 h-5" />
                                         Publish Attendance Register
                                     </button>
                                 </div>
@@ -452,17 +453,18 @@ export const Attendance = () => {
                 <div className="space-y-6 animate-fade-in">
 
                     {/* History filters */}
-                    <div className="bg-white dark:bg-slate-905 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
+                    <div className="bg-blue-50 dark:bg-blue-950 p-5 rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg space-y-4">
+                        <h3 className="text-sm font-bold text-blue-900 dark:text-blue-300">🔍 Filter Archive Sheets</h3>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             {/* Search text */}
                             <div className="relative md:col-span-2">
-                                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                                <Search className="w-5 h-5 text-blue-600 absolute left-3 top-3" />
                                 <input
                                     type="text"
                                     placeholder="Search class names..."
                                     value={historySearchTerm}
                                     onChange={(e) => setHistorySearchTerm(e.target.value)}
-                                    className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    className="pl-10 pr-4 py-3 w-full rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-slate-900 dark:text-white placeholder-slate-500"
                                 />
                             </div>
 
@@ -471,7 +473,7 @@ export const Attendance = () => {
                                 <select
                                     value={historyFilterClass}
                                     onChange={(e) => setHistoryFilterClass(e.target.value)}
-                                    className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    className="px-4 py-3 w-full rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-slate-900 dark:text-white"
                                 >
                                     <option value="All">All Classes</option>
                                     {classes.map((c) => (
@@ -488,7 +490,7 @@ export const Attendance = () => {
                                     type="date"
                                     value={historyFilterDate}
                                     onChange={(e) => setHistoryFilterDate(e.target.value)}
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    className="px-4 py-3 w-full rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:border-blue-600 dark:focus:border-blue-400 text-slate-900 dark:text-white"
                                 />
                             </div>
                         </div>
@@ -497,78 +499,78 @@ export const Attendance = () => {
                     {/* History Lists */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {filteredHistory.length === 0 ? (
-                            <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-2xl border border-slate-100 col-span-2 text-slate-400 font-semibold shadow-xs">
-                                No attendance logs found in the archives for the selected filter metrics.
+                            <div className="bg-blue-50 dark:bg-blue-950 p-12 text-center rounded-xl border-2 border-blue-200 col-span-2 text-blue-900 dark:text-blue-300 font-bold shadow-lg text-lg">
+                                📭 No attendance logs found in the archives for the selected filter metrics.
                             </div>
                         ) : (
                             filteredHistory.map((log) => {
                                 const stats = getLogStats(log.records);
                                 return (
-                                    <div key={log.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs relative overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow group">
-                                        <div className="absolute top-0 right-0 h-1.5 bg-indigo-600 w-full"></div>
-                                        <div className="space-y-4">
+                                    <div key={log.id} className="bg-gradient-to-br from-white to-blue-50 dark:from-slate-800 dark:to-blue-900 p-6 rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg hover:shadow-xl transition-shadow">
+                                        <div className="absolute top-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-blue-600 w-full rounded-t-lg"></div>
+                                        <div className="space-y-4 mt-2">
 
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h4 className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-tight">
-                                                        {log.className}
+                                                    <h4 className="font-black text-lg text-blue-900 dark:text-blue-300 leading-tight">
+                                                        📚 {log.className}
                                                     </h4>
-                                                    <span className="text-[9px] text-slate-400 font-bold uppercase block mt-1 font-mono">
-                                                        Date: {log.date} • Log ID: {log.id}
+                                                    <span className="text-xs text-blue-700 dark:text-blue-400 font-bold uppercase block mt-2 font-mono">
+                                                        📅 Date: {log.date} • ID: {log.id}
                                                     </span>
                                                 </div>
                                                 {/* Attendance rate */}
-                                                <div className="bg-indigo-50/50 dark:bg-indigo-950/20 px-3 py-1.5 rounded-lg border border-indigo-50 dark:border-none text-center">
-                                                    <span className="text-xs font-black text-indigo-650 dark:text-indigo-400 font-mono block">
+                                                <div className="bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-3 rounded-xl text-center shadow-lg">
+                                                    <span className="text-xl font-black text-white font-mono block">
                                                         {stats.rate}%
                                                     </span>
-                                                    <span className="text-[8px] font-bold text-slate-400 uppercase">Rate</span>
+                                                    <span className="text-xs font-bold text-blue-100 uppercase">Attendance</span>
                                                 </div>
                                             </div>
 
                                             {/* Micro progress bar */}
-                                            <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                            <div className="w-full h-3 bg-slate-300 dark:bg-slate-700 rounded-full overflow-hidden border border-slate-400">
                                                 <div
-                                                    className={`h-full ${stats.rate >= 90 ? 'bg-emerald-500' : stats.rate >= 75 ? 'bg-indigo-500' : 'bg-rose-500'}`}
+                                                    className={`h-full font-bold flex items-center justify-center text-white text-xs ${stats.rate >= 90 ? 'bg-gradient-to-r from-green-500 to-green-600' : stats.rate >= 75 ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
                                                     style={{ width: `${stats.rate}%` }}
                                                 ></div>
                                             </div>
 
                                             {/* Small breakdown panel */}
-                                            <div className="grid grid-cols-4 gap-2 text-center text-[10px] font-bold font-mono">
-                                                <div className="bg-emerald-50/40 dark:bg-emerald-950/10 p-2 rounded-lg text-emerald-650 dark:text-emerald-450 border border-emerald-50 dark:border-none">
-                                                    <span>{stats.present}</span>
-                                                    <span className="block text-[8px] text-slate-400 font-semibold uppercase mt-0.5">Present</span>
+                                            <div className="grid grid-cols-4 gap-2 text-center">
+                                                <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-lg text-white border-2 border-green-600 shadow-md">
+                                                    <span className="font-bold text-lg block">{stats.present}</span>
+                                                    <span className="text-xs font-bold uppercase">Present</span>
                                                 </div>
-                                                <div className="bg-rose-50/40 dark:bg-rose-950/10 p-2 rounded-lg text-rose-650 dark:text-rose-455 border border-rose-55 mt-0.5">
-                                                    <span>{stats.absent}</span>
-                                                    <span className="block text-[8px] text-slate-400 font-semibold uppercase mt-0.5">Absent</span>
+                                                <div className="bg-gradient-to-br from-red-500 to-red-600 p-3 rounded-lg text-white border-2 border-red-600 shadow-md">
+                                                    <span className="font-bold text-lg block">{stats.absent}</span>
+                                                    <span className="text-xs font-bold uppercase">Absent</span>
                                                 </div>
-                                                <div className="bg-amber-50/40 dark:bg-amber-950/10 p-2 rounded-lg text-amber-600 dark:text-amber-450 border border-amber-50 dark:border-none">
-                                                    <span>{stats.late}</span>
-                                                    <span className="block text-[8px] text-slate-400 font-semibold uppercase mt-0.5">Late</span>
+                                                <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-3 rounded-lg text-white border-2 border-yellow-600 shadow-md">
+                                                    <span className="font-bold text-lg block">{stats.late}</span>
+                                                    <span className="text-xs font-bold uppercase">Late</span>
                                                 </div>
-                                                <div className="bg-blue-50/40 dark:bg-blue-950/10 p-2 rounded-lg text-blue-650 dark:text-blue-450 border border-blue-50 dark:border-none">
-                                                    <span>{stats.excused}</span>
-                                                    <span className="block text-[8px] text-slate-400 font-semibold uppercase mt-0.5">Excused</span>
+                                                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-lg text-white border-2 border-blue-600 shadow-md">
+                                                    <span className="font-bold text-lg block">{stats.excused}</span>
+                                                    <span className="text-xs font-bold uppercase">Excused</span>
                                                 </div>
                                             </div>
 
                                             {/* Action buttons */}
-                                            <div className="flex gap-2 justify-end border-t border-slate-50 dark:border-slate-800/80 pt-3 text-xs">
+                                            <div className="flex gap-2 justify-end border-t-2 border-blue-200 dark:border-blue-700 pt-4 text-sm">
                                                 <button
                                                     onClick={() => handleReloadLog(log)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-205 dark:border-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-650 rounded-lg font-bold text-slate-650 cursor-pointer"
+                                                    className="flex items-center gap-2 px-4 py-2 border-2 border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800 font-bold rounded-lg cursor-pointer transition-all"
                                                 >
-                                                    <RefreshCw className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                                    <RefreshCw className="w-4 h-4" />
                                                     Reload Sheet
                                                 </button>
                                                 <button
                                                     onClick={() => confirmDeleteLog(log)}
-                                                    className="p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-550 border border-transparent hover:border-rose-100 rounded-lg cursor-pointer"
+                                                    className="p-2 hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400 border-2 border-red-300 dark:border-red-700 hover:border-red-500 rounded-lg cursor-pointer font-bold transition-all"
                                                     title="Delete archived sheet"
                                                 >
-                                                    <Trash2 className="w-4 h-4 shrink-0" />
+                                                    <Trash2 className="w-5 h-5" />
                                                 </button>
                                             </div>
 

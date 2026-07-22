@@ -413,52 +413,64 @@ export const SAMPLE_PAYMENTS = [
 export const SAMPLE_ATTENDANCE = [
     // For Class CLS-7821 Math Grade 10 - Date 2026-07-20
     {
+        id: "ATT-001",
         date: "2026-07-20",
         classId: "CLS-7821",
+        className: "Grade 10 Mathematics",
         records: [
-            { studentId: "STD-4091", status: "Present", notes: "Arrived on time" },
-            { studentId: "STD-4097", status: "Absent", notes: "Inactive status" }
+            { studentId: "STD-4091", studentName: "Alexander Mercer", status: "Present", notes: "Arrived on time" },
+            { studentId: "STD-4097", studentName: "Mason James Davis", status: "Absent", notes: "Inactive status" }
         ]
     },
     // For Class CLS-7821 Math Grade 10 - Date 2026-07-13
     {
+        id: "ATT-002",
         date: "2026-07-13",
         classId: "CLS-7821",
+        className: "Grade 10 Mathematics",
         records: [
-            { studentId: "STD-4091", status: "Present", notes: "" },
-            { studentId: "STD-4097", status: "Absent", notes: "" }
+            { studentId: "STD-4091", studentName: "Alexander Mercer", status: "Present", notes: "" },
+            { studentId: "STD-4097", studentName: "Mason James Davis", status: "Absent", notes: "" }
         ]
     },
     // For Class CLS-7822 Math Grade 11 - Date 2026-07-20
     {
+        id: "ATT-003",
         date: "2026-07-20",
         classId: "CLS-7822",
+        className: "Grade 11 Pure Maths",
         records: [
-            { studentId: "STD-4092", status: "Present", notes: "" }
+            { studentId: "STD-4092", studentName: "Sophia Martinez", status: "Present", notes: "" }
         ]
     },
     // For Class CLS-9041 Physics Grade 11 - Date 2026-07-21 (Today)
     {
+        id: "ATT-004",
         date: "2026-07-21",
         classId: "CLS-9041",
+        className: "Grade 11 Mechanics",
         records: [
-            { studentId: "STD-4093", status: "Late", notes: "Late by 10 mins due to school bus delay" }
+            { studentId: "STD-4093", studentName: "Ethan James Harrison", status: "Late", notes: "Late by 10 mins due to school bus delay" }
         ]
     },
     // For Class CLS-3011 Chemistry - Date 2026-07-17
     {
+        id: "ATT-005",
         date: "2026-07-17",
         classId: "CLS-3011",
+        className: "High School Organic Chemistry",
         records: [
-            { studentId: "STD-4096", status: "Present", notes: "" }
+            { studentId: "STD-4096", studentName: "Emma Victoria Smith", status: "Present", notes: "" }
         ]
     },
     // For Class CLS-4011 English - Date 2026-07-18
     {
+        id: "ATT-006",
         date: "2026-07-18",
         classId: "CLS-4011",
+        className: "Grade 10 English",
         records: [
-            { studentId: "STD-4094", status: "Excused", notes: "Medical leave" }
+            { studentId: "STD-4094", studentName: "Chloe Isabella Carter", status: "Excused", notes: "Medical leave" }
         ]
     }
 ];

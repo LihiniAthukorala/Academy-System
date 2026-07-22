@@ -353,6 +353,10 @@ export const AcademyProvider = ({ children }) => {
             return false;
         }
 
+        // Get the class name for this attendance log
+        const cls = classes.find((c) => c.id === classId);
+        const className = cls ? cls.name : 'Unknown Class';
+
         setAttendance((prev) => {
             // Check if entry already exists for class + date
             const exists = prev.some((log) => log.classId === classId && log.date === date);
@@ -362,7 +366,12 @@ export const AcademyProvider = ({ children }) => {
                     log.classId === classId && log.date === date ? { ...log, records: recordsInput } : log
                 );
             } else {
-                return [{ classId, date, records: recordsInput }, ...prev];
+                // Generate unique ID for this attendance log
+                let newId = generateId('ATT');
+                while (prev.some((log) => log.id === newId)) {
+                    newId = generateId('ATT');
+                }
+                return [{ id: newId, classId, className, date, records: recordsInput }, ...prev];
             }
         });
 
@@ -384,6 +393,11 @@ export const AcademyProvider = ({ children }) => {
 
         showToast('Success', 'Attendance saved successfully.', 'success');
         return true;
+    };
+
+    const deleteAttendanceLog = (logId) => {
+        setAttendance((prev) => prev.filter((log) => log.id !== logId));
+        showToast('Record Deleted', `Attendance log ${logId} removed.`, 'success');
     };
 
     // Helper values
@@ -467,6 +481,7 @@ export const AcademyProvider = ({ children }) => {
                 toasts,
                 showToast,
                 removeToast,
+                triggerToast: (message, type = 'info') => showToast('Notification', message, type),
 
                 students,
                 addStudent,
@@ -490,6 +505,7 @@ export const AcademyProvider = ({ children }) => {
 
                 attendance,
                 saveAttendance,
+                deleteAttendanceLog,
                 getAttendanceSummaryByStudent,
                 getStudentOverviewStats,
 
