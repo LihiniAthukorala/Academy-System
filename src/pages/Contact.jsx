@@ -38,18 +38,18 @@ export const Contact = () => {
                         <div className="rounded-[2rem] border border-white/10 bg-slate-900/80 p-8 shadow-[0_35px_120px_-45px_rgba(0,0,0,0.85)] backdrop-blur-xl">
                             <div className="space-y-6">
                                 <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-                                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Office</p>
+                                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Official Address</p>
                                     <p className="mt-4 text-xl font-semibold text-white">Ratnapura Chess Academy</p>
-                                    <p className="mt-2 text-slate-300">1 Academy Avenue, Ratnapura, Sri Lanka</p>
+                                    <p className="mt-2 text-slate-300">No 243 1/1, Main Street, Kudugalawatta, Ratnapura</p>
                                 </div>
                                 <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
                                     <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Email</p>
-                                    <p className="mt-4 text-xl font-semibold text-white">info@ratnapurachessacademy.edu</p>
+                                    <p className="mt-4 text-xl font-semibold text-white">ratnapurachessacademy@gmail.com</p>
                                     <p className="mt-2 text-slate-300">Reach us for admissions and support</p>
                                 </div>
                                 <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-                                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Phone</p>
-                                    <p className="mt-4 text-xl font-semibold text-white">+94 11 234 5678</p>
+                                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Contact Number</p>
+                                    <p className="mt-4 text-xl font-semibold text-white">077 990 3464</p>
                                     <p className="mt-2 text-slate-300">Mon - Sat, 8am - 8pm</p>
                                 </div>
                             </div>

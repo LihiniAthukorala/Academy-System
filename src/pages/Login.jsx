@@ -76,8 +76,8 @@ export const Login = () => {
                     <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-slate-950/40">
                         <button
                             type="button"
-                            onClick={() => navigate('/')}
-                            className="group mx-auto mb-6 flex h-12 w-full max-w-[320px] items-center justify-center gap-3 rounded-[14px] border border-[#2D3A56] bg-[#111827] px-5 text-[16px] font-semibold text-[#F8FAFC] transition duration-250 ease-out hover:border-[#D4AF37] hover:bg-[#1A2438] hover:text-[#D4AF37] active:scale-[0.98] sm:absolute sm:right-6 sm:top-6 sm:mx-0 sm:w-auto"
+                            onClick={() => navigate('/home')}
+                            className="group relative z-20 mx-auto mb-6 flex h-12 w-full max-w-[320px] items-center justify-center gap-3 rounded-[14px] border border-[#2D3A56] bg-[#111827] px-5 text-[16px] font-semibold text-[#F8FAFC] transition duration-250 ease-out hover:border-[#D4AF37] hover:bg-[#1A2438] hover:text-[#D4AF37] active:scale-[0.98] sm:absolute sm:right-6 sm:top-6 sm:mx-0 sm:w-auto"
                             style={{ fontFamily: 'Inter, sans-serif' }}
                         >
                             <Home className="w-5 h-5 text-[#D4AF37] transition-transform duration-250 group-hover:scale-105" />

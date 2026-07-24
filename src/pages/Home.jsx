@@ -1,21 +1,72 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Moon, Sun, Menu } from 'lucide-react';
 import { useAcademy } from '../context/AcademyContext';
 
 export const Home = () => {
     const { theme, toggleTheme } = useAcademy();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [heroImageFailed, setHeroImageFailed] = useState(false);
+    const aboutSectionRef = useRef(null);
 
     const stats = [
         { label: 'Total Students', value: '1.8K+' },
-        { label: 'Professional Coaches', value: '24' },
-        { label: 'Tournaments', value: '18' },
+        { label: 'Coaches', value: '24' },
         { label: 'Years of Experience', value: '12' }
     ];
 
+    useEffect(() => {
+        const section = new URLSearchParams(location.search).get('section');
+
+        if (section === 'about' && aboutSectionRef.current) {
+            aboutSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [location.search]);
+
     return (
         <div className="min-h-screen bg-[#020817] text-white overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+                <div className="neon-piece neon-piece-king neon-pink neon-float-a" style={{ top: '18%', left: '5%' }}>
+                    <span className="piece-base" />
+                    <span className="piece-body" />
+                    <span className="piece-top" />
+                    <span className="piece-cross-h" />
+                    <span className="piece-cross-v" />
+                </div>
+
+                <div className="neon-piece neon-piece-knight neon-blue neon-float-b" style={{ top: '56%', right: '6%' }}>
+                    <span className="piece-base" />
+                    <span className="piece-body" />
+                    <span className="piece-head" />
+                </div>
+
+                <div className="neon-piece neon-piece-bishop neon-cyan neon-float-c" style={{ bottom: '8%', left: '16%' }}>
+                    <span className="piece-base" />
+                    <span className="piece-body" />
+                    <span className="piece-head" />
+                    <span className="piece-slit" />
+                </div>
+
+                <div className="neon-piece neon-piece-queen neon-cyan neon-float-b" style={{ top: '14%', right: '24%' }}>
+                    <span className="piece-base" />
+                    <span className="piece-body" />
+                    <span className="piece-crown" />
+                    <span className="piece-tip piece-tip-left" />
+                    <span className="piece-tip piece-tip-mid" />
+                    <span className="piece-tip piece-tip-right" />
+                </div>
+
+                <div className="neon-piece neon-piece-rook neon-pink neon-float-a" style={{ bottom: '14%', right: '20%' }}>
+                    <span className="piece-base" />
+                    <span className="piece-body" />
+                    <span className="piece-top" />
+                    <span className="piece-notch piece-notch-a" />
+                    <span className="piece-notch piece-notch-b" />
+                    <span className="piece-notch piece-notch-c" />
+                </div>
+            </div>
+
             <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(251,191,36,0.16),_transparent_30%)] pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 h-96 bg-[radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.18),_transparent_28%),radial-gradient(circle_at_bottom_left,_rgba(34,211,238,0.14),_transparent_24%)] pointer-events-none" />
 
@@ -29,9 +80,8 @@ export const Home = () => {
                 </div>
 
                 <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-200 md:flex">
-                    <a href="#home" className="transition hover:text-white">Home</a>
-                    <a href="#about" className="transition hover:text-white">About</a>
-                    <a href="#courses" className="transition hover:text-white">Courses</a>
+                    <Link to="/home" className="transition hover:text-white">Home</Link>
+                    <Link to="/home?section=about" className="transition hover:text-white">About Us</Link>
                     <a href="#coaches" className="transition hover:text-white">Coaches</a>
                     <a href="#tournaments" className="transition hover:text-white">Tournaments</a>
                     <a href="#contact" className="transition hover:text-white">Contact</a>
@@ -95,7 +145,7 @@ export const Home = () => {
                         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                             {stats.map((item) => (
                                 <div key={item.label} className="rounded-3xl border border-white/10 bg-slate-900/70 p-6 backdrop-blur-xl shadow-[0_24px_80px_-40px_rgba(0,0,0,0.7)] transition hover:-translate-y-1 hover:border-amber-400/25">
-                                    <p className="text-sm uppercase tracking-[0.3em] text-slate-400">{item.label}</p>
+                                    <p className="text-xs uppercase tracking-[0.2em] leading-5 text-slate-400 break-words">{item.label}</p>
                                     <p className="mt-4 text-3xl font-black text-white">{item.value}</p>
                                 </div>
                             ))}
@@ -106,11 +156,18 @@ export const Home = () => {
                         <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),transparent)] blur-3xl" />
                         <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 p-4 shadow-2xl shadow-slate-950/40">
                             <div className="absolute -right-8 top-8 h-24 w-24 rounded-full bg-gradient-to-br from-violet-500/20 to-sky-400/10 blur-3xl" />
-                            <img
-                                src="/src/assets/hero.png"
-                                alt="Chess board"
-                                className="h-[420px] w-full object-cover object-center"
-                            />
+                            <div className="relative h-[420px] w-full overflow-hidden rounded-[1.5rem] bg-[#0A1025]">
+                                <img
+                                    src={heroImageFailed ? '/src/assets/hero.png' : '/home.jpg'}
+                                    alt="Chess board"
+                                    className="h-full w-full object-cover object-center"
+                                    onError={() => setHeroImageFailed(true)}
+                                />
+                                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,16,37,0.08)_0%,rgba(10,16,37,0.22)_45%,rgba(10,16,37,0.52)_100%)]" />
+                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.16),transparent_48%),radial-gradient(circle_at_top_right,rgba(246,215,120,0.12),transparent_24%)] mix-blend-screen" />
+                                <div className="pointer-events-none absolute bottom-16 left-1/2 h-[2px] w-[68%] -translate-x-1/2 rounded-full bg-[linear-gradient(90deg,rgba(0,255,240,0),rgba(0,255,240,0.95),rgba(139,92,246,0.9),rgba(0,255,240,0))] shadow-[0_0_16px_rgba(34,211,238,0.8)] animate-neon-sweep" />
+                                <div className="pointer-events-none absolute bottom-16 left-1/2 h-4 w-[68%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(34,211,238,0.35),transparent_68%)] blur-md animate-pulse" />
+                            </div>
                         </div>
                         <div className="absolute bottom-8 left-8 hidden rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-4 text-sm text-slate-200 shadow-xl shadow-slate-950/60 sm:block">
                             <p className="font-semibold text-white">Elite coaching, strategy labs, tournament readiness.</p>
@@ -118,7 +175,7 @@ export const Home = () => {
                     </div>
                 </div>
 
-                <section id="about" className="grid gap-10 rounded-[2rem] border border-white/10 bg-slate-950/60 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] lg:grid-cols-2">
+                <section id="about" ref={aboutSectionRef} className="grid gap-10 rounded-[2rem] border border-white/10 bg-slate-950/60 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] lg:grid-cols-2 scroll-mt-24">
                     <div className="space-y-4">
                         <p className="text-xs uppercase tracking-[0.35em] text-slate-400">About the academy</p>
                         <h2 className="text-2xl font-bold text-white">A cinematic training ground for modern chess learners.</h2>
@@ -145,18 +202,18 @@ export const Home = () => {
                             Contact Us
                         </button>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
                         <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-5">
-                            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Home base</p>
-                            <p className="mt-4 text-lg font-semibold text-white">Ratnapura Main Campus</p>
+                            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Location</p>
+                            <p className="mt-4 text-lg font-semibold text-white">Ratnapura Chess Academy</p>
                         </div>
                         <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-5">
                             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Email</p>
-                            <p className="mt-4 text-lg font-semibold text-white">info@ratnapurachessacademy.edu</p>
+                            <p className="mt-4 text-lg font-semibold text-white">ratnapurachessacademy@gmail.com</p>
                         </div>
                         <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-5">
-                            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Phone</p>
-                            <p className="mt-4 text-lg font-semibold text-white">+94 11 234 5678</p>
+                            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Contact Us</p>
+                            <p className="mt-4 text-lg font-semibold text-white">077 990 3464</p>
                         </div>
                         <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-5">
                             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Open hours</p>

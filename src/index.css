@@ -76,6 +76,275 @@
   animation: slideIn 0.25s ease-out forwards;
 }
 
+@keyframes neonSweep {
+  0% {
+    transform: translateX(-52%) scaleX(0.92);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(-48%) scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-52%) scaleX(0.92);
+    opacity: 0.45;
+  }
+}
+
+.animate-neon-sweep {
+  animation: neonSweep 3.4s ease-in-out infinite;
+}
+
+@keyframes neonFloatA {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+
+@keyframes neonFloatB {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -18px, 0); }
+}
+
+@keyframes neonFloatC {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -12px, 0); }
+}
+
+.neon-float-a { animation: neonFloatA 5.6s ease-in-out infinite; }
+.neon-float-b { animation: neonFloatB 6.2s ease-in-out infinite; }
+.neon-float-c { animation: neonFloatC 5s ease-in-out infinite; }
+
+.neon-piece {
+  position: absolute;
+  --neon: rgba(214, 0, 255, 0.9);
+  --neon-soft: rgba(214, 0, 255, 0.35);
+  opacity: 0.4;
+  filter: drop-shadow(0 0 14px var(--neon-soft));
+}
+
+.neon-piece span {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1.5px solid var(--neon);
+  box-shadow: 0 0 10px var(--neon-soft), inset 0 0 8px color-mix(in srgb, var(--neon) 24%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--neon) 9%, transparent), rgba(79, 70, 229, 0.02));
+}
+
+.neon-pink {
+  --neon: rgba(244, 63, 255, 0.95);
+  --neon-soft: rgba(244, 63, 255, 0.45);
+}
+
+.neon-cyan {
+  --neon: rgba(34, 211, 238, 0.95);
+  --neon-soft: rgba(34, 211, 238, 0.42);
+}
+
+.neon-blue {
+  --neon: rgba(99, 102, 241, 0.95);
+  --neon-soft: rgba(99, 102, 241, 0.4);
+}
+
+.neon-piece-king {
+  width: 82px;
+  height: 126px;
+}
+
+.neon-piece-king .piece-base {
+  width: 70px;
+  height: 16px;
+  left: 6px;
+  bottom: 0;
+  border-radius: 9999px;
+}
+
+.neon-piece-king .piece-body {
+  width: 44px;
+  height: 58px;
+  left: 19px;
+  bottom: 15px;
+  border-radius: 20px 20px 14px 14px;
+}
+
+.neon-piece-king .piece-top {
+  width: 28px;
+  height: 28px;
+  left: 27px;
+  bottom: 72px;
+  border-radius: 9999px;
+}
+
+.neon-piece-king .piece-cross-h {
+  width: 20px;
+  height: 4px;
+  left: 31px;
+  bottom: 103px;
+  border-radius: 999px;
+}
+
+.neon-piece-king .piece-cross-v {
+  width: 4px;
+  height: 18px;
+  left: 39px;
+  bottom: 96px;
+  border-radius: 999px;
+}
+
+.neon-piece-knight {
+  width: 88px;
+  height: 122px;
+}
+
+.neon-piece-knight .piece-base {
+  width: 72px;
+  height: 16px;
+  left: 8px;
+  bottom: 0;
+  border-radius: 9999px;
+}
+
+.neon-piece-knight .piece-body {
+  width: 48px;
+  height: 60px;
+  left: 22px;
+  bottom: 15px;
+  border-radius: 22px 18px 12px 12px;
+}
+
+.neon-piece-knight .piece-head {
+  width: 36px;
+  height: 38px;
+  left: 10px;
+  bottom: 60px;
+  border-radius: 18px 20px 8px 8px;
+  transform: rotate(-18deg);
+}
+
+.neon-piece-bishop {
+  width: 78px;
+  height: 118px;
+}
+
+.neon-piece-bishop .piece-base {
+  width: 66px;
+  height: 16px;
+  left: 6px;
+  bottom: 0;
+  border-radius: 9999px;
+}
+
+.neon-piece-bishop .piece-body {
+  width: 40px;
+  height: 58px;
+  left: 19px;
+  bottom: 15px;
+  border-radius: 20px;
+}
+
+.neon-piece-bishop .piece-head {
+  width: 30px;
+  height: 34px;
+  left: 24px;
+  bottom: 70px;
+  border-radius: 9999px;
+}
+
+.neon-piece-bishop .piece-slit {
+  width: 2px;
+  height: 22px;
+  left: 38px;
+  bottom: 77px;
+  border-radius: 999px;
+  transform: rotate(18deg);
+}
+
+.neon-piece-queen {
+  width: 86px;
+  height: 128px;
+}
+
+.neon-piece-queen .piece-base {
+  width: 72px;
+  height: 16px;
+  left: 7px;
+  bottom: 0;
+  border-radius: 9999px;
+}
+
+.neon-piece-queen .piece-body {
+  width: 44px;
+  height: 56px;
+  left: 21px;
+  bottom: 16px;
+  border-radius: 18px;
+}
+
+.neon-piece-queen .piece-crown {
+  width: 52px;
+  height: 34px;
+  left: 17px;
+  bottom: 66px;
+  border-radius: 10px 10px 20px 20px;
+}
+
+.neon-piece-queen .piece-tip {
+  width: 10px;
+  height: 10px;
+  bottom: 100px;
+  border-radius: 999px;
+}
+
+.neon-piece-queen .piece-tip-left { left: 16px; }
+.neon-piece-queen .piece-tip-mid { left: 38px; }
+.neon-piece-queen .piece-tip-right { left: 60px; }
+
+.neon-piece-rook {
+  width: 84px;
+  height: 124px;
+}
+
+.neon-piece-rook .piece-base {
+  width: 72px;
+  height: 16px;
+  left: 6px;
+  bottom: 0;
+  border-radius: 9999px;
+}
+
+.neon-piece-rook .piece-body {
+  width: 42px;
+  height: 64px;
+  left: 21px;
+  bottom: 14px;
+  border-radius: 10px;
+}
+
+.neon-piece-rook .piece-top {
+  width: 50px;
+  height: 22px;
+  left: 17px;
+  bottom: 76px;
+  border-radius: 8px;
+}
+
+.neon-piece-rook .piece-notch {
+  width: 8px;
+  height: 8px;
+  bottom: 90px;
+  border-radius: 3px;
+}
+
+.neon-piece-rook .piece-notch-a { left: 20px; }
+.neon-piece-rook .piece-notch-b { left: 38px; }
+.neon-piece-rook .piece-notch-c { left: 56px; }
+
+@media (max-width: 768px) {
+  .neon-piece {
+    transform: scale(0.72);
+    opacity: 0.26;
+  }
+}
+
 @layer utilities {
   .bg-chessboard {
     background-image:
