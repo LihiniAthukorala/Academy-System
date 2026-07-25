@@ -254,123 +254,103 @@ export const Students = () => {
                 </div>
             </div>
 
-            {/* Main Datatable display */}
+            {/* Modern card grid display */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-transparent dark:bg-transparent border-b border-[rgba(212,175,55,0.12)]">
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student ID</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Enrolled Class</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Guardian Phone</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Fees Status</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Attendance %</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Status</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[rgba(212,175,55,0.06)] dark:divide-[rgba(140,100,26,0.06)]">
-                            {currentStudentsList.length === 0 ? (
-                                <tr>
-                                    <td colSpan="8" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
-                                        No student registrations match the active search filters.
-                                    </td>
-                                </tr>
-                            ) : (
-                                currentStudentsList.map((std) => {
-                                    const stats = getStudentOverviewStats(std.id);
-                                    return (
-                                        <tr
-                                            key={std.id}
-                                            className="transition-colors hover:bg-[rgba(212,175,55,0.06)] dark:hover:bg-[rgba(212,175,55,0.04)]"
-                                        >
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={std.profileImage}
-                                                        alt={std.name}
-                                                        className="w-10 h-10 rounded-xl object-cover bg-slate-100 ring-2 ring-slate-100 dark:ring-slate-800 shadow-xs"
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm font-extrabold text-indigo-600 dark:text-indigo-300 leading-none">
-                                                            {std.name}
-                                                        </p>
-                                                        <span className="text-[10px] text-slate-400 font-semibold block mt-1">
-                                                            {std.grade} • {std.gender}
-                                                        </span>
-                                                    </div>
+                <div className="p-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {currentStudentsList.length === 0 ? (
+                            <div className="col-span-full p-8 text-center text-slate-400 dark:text-slate-500 font-semibold">
+                                No student registrations match the active search filters.
+                            </div>
+                        ) : (
+                            currentStudentsList.map((std) => {
+                                const stats = getStudentOverviewStats(std.id);
+                                return (
+                                    <div
+                                        key={std.id}
+                                        className="bg-gradient-to-br from-white/60 to-slate-50/30 dark:from-slate-800/60 dark:to-slate-900/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-0.5"
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={std.profileImage}
+                                                    alt={std.name}
+                                                    className="w-14 h-14 rounded-xl object-cover bg-slate-100 ring-2 ring-indigo-100 dark:ring-indigo-900 shadow-xs"
+                                                />
+                                                <div>
+                                                    <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                                                        {std.name}
+                                                    </p>
+                                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                                        {std.grade} • {std.gender}
+                                                    </p>
+                                                    <p className="text-[11px] text-slate-500 font-mono mt-1">
+                                                        {std.id}
+                                                    </p>
                                                 </div>
-                                            </td>
-                                            <td className="p-4 text-sm font-bold text-slate-600 dark:text-slate-400 font-mono">
-                                                {std.id}
-                                            </td>
-                                            <td className="p-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                                {getClassName(std.classId)}
-                                            </td>
-                                            <td className="p-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                                {std.parentPhone}
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                <StatusBadge status={stats.paymentStatus === 'Pending' ? 'Pending' : 'Paid'} />
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                <div className="inline-flex flex-col items-center">
-                                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                                        {stats.attendancePercentage}%
-                                                    </span>
-                                                    <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1">
-                                                        <div
-                                                            className={`h-full ${stats.attendancePercentage >= 90
-                                                                    ? 'bg-emerald-500'
-                                                                    : stats.attendancePercentage >= 75
-                                                                        ? 'bg-indigo-500'
-                                                                        : 'bg-rose-500'
-                                                                }`}
-                                                            style={{ width: `${stats.attendancePercentage}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="p-4 text-center">
+                                            </div>
+
+                                            <div className="flex flex-col items-end gap-2">
                                                 <StatusBadge status={std.status} />
-                                            </td>
-                                            <td className="p-4 text-right">
-                                                <div className="flex gap-2 justify-end">
-                                                    <button
-                                                        onClick={() => navigate(`/students/${std.id}`)}
-                                                        className="p-2 rounded-lg text-slate-400 hover:text-indigo-650 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                                                        title="View student profile"
-                                                    >
-                                                        <Eye className="w-4 h-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openEditForm(std)}
-                                                        className="p-2 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                                                        title="Edit student"
-                                                    >
-                                                        <Edit2 className="w-4 h-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => confirmDelete(std)}
-                                                        className="p-2 rounded-lg text-slate-400 hover:text-rose-650 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                                                        title="Delete student"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
+                                                <div className="text-xs text-slate-500">{getClassName(std.classId)}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 flex items-center justify-between">
+                                            <div>
+                                                <p className="text-[11px] text-slate-400">Guardian</p>
+                                                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-0.5">{std.parentName || std.parentPhone}</p>
+                                            </div>
+
+                                            <div className="text-center">
+                                                <div className="text-sm font-bold text-slate-800 dark:text-slate-100">{stats.attendancePercentage}%</div>
+                                                <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-2">
+                                                    <div
+                                                        className={`h-full ${stats.attendancePercentage >= 90
+                                                            ? 'bg-emerald-500'
+                                                            : stats.attendancePercentage >= 75
+                                                                ? 'bg-indigo-500'
+                                                                : 'bg-rose-500'
+                                                            }`}
+                                                        style={{ width: `${stats.attendancePercentage}%` }}
+                                                    ></div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
-                            )}
-                        </tbody>
-                    </table>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 flex justify-end gap-2">
+                                            <button
+                                                onClick={() => navigate(`/students/${std.id}`)}
+                                                className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"
+                                                title="View student profile"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => openEditForm(std)}
+                                                className="p-2 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors"
+                                                title="Edit student"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => confirmDelete(std)}
+                                                className="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+                                                title="Delete student"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
                 </div>
 
                 {/* Paginated Footer */}
                 {totalPages > 1 && (
-                    <div className="px-6 py-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-850/10">
+                    <div className="px-6 py-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 bg-slate-50/10 dark:bg-slate-850/10">
                         <span className="text-xs font-semibold text-slate-500 dark:text-slate-455">
                             Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalItems)} of {totalItems} entries
                         </span>
