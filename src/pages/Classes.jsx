@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmationModal from '../components/ConfirmationModal';
+import { formatLKR } from '../utils/currency';
 
 export const Classes = () => {
     const {
@@ -34,7 +35,6 @@ export const Classes = () => {
     // Search & Filter state
     const [searchTerm, setSearchTerm] = useState('');
     const [filterTeacher, setFilterTeacher] = useState('All');
-    const [filterSubject, setFilterSubject] = useState('All');
 
     // Modal states
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -66,7 +66,6 @@ export const Classes = () => {
     const openAddForm = () => {
         reset({
             name: '',
-            subject: 'Mathematics',
             teacherId: teachers[0]?.id || '',
             day: 'Monday',
             startTime: '09:00',
@@ -83,7 +82,6 @@ export const Classes = () => {
     const openEditForm = (cls) => {
         reset({
             name: cls.name,
-            subject: cls.subject,
             teacherId: cls.teacherId,
             day: cls.day,
             startTime: cls.startTime,
@@ -101,12 +99,13 @@ export const Classes = () => {
         // Find teacher name from list
         const teacher = teachers.find((t) => t.id === data.teacherId);
         const teacherName = teacher ? teacher.name : 'Unknown';
+        const { subject: _ignoredSubject, ...classData } = data;
 
         const payload = {
-            ...data,
+            ...classData,
             teacherName,
-            capacity: Number(data.capacity || 0),
-            monthlyFee: Number(data.monthlyFee || 0)
+            capacity: Number(classData.capacity || 0),
+            monthlyFee: Number(classData.monthlyFee || 0)
         };
 
         if (editingClassId) {
@@ -138,16 +137,12 @@ export const Classes = () => {
     const filteredClasses = classes.filter((cls) => {
         const matchesSearch =
             cls.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            cls.subject.toLowerCase().includes(searchTerm.toLowerCase());
+            (cls.teacherName || '').toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesTeacher = filterTeacher === 'All' || cls.teacherId === filterTeacher;
-        const matchesSubject = filterSubject === 'All' || cls.subject === filterSubject;
 
-        return matchesSearch && matchesTeacher && matchesSubject;
+        return matchesSearch && matchesTeacher;
     });
-
-    // Extract subjects list dynamically
-    const subjects = ['Mathematics', 'Physics', 'Chemistry', 'English'];
 
     return (
         <div className="space-y-6">
@@ -178,7 +173,7 @@ export const Classes = () => {
                         <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
                         <input
                             type="text"
-                            placeholder="Search classes by name or subject specialty..."
+                            placeholder="Search classes by name or teacher..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] transition-colors"
@@ -199,23 +194,8 @@ export const Classes = () => {
                         </select>
                     </div>
 
-                    {/* Subject filter */}
-                    <div>
-                        <select
-                            value={filterSubject}
-                            onChange={(e) => setFilterSubject(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
-                        >
-                            <option value="All">All Subjects</option>
-                            {subjects.map((sub) => (
-                                <option key={sub} value={sub}>{sub}</option>
-                            ))}
-                        </select>
-                    </div>
                 </div>
             </div>
-
-            {/* Classes cards grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredClasses.length === 0 ? (
                     <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-2xl border border-slate-105 col-span-3 text-slate-400 font-semibold shadow-xs">
@@ -261,7 +241,7 @@ export const Classes = () => {
                                         <div className="space-y-0.5">
                                             <span className="text-slate-400 font-bold block text-[10px] uppercase">Lecturer</span>
                                             <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                                                <User className="w-3.5 h-3.5 text-slate-400" />
+                                                            <span className="text-sm font-black text-indigo-650 dark:text-indigo-400 font-mono">{formatLKR(cls.monthlyFee)}</span>
                                                 {cls.teacherName}
                                             </span>
                                         </div>
@@ -302,7 +282,7 @@ export const Classes = () => {
                                     {/* Monthly Fee cost info */}
                                     <div className="flex justify-between items-center pt-2 text-xs">
                                         <span className="text-slate-500 font-bold">Monthly Cost:</span>
-                                        <span className="text-sm font-black text-indigo-650 dark:text-indigo-400 font-mono">${cls.monthlyFee}</span>
+                                        <span className="text-sm font-black text-indigo-650 dark:text-indigo-400 font-mono">{formatLKR(cls.monthlyFee)}</span>
                                     </div>
 
                                 </div>
@@ -344,10 +324,10 @@ export const Classes = () => {
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                             <div>
                                 <h3 className="text-lg font-bold text-slate-855 dark:text-slate-150">
-                                    {editingClassId ? 'Modify Class Schedule' : 'Create Subject Course Class'}
+                                    {editingClassId ? 'Modify Class Schedule' : 'Create New Class'}
                                 </h3>
                                 <p className="text-xs text-slate-455 mt-0.5">
-                                    Establish syllabus, weekly sessions timetable schedules, and classroom limits.
+                                    Establish weekly session schedules, teacher assignments, and classroom limits.
                                 </p>
                             </div>
                             <button onClick={() => setIsFormOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -355,7 +335,13 @@ export const Classes = () => {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+                        <form
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                handleSubmit(handleFormSubmit)(event);
+                            }}
+                            className="space-y-4"
+                        >
 
                             {/* Class Name */}
                             <div className="space-y-1">
@@ -371,33 +357,19 @@ export const Classes = () => {
                                 {errors.name && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.name.message}</p>}
                             </div>
 
-                            {/* Subject specialist & teacher */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Subject Course</label>
-                                    <select
-                                        {...register('subject')}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                    >
-                                        {subjects.map((sub) => (
-                                            <option key={sub} value={sub}>{sub}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Assign Teacher *</label>
-                                    <select
-                                        {...register('teacherId', { required: 'Teacher assignment is required' })}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                    >
-                                        <option value="">Choose Instructor</option>
-                                        {teachers.map((t) => (
-                                            <option key={t.id} value={t.id}>{t.name}</option>
-                                        ))}
-                                    </select>
-                                    {errors.teacherId && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.teacherId.message}</p>}
-                                </div>
+                            {/* Teacher assignment */}
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Assign Teacher *</label>
+                                <select
+                                    {...register('teacherId', { required: 'Teacher assignment is required' })}
+                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                >
+                                    <option value="">Choose Instructor</option>
+                                    {teachers.map((t) => (
+                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                    ))}
+                                </select>
+                                {errors.teacherId && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.teacherId.message}</p>}
                             </div>
 
                             {/* Schedule Details */}
@@ -457,7 +429,7 @@ export const Classes = () => {
 
                                 {/* Fees */}
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350 font-mono">Monthly Fee ($) *</label>
+                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350 font-mono">Monthly Fee (LKR) *</label>
                                     <input
                                         {...register('monthlyFee', { required: 'Fee required', min: { value: 0, message: 'Fee cannot be negative' } })}
                                         type="number"
@@ -489,7 +461,8 @@ export const Classes = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    type="submit"
+                                    type="button"
+                                    onClick={handleSubmit(handleFormSubmit)}
                                     className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-650 hover:bg-indigo-700 shadow-md cursor-pointer"
                                 >
                                     Save Class Parameters

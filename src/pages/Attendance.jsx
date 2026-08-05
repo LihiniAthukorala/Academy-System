@@ -240,7 +240,7 @@ export const Attendance = () => {
 
                     {/* Selecting Class & date */}
                     <form onSubmit={handleSubmitAttendance} className="space-y-6">
-                        <div className="bg-white dark:bg-slate-905 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs">
+                        <div className="bg-blue-50 dark:bg-blue-950 p-5 rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 
                                 {/* Select Class */}
@@ -277,28 +277,28 @@ export const Attendance = () => {
 
                                 {/* Info summary */}
                                 {selectedClassId !== '' && records.length > 0 && (
-                                    <div className="bg-slate-50 dark:bg-slate-850/50 p-3 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-800 self-end">
-                                        <div className="text-xs font-semibold space-y-1">
-                                            <p className="text-slate-455">Capacity: <span className="font-bold text-slate-700 dark:text-slate-300">{records.length} enrolled</span></p>
-                                            <p className="text-slate-455">Status: <span className="font-bold text-indigo-500">Log Pending</span></p>
+                                    <div className="bg-slate-50 dark:bg-slate-850/50 p-3 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-slate-100 dark:border-slate-800 self-end">
+                                            <div className="text-sm font-semibold space-y-1">
+                                                <p className="text-slate-700 dark:text-slate-300">Capacity: <span className="font-bold text-slate-900 dark:text-slate-100">{records.length} enrolled</span></p>
+                                                <p className="text-slate-700 dark:text-slate-300">Status: <span className="font-bold text-indigo-600 dark:text-indigo-400">Log Pending</span></p>
+                                            </div>
+                                            {/* Reset button */}
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const existing = attendance.find(a => a.classId === selectedClassId && a.date === selectedDate);
+                                                    if (!existing) {
+                                                        setRecords(prev => prev.map(r => ({ ...r, status: 'Present', notes: '' })));
+                                                    } else {
+                                                        triggerToast('Reset to saved status.', 'info');
+                                                    }
+                                                }}
+                                                className="p-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer shadow-xs text-slate-700 dark:text-slate-300"
+                                                title="Clear/Reload"
+                                            >
+                                                <RefreshCw className="w-3.5 h-3.5" />
+                                            </button>
                                         </div>
-                                        {/* Reset button */}
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const existing = attendance.find(a => a.classId === selectedClassId && a.date === selectedDate);
-                                                if (!existing) {
-                                                    setRecords(prev => prev.map(r => ({ ...r, status: 'Present', notes: '' })));
-                                                } else {
-                                                    triggerToast('Reset to saved status.', 'info');
-                                                }
-                                            }}
-                                            className="p-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer shadow-xs text-slate-455"
-                                            title="Clear/Reload"
-                                        >
-                                            <RefreshCw className="w-3.5 h-3.5" />
-                                        </button>
-                                    </div>
                                 )}
                             </div>
                         </div>
@@ -313,10 +313,10 @@ export const Attendance = () => {
                                 </p>
                             </div>
                         ) : records.length === 0 ? (
-                            <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950 dark:to-red-900 p-12 text-center rounded-xl border-2 border-red-300 dark:border-red-700 shadow-lg">
-                                <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-3" />
-                                <h3 className="text-lg font-bold text-red-900 dark:text-red-300 uppercase tracking-widest">No Enrolled Students</h3>
-                                <p className="text-sm text-red-800 dark:text-red-400 mt-3 max-w-sm mx-auto font-semibold">
+                            <div className="bg-blue-50 dark:bg-blue-950 p-12 text-center rounded-xl border-2 border-blue-200 col-span-2 text-blue-900 dark:text-blue-300 font-bold shadow-lg text-lg">
+                                <AlertCircle className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
+                                <h3 className="text-lg font-bold text-blue-900 dark:text-blue-300 uppercase tracking-widest">No Enrolled Students</h3>
+                                <p className="text-sm text-blue-800 dark:text-blue-400 mt-3 max-w-sm mx-auto font-semibold">
                                     There are no active students enrolled in class "{getClassName(selectedClassId)}". Please enroll students first.
                                 </p>
                             </div>
@@ -346,7 +346,7 @@ export const Attendance = () => {
                                 </div>
 
                                 {/* Table Sheet */}
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs overflow-hidden">
+                                <div className="bg-gradient-to-br from-white to-blue-50 dark:from-slate-800 dark:to-blue-900 p-6 rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg overflow-hidden">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left">
                                             <thead>
@@ -362,11 +362,11 @@ export const Attendance = () => {
                                                     <tr key={r.studentId} className="hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
                                                         <td className="p-4">
                                                             <div className="flex items-center gap-3">
-                                                                <img
-                                                                    src={r.profileImage}
-                                                                    alt={r.studentName}
-                                                                    className="w-10 h-10 rounded-lg object-cover shadow-md bg-slate-100 ring-2 ring-blue-400 dark:ring-blue-600"
-                                                                />
+                                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
+                                                                    <span className="text-sm font-black text-[#F6D778]">
+                                                                        {r.studentName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
+                                                                    </span>
+                                                                </div>
                                                                 <span className="text-sm font-bold text-slate-900 dark:text-white">
                                                                     {r.studentName}
                                                                 </span>

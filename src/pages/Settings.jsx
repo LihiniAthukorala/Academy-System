@@ -54,7 +54,7 @@ export const Settings = () => {
             address: settings.address,
             phone: settings.phone,
             email: settings.email,
-            currency: settings.currency || 'USD',
+            currency: settings.currency || 'LKR',
             receiptFooter: settings.receiptFooter
         }
     });
@@ -179,7 +179,6 @@ export const Settings = () => {
                                 {...registerSettings('currency')}
                                 className="px-3.5 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
                             >
-                                <option value="USD">USD ($)</option>
                                 <option value="LKR">LKR (Rs.)</option>
                             </select>
                         </div>

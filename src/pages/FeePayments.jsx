@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmationModal from '../components/ConfirmationModal';
+import { formatLKR } from '../utils/currency';
 
 export const FeePayments = () => {
     const {
@@ -720,38 +721,38 @@ export const FeePayments = () => {
                                 <div className="space-y-2.5 text-xs">
                                     <div className="flex justify-between items-center py-1">
                                         <span className="text-slate-600 dark:text-slate-400 font-medium">Monthly Tuition Fee</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.monthlyFee}</span>
+                                        <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">{formatLKR(selectedReceipt.monthlyFee)}</span>
                                     </div>
 
                                     {selectedReceipt.registrationFee > 0 && (
                                         <div className="flex justify-between items-center py-1">
                                             <span className="text-slate-600 dark:text-slate-400 font-medium">Registration Fee</span>
-                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.registrationFee}</span>
+                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">{formatLKR(selectedReceipt.registrationFee)}</span>
                                         </div>
                                     )}
 
                                     {selectedReceipt.additionalCharges > 0 && (
                                         <div className="flex justify-between items-center py-1">
                                             <span className="text-slate-600 dark:text-slate-400 font-medium">Additional Study Materials</span>
-                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">${selectedReceipt.additionalCharges}</span>
+                                            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">{formatLKR(selectedReceipt.additionalCharges)}</span>
                                         </div>
                                     )}
 
                                     {selectedReceipt.discount > 0 && (
                                         <div className="flex justify-between items-center py-1 text-emerald-600 dark:text-emerald-450 font-bold">
                                             <span>Applied Promocode / Scholarship Discount</span>
-                                            <span className="font-mono">-${selectedReceipt.discount}</span>
+                                            <span className="font-mono">-{formatLKR(selectedReceipt.discount)}</span>
                                         </div>
                                     )}
 
                                     <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center text-sm font-black">
                                         <span className="text-slate-800 dark:text-slate-200 font-extrabold">Total Amount Invoiced</span>
-                                        <span className="font-mono">${selectedReceipt.totalAmount}</span>
+                                        <span className="font-mono">{formatLKR(selectedReceipt.totalAmount)}</span>
                                     </div>
 
                                     <div className="flex justify-between items-center text-sm font-black text-emerald-600 dark:text-emerald-400 pt-1">
                                         <span className="font-extrabold">Amount Cleared / Paid</span>
-                                        <span className="font-mono">-${selectedReceipt.paidAmount}</span>
+                                        <span className="font-mono">-{formatLKR(selectedReceipt.paidAmount)}</span>
                                     </div>
 
                                     <div className={`flex justify-between items-center text-sm font-black py-2.5 px-3 rounded-lg border my-2 ${selectedReceipt.balance > 0
@@ -759,7 +760,7 @@ export const FeePayments = () => {
                                             : 'bg-emerald-50/20 border-emerald-100/50 text-emerald-600 dark:text-emerald-400'
                                         }`}>
                                         <span className="font-extrabold">Net Arrears Balance Due</span>
-                                        <span className="font-mono">${selectedReceipt.balance}</span>
+                                        <span className="font-mono">{formatLKR(selectedReceipt.balance)}</span>
                                     </div>
                                 </div>
                             </div>

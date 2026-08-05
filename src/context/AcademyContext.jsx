@@ -76,28 +76,17 @@ export const AcademyProvider = ({ children }) => {
     }, [settings]);
 
     useEffect(() => {
-        const cleanupFlag = 'academy_seed_cleanup_v1';
+        const cleanupFlag = 'academy_seed_cleanup_v2';
         const alreadyCleaned = window.localStorage.getItem(cleanupFlag) === 'true';
 
-        if (alreadyCleaned) {
-            return;
+        if (!alreadyCleaned) {
+            window.localStorage.removeItem('academy_students');
+            window.localStorage.removeItem('academy_teachers');
+            window.localStorage.removeItem('academy_classes');
+            window.localStorage.removeItem('academy_payments');
+            window.localStorage.removeItem('academy_attendance');
+            window.localStorage.setItem(cleanupFlag, 'true');
         }
-
-        window.localStorage.removeItem('academy_students');
-        window.localStorage.removeItem('academy_classes');
-        window.localStorage.removeItem('academy_payments');
-        window.localStorage.removeItem('academy_attendance');
-
-        setStudents([]);
-        setClasses([]);
-        setPayments([]);
-        setAttendance([]);
-
-        skipBackendHydrationRef.current = true;
-        window.localStorage.setItem(cleanupFlag, 'true');
-
-        setIsBackendReady(true);
-        setIsHydrated(true);
     }, []);
 
     useEffect(() => {
@@ -113,8 +102,9 @@ export const AcademyProvider = ({ children }) => {
             try {
                 await apiHealth();
 
-                const [remoteStudents, remoteClasses, remoteAttendance, remotePayments] = await Promise.all([
+                const [remoteStudents, remoteTeachers, remoteClasses, remoteAttendance, remotePayments] = await Promise.all([
                     fetchCollection('students'),
+                    fetchCollection('teachers'),
                     fetchCollection('classes'),
                     fetchCollection('attendance'),
                     fetchCollection('payments')
@@ -124,6 +114,13 @@ export const AcademyProvider = ({ children }) => {
 
                 if (Array.isArray(remoteStudents) && remoteStudents.length > 0) {
                     setStudents(remoteStudents);
+                }
+
+                if (Array.isArray(remoteTeachers) && remoteTeachers.length > 0) {
+                    setTeachers(remoteTeachers.map((t) => ({
+                        ...t,
+                        classes: Array.isArray(t.classes) ? t.classes : []
+                    })));
                 }
 
                 if (Array.isArray(remoteClasses) && remoteClasses.length > 0) {
@@ -161,6 +158,11 @@ export const AcademyProvider = ({ children }) => {
         if (!isHydrated || !isBackendReady) return;
         replaceCollection('students', students).catch(() => {});
     }, [students, isBackendReady, isHydrated]);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendReady) return;
+        replaceCollection('teachers', teachers).catch(() => {});
+    }, [teachers, isBackendReady, isHydrated]);
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
@@ -298,7 +300,8 @@ export const AcademyProvider = ({ children }) => {
             id: newId,
             joinedDate: teacherPayload.joinedDate || new Date().toISOString().split('T')[0],
             status: teacherPayload.status || 'Active',
-            profileImage: teacherPayload.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(teacherPayload.name)}`
+            profileImage: teacherPayload.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(teacherPayload.name)}`,
+            classes: []
         };
 
         setTeachers((prev) => [newTeacher, ...prev]);
@@ -346,7 +349,10 @@ export const AcademyProvider = ({ children }) => {
             setTeachers((prev) =>
                 prev.map((t) =>
                     t.id === classData.teacherId
-                        ? { ...t, classes: [...new Set([...t.classes, newId])] }
+                        ? {
+                            ...t,
+                            classes: [...new Set([...(Array.isArray(t.classes) ? t.classes : []), newId])]
+                        }
                         : t
                 )
             );
@@ -370,7 +376,10 @@ export const AcademyProvider = ({ children }) => {
         setClasses((prev) => prev.filter((c) => c.id !== id));
         // Remove class reference from teachers
         setTeachers((prev) =>
-            prev.map((t) => ({ ...t, classes: t.classes.filter((cId) => cId !== id) }))
+            prev.map((t) => ({
+                ...t,
+                classes: Array.isArray(t.classes) ? t.classes.filter((cId) => cId !== id) : []
+            }))
         );
         showToast('Class Deleted', 'Class removed.', 'success');
     };
@@ -414,7 +423,7 @@ export const AcademyProvider = ({ children }) => {
 
         // Add alert notification if balance remains unpaid
         if (status === 'Overdue') {
-            addNotification('Overdue Payment Alert', `${studentName} outstanding balance of $${balance} is registry overdue.`, 'fee', 'error');
+            addNotification('Overdue Payment Alert', `${studentName} outstanding balance of LKR ${balance} is registry overdue.`, 'fee', 'error');
         }
 
         return newPayment;

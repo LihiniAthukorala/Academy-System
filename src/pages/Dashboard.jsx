@@ -32,6 +32,7 @@ import {
     Area
 } from 'recharts';
 import StatusBadge from '../components/StatusBadge';
+import { formatLKR } from '../utils/currency';
 
 export const Dashboard = () => {
     const { students, teachers, classes, payments, attendance, notifications } = useAcademy();
@@ -108,7 +109,7 @@ export const Dashboard = () => {
         },
         {
             title: 'Monthly Collection',
-            value: `$${monthlyCollection}`,
+            value: formatLKR(monthlyCollection),
             change: 'July invoices summary',
             trend: 'up',
             icon: DollarSign,
@@ -116,7 +117,7 @@ export const Dashboard = () => {
         },
         {
             title: 'Pending Fee Balance',
-            value: `$${pendingCollection}`,
+            value: formatLKR(pendingCollection),
             change: 'Action required',
             trend: 'down',
             icon: AlertCircle,

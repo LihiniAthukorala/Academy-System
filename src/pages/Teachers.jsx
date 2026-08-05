@@ -183,7 +183,7 @@ export const Teachers = () => {
                     <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
                     <input
                         type="text"
-                        placeholder="Search teachers by instructor name or specialty..."
+                        placeholder="Search teachers by name or qualification..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25"
@@ -191,137 +191,117 @@ export const Teachers = () => {
                 </div>
             </div>
 
-            {/* Teachers directory Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {currentTeachersList.length === 0 ? (
-                    <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-2xl border border-slate-105 col-span-3 text-slate-400 font-semibold shadow-xs">
-                        No instructor registrations match search.
-                    </div>
-                ) : (
-                    currentTeachersList.map((t) => {
-                        const assignedClassesList = getTeacherClasses(t.id);
+            {/* Teachers directory table */}
+            <div className="overflow-hidden rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-800">
+                        <thead className="bg-slate-50 dark:bg-slate-950/50">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Teacher</th>
+                                <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Contact</th>
+                                <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Qualifications</th>
+                                <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Assigned Classes</th>
+                                <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Status</th>
+                                <th className="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                            {currentTeachersList.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-12 text-center text-slate-400 font-semibold">
+                                        No instructor registrations match search.
+                                    </td>
+                                </tr>
+                            ) : (
+                                currentTeachersList.map((t) => {
+                                    const assignedClassesList = getTeacherClasses(t.id);
 
-                        return (
-                            <div
-                                key={t.id}
-                                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-xs relative overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group"
-                            >
-                                {/* Status line */}
-                                <div className="absolute top-0 right-0 h-1.5 bg-indigo-600 w-full animate-pulse"></div>
-
-                                <div className="p-6 space-y-4">
-                                    {/* Banner */}
-                                    <div className="flex items-start gap-4">
-                                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
-                                            {t.profileImage ? (
-                                                <img
-                                                    src={t.profileImage}
-                                                    alt={t.name}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            ) : (
-                                                <span className="text-sm font-black text-[#F6D778]">
-                                                    {t.name?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'T'}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div className="min-w-0">
-                                                    <h3 className="text-base font-extrabold text-slate-909 dark:text-slate-100 leading-tight">
-                                                        {t.name}
-                                                    </h3>
-                                                    <span className="text-[10px] text-slate-400 font-bold block mt-1 font-mono">
-                                                        Teacher ID: {t.id}
-                                                    </span>
+                                    return (
+                                        <tr key={t.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-950/35 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
+                                                        {t.profileImage ? (
+                                                            <img src={t.profileImage} alt={t.name} className="h-full w-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-xs font-black text-[#F6D778]">
+                                                                {t.name?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'T'}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-extrabold text-slate-900 dark:text-slate-100">{t.name}</div>
+                                                        <div className="text-[11px] font-mono text-slate-400">Teacher ID: {t.id}</div>
+                                                    </div>
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm">
+                                                <div className="space-y-1 text-slate-700 dark:text-slate-300">
+                                                    <div className="flex items-center gap-2">
+                                                        <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                                                        <span>{t.phone || '-'}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                                                        <span className="truncate">{t.email || '-'}</span>
+                                                    </div>
+                                                    <div className="flex items-start gap-2">
+                                                        <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                                                        <span className="text-slate-500 dark:text-slate-400">{t.address || 'No address logged'}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                                                <div className="flex items-center gap-2">
+                                                    <GraduationCap className="w-4 h-4 text-emerald-500 shrink-0" />
+                                                    <span>{t.qualifications || 'No qualifications listed'}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                                                {assignedClassesList.length === 0 ? (
+                                                    <span className="text-slate-400 italic">Unassigned</span>
+                                                ) : (
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {assignedClassesList.map((cName) => (
+                                                            <span key={cName} className="rounded-full border border-[rgba(212,175,55,0.16)] bg-[#F6D778]/10 px-2.5 py-1 text-[11px] font-bold text-[#8C641A]">
+                                                                {cName}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
                                                 <StatusBadge status={t.status} />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Skills summary details */}
-                                    <div className="space-y-2.5 text-xs border-t border-slate-50 dark:border-slate-805 pt-4">
-
-                                        <div className="flex items-center gap-2">
-                                            <GraduationCap className="w-4 h-4 text-emerald-500 shrink-0" />
-                                            <span className="font-medium text-slate-600 dark:text-slate-400">
-                                                {t.qualifications || 'No qualifications listed'}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Phone className="w-4 h-4 text-slate-400 shrink-0" />
-                                            <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                {t.phone}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                                            <span className="font-semibold text-slate-700 dark:text-slate-350 select-all truncate">
-                                                {t.email}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-start gap-2 border-t border-slate-50 dark:border-slate-800/80 pt-2.5">
-                                            <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
-                                            <span className="font-medium text-slate-500 dark:text-slate-400 leading-tight">
-                                                {t.address || 'No address logged'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Assigned classes list badges */}
-                                    <div className="space-y-1.5 pt-2 border-t border-slate-50 dark:border-slate-800/80">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
-                                            Assigned Class Schedules
-                                        </span>
-                                        <div className="flex flex-wrap gap-1">
-                                            {assignedClassesList.length === 0 ? (
-                                                <span className="text-[10px] text-slate-400 font-semibold italic">Unassigned Class</span>
-                                            ) : (
-                                                assignedClassesList.map((cName, idx) => (
-                                                    <span
-                                                        key={idx}
-                                                        className="px-2 py-0.5 rounded-md bg-[#F6D778]/10 text-[#8C641A] border border-[rgba(212,175,55,0.12)] text-[10px] font-bold"
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="inline-flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => openEditForm(t)}
+                                                        className="p-2 rounded-lg border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-500 hover:text-amber-500 transition-colors cursor-pointer"
+                                                        title="Edit teacher parameters"
                                                     >
-                                                        {cName}
-                                                    </span>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                {/* Operations Footer (gold-tinted) */}
-                                <div className="px-6 py-4 bg-[rgba(212,175,55,0.02)] dark:bg-[rgba(212,175,55,0.02)] border-t border-[rgba(212,175,55,0.06)] flex justify-end gap-2">
-                                    <button
-                                        onClick={() => openEditForm(t)}
-                                        className="p-1.5 rounded-lg border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-500 hover:text-amber-500 transition-colors cursor-pointer"
-                                        title="Edit teacher parameters"
-                                    >
-                                        <Edit2 className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        onClick={() => confirmDelete(t)}
-                                        disabled={assignedClassesList.length > 0}
-                                        className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${assignedClassesList.length > 0
-                                                ? 'border-slate-101 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                                                : 'border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-550 hover:text-rose-600'
-                                            }`}
-                                        title={assignedClassesList.length > 0 ? "Cannot delete instructor actively teaching classes" : "Remove teacher account"}
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-
-                            </div>
-                        );
-                    })
-                )}
+                                                        <Edit2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => confirmDelete(t)}
+                                                        disabled={assignedClassesList.length > 0}
+                                                        className={`p-2 rounded-lg border transition-colors cursor-pointer ${assignedClassesList.length > 0
+                                                                ? 'border-slate-101 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                                                                : 'border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-550 hover:text-rose-600'
+                                                            }`}
+                                                        title={assignedClassesList.length > 0 ? 'Cannot delete instructor actively teaching classes' : 'Remove teacher account'}
+                                                    >
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Pagging Footer widgets */}

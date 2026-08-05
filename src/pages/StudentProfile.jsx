@@ -17,6 +17,7 @@ import {
     ClipboardList
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
+import { formatLKR } from '../utils/currency';
 
 export const StudentProfile = () => {
     const { id } = useParams();
@@ -125,7 +126,7 @@ export const StudentProfile = () => {
 
                     <div className="bg-emerald-50/40 dark:bg-emerald-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-emerald-50/20 dark:border-none">
                         <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                            ${stats.totalPaid}
+                            {formatLKR(stats.totalPaid)}
                         </span>
                         <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
                             Total Paid
@@ -134,7 +135,7 @@ export const StudentProfile = () => {
 
                     <div className="bg-rose-50/40 dark:bg-rose-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-rose-55/10 dark:border-none">
                         <span className={`text-lg font-black font-mono ${stats.totalOutstanding > 0 ? 'text-rose-600 dark:text-rose-455' : 'text-slate-600 dark:text-slate-400'}`}>
-                            ${stats.totalOutstanding}
+                            {formatLKR(stats.totalOutstanding)}
                         </span>
                         <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
                             Balance Due
@@ -246,7 +247,7 @@ export const StudentProfile = () => {
                                 <div className="sm:col-span-2">
                                     <span className="text-slate-400 font-bold block mb-1">Admission Class Default Monthly Fee</span>
                                     <span className="font-extrabold text-slate-850 dark:text-slate-200 font-mono text-sm">
-                                        ${student.monthlyFee}
+                                        {formatLKR(student.monthlyFee)}
                                     </span>
                                 </div>
                             </div>
@@ -347,14 +348,14 @@ export const StudentProfile = () => {
                                                     {p.month} {p.year}
                                                 </td>
                                                 <td className="p-4 text-right font-bold text-slate-800 dark:text-slate-200 font-mono">
-                                                    ${p.totalAmount}
+                                                    {formatLKR(p.totalAmount)}
                                                 </td>
                                                 <td className="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                                                    ${p.paidAmount}
+                                                    {formatLKR(p.paidAmount)}
                                                 </td>
                                                 <td className="p-4 text-right font-bold font-mono">
                                                     <span className={p.balance > 0 ? 'text-rose-650' : 'text-slate-400'}>
-                                                        ${p.balance}
+                                                        {formatLKR(p.balance)}
                                                     </span>
                                                 </td>
                                                 <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
@@ -438,7 +439,7 @@ export const StudentProfile = () => {
                                         <div>
                                             <span className="text-slate-400 font-bold block mb-1">Monthly Course Fee</span>
                                             <span className="font-extrabold text-indigo-500 font-mono text-sm leading-none block">
-                                                ${studentClass.monthlyFee}
+                                                {formatLKR(studentClass.monthlyFee)}
                                             </span>
                                         </div>
                                     </div>

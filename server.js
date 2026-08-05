@@ -6,6 +6,7 @@ import studentsHandler from './api/students.js';
 import classesHandler from './api/classes.js';
 import attendanceHandler from './api/attendance.js';
 import paymentsHandler from './api/payments.js';
+import teachersHandler from './api/teachers.js';
 
 const port = Number(process.env.PORT || 3001);
 
@@ -14,7 +15,8 @@ const routeHandlers = {
     '/api/students': studentsHandler,
     '/api/classes': classesHandler,
     '/api/attendance': attendanceHandler,
-    '/api/payments': paymentsHandler
+    '/api/payments': paymentsHandler,
+    '/api/teachers': teachersHandler
 };
 
 const sendJson = (res, statusCode, data) => {

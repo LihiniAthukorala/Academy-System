@@ -28,6 +28,7 @@ import {
     LineChart,
     Line
 } from 'recharts';
+import { formatLKR } from '../utils/currency';
 
 export const Reports = () => {
     const { students, classes, payments, attendance } = useAcademy();
@@ -222,7 +223,7 @@ export const Reports = () => {
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs flex justify-between items-center">
                         <div>
                             <span className="text-slate-400 font-bold block text-[10px] uppercase">Annual Invoiced sum</span>
-                            <span className="text-lg font-black text-slate-850 dark:text-slate-200 mt-2 block font-mono">${totalInvoiced}</span>
+                            <span className="text-lg font-black text-slate-850 dark:text-slate-200 mt-2 block font-mono">{formatLKR(totalInvoiced)}</span>
                         </div>
                         <span className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-850 text-slate-400">
                             <DollarSign className="w-5 h-5" />
@@ -233,7 +234,7 @@ export const Reports = () => {
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs flex justify-between items-center">
                         <div>
                             <span className="text-slate-400 font-bold block text-[10px] uppercase">Cleared Collected Revenue</span>
-                            <span className="text-lg font-black text-emerald-650 mt-2 block font-mono">${totalCollected}</span>
+                            <span className="text-lg font-black text-emerald-650 mt-2 block font-mono">{formatLKR(totalCollected)}</span>
                         </div>
                         <span className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600">
                             <TrendingUp className="w-5 h-5" />
@@ -244,7 +245,7 @@ export const Reports = () => {
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs flex justify-between items-center">
                         <div>
                             <span className="text-slate-400 font-bold block text-[10px] uppercase">Awaiting Balance Arrears</span>
-                            <span className="text-lg font-black text-rose-650 mt-2 block font-mono">${totalOutstanding}</span>
+                            <span className="text-lg font-black text-rose-650 mt-2 block font-mono">{formatLKR(totalOutstanding)}</span>
                         </div>
                         <span className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/20 text-rose-500">
                             <Award className="w-5 h-5" />
@@ -280,8 +281,8 @@ export const Reports = () => {
                                     <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                                     <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
                                     <Legend iconType="circle" wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
-                                    <Bar dataKey="Invoiced" name="Invoiced Amount ($)" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={24} />
-                                    <Bar dataKey="Collected" name="Collected Paid ($)" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={24} />
+                                    <Bar dataKey="Invoiced" name="Invoiced Amount (LKR)" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={24} />
+                                    <Bar dataKey="Collected" name="Collected Paid (LKR)" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={24} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -326,7 +327,7 @@ export const Reports = () => {
                                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
                                         <span className="text-slate-500">{entry.name}</span>
                                     </div>
-                                    <span className="text-slate-800 dark:text-slate-205 font-mono">${entry.value}</span>
+                                    <span className="text-slate-800 dark:text-slate-205 font-mono">{formatLKR(entry.value)}</span>
                                 </div>
                             ))}
                         </div>

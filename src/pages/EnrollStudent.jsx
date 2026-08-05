@@ -31,8 +31,6 @@ export const EnrollStudent = () => {
             grade: 'Grade 10',
             address: '',
             phone: '',
-            parentName: '',
-            parentPhone: '',
             joinedDate: new Date().toISOString().split('T')[0],
             status: 'Active',
             profileImage: '',
@@ -194,8 +192,8 @@ export const EnrollStudent = () => {
                         <section className="space-y-4">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <h2 className="text-lg font-bold text-slate-900">Guardian & Academic Details</h2>
-                                    <p className="text-sm text-slate-500">Parent contact details plus grade and class selection.</p>
+                                    <h2 className="text-lg font-bold text-slate-900">Academic Details</h2>
+                                    <p className="text-sm text-slate-500">Grade and class selection.</p>
                                 </div>
                             </div>
 
