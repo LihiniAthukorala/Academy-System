@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAcademy } from '../context/AcademyContext';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -9,7 +9,6 @@ import {
     Trash2,
     Mail,
     Phone,
-    BookOpen,
     MapPin,
     GraduationCap,
     X,
@@ -38,6 +37,8 @@ export const Teachers = () => {
     // CRUD form states
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingTeacherId, setEditingTeacherId] = useState(null);
+    const imageInputRef = useRef(null);
+    const [profilePreview, setProfilePreview] = useState('');
 
     // Delete log confirmation states
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -57,11 +58,12 @@ export const Teachers = () => {
             name: '',
             email: '',
             phone: '',
-            subject: 'Mathematics',
             qualifications: '',
             address: '',
-            status: 'Active'
+            status: 'Active',
+            profileImage: ''
         });
+        setProfilePreview('');
         setEditingTeacherId(null);
         setIsFormOpen(true);
     };
@@ -71,13 +73,37 @@ export const Teachers = () => {
             name: t.name,
             email: t.email,
             phone: t.phone,
-            subject: t.subject,
             qualifications: t.qualifications,
             address: t.address,
-            status: t.status
+            status: t.status,
+            profileImage: t.profileImage || ''
         });
+        setProfilePreview(t.profileImage || '');
         setEditingTeacherId(t.id);
         setIsFormOpen(true);
+    };
+
+    const readImageFile = (file) => {
+        if (!file || !file.type?.startsWith('image/')) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const imageData = reader.result;
+            setValue('profileImage', imageData, { shouldDirty: true, shouldValidate: true });
+            setProfilePreview(imageData);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleImageDrop = (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files?.[0];
+        readImageFile(file);
+    };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files?.[0];
+        readImageFile(file);
     };
 
     const handleFormSubmit = (data) => {
@@ -110,7 +136,7 @@ export const Teachers = () => {
     // Filter list
     const filteredTeachers = teachers.filter((t) =>
         t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.subject.toLowerCase().includes(searchTerm.toLowerCase())
+        (t.qualifications || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Pagination compute
@@ -139,7 +165,7 @@ export const Teachers = () => {
                         Instructor Registers Directory
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-0.5">
-                        Monitor teacher credentials, profiles contact details, and current subject course schedules.
+                        Monitor teacher credentials, profile contact details, and assigned class schedules.
                     </p>
                 </div>
                 <button
@@ -185,27 +211,38 @@ export const Teachers = () => {
 
                                 <div className="p-6 space-y-4">
                                     {/* Banner */}
-                                    <div className="flex justify-between items-start gap-4">
-                                        <div>
-                                            <h3 className="text-base font-extrabold text-slate-909 dark:text-slate-100 leading-tight">
-                                                {t.name}
-                                            </h3>
-                                            <span className="text-[10px] text-slate-400 font-bold block mt-1 font-mono">
-                                                Teacher ID: {t.id}
-                                            </span>
+                                    <div className="flex items-start gap-4">
+                                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
+                                            {t.profileImage ? (
+                                                <img
+                                                    src={t.profileImage}
+                                                    alt={t.name}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="text-sm font-black text-[#F6D778]">
+                                                    {t.name?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'T'}
+                                                </span>
+                                            )}
                                         </div>
-                                        <StatusBadge status={t.status} />
+
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="min-w-0">
+                                                    <h3 className="text-base font-extrabold text-slate-909 dark:text-slate-100 leading-tight">
+                                                        {t.name}
+                                                    </h3>
+                                                    <span className="text-[10px] text-slate-400 font-bold block mt-1 font-mono">
+                                                        Teacher ID: {t.id}
+                                                    </span>
+                                                </div>
+                                                <StatusBadge status={t.status} />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Skills summary details */}
                                     <div className="space-y-2.5 text-xs border-t border-slate-50 dark:border-slate-805 pt-4">
-
-                                        <div className="flex items-center gap-2">
-                                            <BookOpen className="w-4 h-4 text-indigo-500 shrink-0" />
-                                            <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                {t.subject} Specialist
-                                            </span>
-                                        </div>
 
                                         <div className="flex items-center gap-2">
                                             <GraduationCap className="w-4 h-4 text-emerald-500 shrink-0" />
@@ -326,141 +363,181 @@ export const Teachers = () => {
 
             {/* CRUD Edit/Add Overlay Modal dialog */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={() => setIsFormOpen(false)}></div>
-                    <div className="relative w-full max-w-lg bg-white dark:bg-slate-905 rounded-3xl shadow-2xl border border-slate-202 dark:border-slate-800 p-6 md:p-8 z-10 animate-slide-in">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-6">
+                    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={() => setIsFormOpen(false)}></div>
 
-                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="relative z-10 my-4 w-full max-w-6xl overflow-y-auto rounded-[2rem] border border-[#D4AF37]/30 bg-slate-950/96 p-6 shadow-2xl shadow-[#D4AF37]/10 md:my-8 md:p-8 animate-slide-in max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)]">
+                        <div className="mb-6 flex flex-col gap-4 border-b border-[#D4AF37]/15 pb-5 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <h3 className="text-lg font-bold text-slate-855 dark:text-slate-150">
+                                <h3 className="text-2xl font-black text-[#F6D778]">
                                     {editingTeacherId ? 'Modify Teacher Info' : 'Enroll Teacher Account'}
                                 </h3>
-                                <p className="text-xs text-slate-455 mt-0.5">
-                                    Register new tutor details, specialize subjects, and contact numbers.
+                                <p className="mt-2 text-sm text-slate-300">
+                                    Create or update an instructor profile with the same structure used for student registration.
                                 </p>
                             </div>
-                            <button onClick={() => setIsFormOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 cursor-pointer">
-                                <X className="w-5 h-5" />
-                            </button>
+
+                            <div className="rounded-3xl border border-slate-700 bg-slate-900/70 px-5 py-4 shadow-sm">
+                                <div className="flex items-center gap-3 text-slate-100">
+                                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white">
+                                        <UserPlus className="w-5 h-5" />
+                                    </span>
+                                    <div>
+                                        <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Teacher Account</p>
+                                        <p className="text-sm font-semibold">Fill teacher details and submit registration instantly.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-
-                            {/* Name */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Full Name *</label>
-                                <input
-                                    {...register('name', { required: 'Teacher Name is required' })}
-                                    type="text"
-                                    placeholder="e.g. Dr. Walter White"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                />
-                                {errors.name && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.name.message}</p>}
-                            </div>
-
-                            {/* Email & Phone */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350 font-mono">Email Address *</label>
-                                    <input
-                                        {...register('email', {
-                                            required: 'Email coordinates are required',
-                                            pattern: {
-                                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                                message: 'Invalid email format'
-                                            }
-                                        })}
-                                        type="email"
-                                        placeholder="walter@academy.com"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                    />
-                                    {errors.email && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.email.message}</p>}
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+                            <section className="space-y-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#F6D778]">Teacher details</h2>
+                                        <p className="text-sm text-slate-300">Teacher name, contact details, and qualification information.</p>
+                                    </div>
+                                    <span className="rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#F6D778]">Required fields *</span>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Phone Number *</label>
-                                    <input
-                                        {...register('phone', {
-                                            required: 'Phone contact is required',
-                                            pattern: {
-                                                value: /^[0-9+\-\s()]{7,15}$/,
-                                                message: 'Invalid phone format'
-                                            }
-                                        })}
-                                        type="text"
-                                        placeholder="+12345678"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-201 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                    />
-                                    {errors.phone && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.phone.message}</p>}
-                                </div>
-                            </div>
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-semibold text-slate-300">Full Name *</label>
+                                        <input
+                                            {...register('name', { required: 'Teacher Name is required' })}
+                                            type="text"
+                                            placeholder="e.g. Dr. Walter White"
+                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                        />
+                                        {errors.name && <p className="text-rose-400 text-[11px]">{errors.name.message}</p>}
+                                    </div>
 
-                            {/* Subject Specialist Specialization & Qualifications */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-355">Specialized Subject</label>
-                                    <select
-                                        {...register('subject')}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                    >
-                                        <option value="Mathematics">Mathematics</option>
-                                        <option value="Physics">Physics</option>
-                                        <option value="Chemistry">Chemistry</option>
-                                        <option value="English">English</option>
-                                    </select>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-semibold text-slate-300">Email Address *</label>
+                                        <input
+                                            {...register('email', {
+                                                required: 'Email coordinates are required',
+                                                pattern: {
+                                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                    message: 'Invalid email format'
+                                                }
+                                            })}
+                                            type="email"
+                                            placeholder="walter@academy.com"
+                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                        />
+                                        {errors.email && <p className="text-rose-400 text-[11px]">{errors.email.message}</p>}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-semibold text-slate-300">Phone Number *</label>
+                                        <input
+                                            {...register('phone', {
+                                                required: 'Phone contact is required',
+                                                pattern: {
+                                                    value: /^[0-9+\-\s()]{7,15}$/,
+                                                    message: 'Invalid phone format'
+                                                }
+                                            })}
+                                            type="text"
+                                            placeholder="+12345678"
+                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                        />
+                                        {errors.phone && <p className="text-rose-400 text-[11px]">{errors.phone.message}</p>}
+                                    </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Qualifications</label>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-slate-300">Qualifications</label>
                                     <input
                                         {...register('qualifications')}
                                         type="text"
                                         placeholder="e.g. BSc, PhD in Pure Math"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold"
+                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
                                     />
                                 </div>
-                            </div>
 
-                            {/* Address */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Residential Physical Address</label>
-                                <input
-                                    {...register('address')}
-                                    type="text"
-                                    placeholder="308 Negra Arroyo Lane, Albuquerque"
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold"
-                                />
-                            </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-slate-300">Residential Physical Address</label>
+                                    <input
+                                        {...register('address')}
+                                        type="text"
+                                        placeholder="308 Negra Arroyo Lane, Albuquerque"
+                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                    />
+                                </div>
+                            </section>
 
-                            {/* Status */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Teaching account status</label>
-                                <select
-                                    {...register('status')}
-                                    className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
-                                >
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                            </div>
+                            <section className="space-y-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <h2 className="text-lg font-bold text-slate-100">Teaching account settings</h2>
+                                        <p className="text-sm text-slate-400">Status and any optional account configuration for the teacher profile.</p>
+                                    </div>
+                                </div>
 
-                            {/* Submit footer */}
-                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-semibold text-slate-300">Teaching account status</label>
+                                        <select
+                                            {...register('status')}
+                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                        >
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="space-y-2 lg:col-span-2">
+                                        <label className="text-xs font-semibold text-slate-300">Profile Image</label>
+                                        <input {...register('profileImage')} type="hidden" />
+                                        <div
+                                            onClick={() => imageInputRef.current?.click()}
+                                            onDragOver={(event) => event.preventDefault()}
+                                            onDrop={handleImageDrop}
+                                            className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#D4AF37]/35 bg-slate-900 px-5 py-5 text-center transition hover:border-[#F6D778] hover:bg-slate-800/70"
+                                        >
+                                            {profilePreview ? (
+                                                <img
+                                                    src={profilePreview}
+                                                    alt="Teacher preview"
+                                                    className="mb-4 h-24 w-24 rounded-2xl object-cover ring-2 ring-[#D4AF37]/40"
+                                                />
+                                            ) : (
+                                                <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-sm font-bold text-[#F6D778]">
+                                                    Upload
+                                                </div>
+                                            )}
+                                            <p className="text-sm font-semibold text-slate-100">Drag & drop an image here</p>
+                                            <p className="mt-1 text-xs text-slate-400">or click to choose a file from your device</p>
+                                            <p className="mt-3 text-[11px] text-slate-500">PNG, JPG, JPEG, WEBP</p>
+                                        </div>
+                                        <input
+                                            ref={imageInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                        />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div className="grid gap-3 sm:grid-cols-2 pt-2">
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 border border-slate-205 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                    className="rounded-2xl border border-[#D4AF37]/30 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-650 hover:bg-indigo-700 shadow-md cursor-pointer"
+                                    className="rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm shadow-[#D4AF37]/30 transition hover:bg-[#F6D778]"
                                 >
-                                    Save Account Parameters
+                                    Save Teacher Account
                                 </button>
                             </div>
-
                         </form>
                     </div>
                 </div>

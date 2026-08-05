@@ -259,22 +259,25 @@ export const AcademyProvider = ({ children }) => {
             newId = generateId('TCH');
         }
 
+        const { subject: _ignoredSubject, ...teacherPayload } = teacherData;
+
         const newTeacher = {
-            ...teacherData,
+            ...teacherPayload,
             id: newId,
-            joinedDate: teacherData.joinedDate || new Date().toISOString().split('T')[0],
-            status: teacherData.status || 'Active',
-            profileImage: teacherData.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(teacherData.name)}`
+            joinedDate: teacherPayload.joinedDate || new Date().toISOString().split('T')[0],
+            status: teacherPayload.status || 'Active',
+            profileImage: teacherPayload.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(teacherPayload.name)}`
         };
 
         setTeachers((prev) => [newTeacher, ...prev]);
-        showToast('Teacher Added', `${teacherData.name} has been registered.`, 'success');
+        showToast('Teacher Added', `${teacherPayload.name} has been registered.`, 'success');
         return newTeacher;
     };
 
     const updateTeacher = (id, updatedData) => {
+        const { subject: _ignoredSubject, ...teacherPayload } = updatedData;
         setTeachers((prev) =>
-            prev.map((t) => (t.id === id ? { ...t, ...updatedData } : t))
+            prev.map((t) => (t.id === id ? { ...t, ...teacherPayload } : t))
         );
         showToast('Teacher Updated', 'Teacher details updated.', 'success');
     };

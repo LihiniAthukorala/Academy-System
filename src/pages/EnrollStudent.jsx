@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAcademy } from '../context/AcademyContext';
@@ -13,6 +13,8 @@ import {
 export const EnrollStudent = () => {
     const { classes, addStudent } = useAcademy();
     const navigate = useNavigate();
+    const imageInputRef = useRef(null);
+    const [profilePreview, setProfilePreview] = useState('');
 
     const {
         register,
@@ -45,6 +47,29 @@ export const EnrollStudent = () => {
 
     const onCancel = () => {
         navigate('/students');
+    };
+
+    const readImageFile = (file) => {
+        if (!file || !file.type?.startsWith('image/')) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const imageData = reader.result;
+            setValue('profileImage', imageData, { shouldDirty: true, shouldValidate: true });
+            setProfilePreview(imageData);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleImageDrop = (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files?.[0];
+        readImageFile(file);
+    };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files?.[0];
+        readImageFile(file);
     };
 
     return (
@@ -207,12 +232,35 @@ export const EnrollStudent = () => {
                             </div>
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Profile Image URL</label>
+                                    <label className="text-xs font-semibold text-slate-300">Profile Image</label>
+                                    <input {...register('profileImage')} type="hidden" />
+                                    <div
+                                        onClick={() => imageInputRef.current?.click()}
+                                        onDragOver={(event) => event.preventDefault()}
+                                        onDrop={handleImageDrop}
+                                        className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#D4AF37]/35 bg-slate-900 px-5 py-5 text-center transition hover:border-[#F6D778] hover:bg-slate-800/70"
+                                    >
+                                        {profilePreview ? (
+                                            <img
+                                                src={profilePreview}
+                                                alt="Student preview"
+                                                className="mb-4 h-24 w-24 rounded-2xl object-cover ring-2 ring-[#D4AF37]/40"
+                                            />
+                                        ) : (
+                                            <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-sm font-bold text-[#F6D778]">
+                                                Upload
+                                            </div>
+                                        )}
+                                        <p className="text-sm font-semibold text-slate-100">Drag & drop an image here</p>
+                                        <p className="mt-1 text-xs text-slate-400">or click to choose a file from your device</p>
+                                        <p className="mt-3 text-[11px] text-slate-500">PNG, JPG, JPEG, WEBP</p>
+                                    </div>
                                     <input
-                                        {...register('profileImage')}
-                                        type="text"
-                                        placeholder="https://example.com/avatar.jpg"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                        ref={imageInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="hidden"
                                     />
                                 </div>
                                 <div className="space-y-2">

@@ -4,7 +4,6 @@ export const SAMPLE_TEACHERS = [
     {
         id: "TCH-1082",
         name: "Dr. Robert Carter",
-        subject: "Advanced Mathematics",
         phone: "+1-555-0143",
         email: "robert.carter@academy.com",
         address: "742 Evergreen Terrace, Springfield",
@@ -16,7 +15,6 @@ export const SAMPLE_TEACHERS = [
     {
         id: "TCH-1405",
         name: "Prof. Sarah Jenkins",
-        subject: "Theoretical Physics",
         phone: "+1-555-0178",
         email: "sarah.jenkins@academy.com",
         address: "109 Baker Street, London",
@@ -28,7 +26,6 @@ export const SAMPLE_TEACHERS = [
     {
         id: "TCH-2011",
         name: "David Miller",
-        subject: "General Chemistry",
         phone: "+1-555-0199",
         email: "david.miller@academy.com",
         address: "456 Oak Lane, Maplewood",
@@ -40,7 +37,6 @@ export const SAMPLE_TEACHERS = [
     {
         id: "TCH-3144",
         name: "Emma Watson",
-        subject: "English Literature",
         phone: "+1-555-0211",
         email: "emma.watson@academy.com",
         address: "789 Pine Crescent, Sunnyvale",
