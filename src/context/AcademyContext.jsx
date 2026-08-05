@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getStorageItem, setStorageItem, generateId } from '../utils/storage';
+import { apiHealth, fetchCollection, replaceCollection } from '../utils/api';
 import {
     SAMPLE_STUDENTS,
     SAMPLE_TEACHERS,
@@ -27,6 +28,8 @@ export const AcademyProvider = ({ children }) => {
     const [attendance, setAttendance] = useState(() => getStorageItem('academy_attendance', SAMPLE_ATTENDANCE));
     const [notifications, setNotifications] = useState(() => getStorageItem('academy_notifications', SAMPLE_NOTIFICATIONS));
     const [settings, setSettings] = useState(() => getStorageItem('academy_settings', DEFAULT_SETTINGS));
+    const [isBackendReady, setIsBackendReady] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     // Toasts notifications queue
     const [toasts, setToasts] = useState([]);
@@ -70,6 +73,77 @@ export const AcademyProvider = ({ children }) => {
     useEffect(() => {
         setStorageItem('academy_settings', settings);
     }, [settings]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const hydrateFromBackend = async () => {
+            try {
+                await apiHealth();
+
+                const [remoteStudents, remoteClasses, remoteAttendance, remotePayments] = await Promise.all([
+                    fetchCollection('students'),
+                    fetchCollection('classes'),
+                    fetchCollection('attendance'),
+                    fetchCollection('payments')
+                ]);
+
+                if (cancelled) return;
+
+                if (Array.isArray(remoteStudents) && remoteStudents.length > 0) {
+                    setStudents(remoteStudents);
+                }
+
+                if (Array.isArray(remoteClasses) && remoteClasses.length > 0) {
+                    setClasses(remoteClasses);
+                }
+
+                if (Array.isArray(remoteAttendance) && remoteAttendance.length > 0) {
+                    setAttendance(remoteAttendance);
+                }
+
+                if (Array.isArray(remotePayments) && remotePayments.length > 0) {
+                    setPayments(remotePayments);
+                }
+
+                setIsBackendReady(true);
+            } catch (error) {
+                if (!cancelled) {
+                    setIsBackendReady(false);
+                }
+            } finally {
+                if (!cancelled) {
+                    setIsHydrated(true);
+                }
+            }
+        };
+
+        hydrateFromBackend();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendReady) return;
+        replaceCollection('students', students).catch(() => {});
+    }, [students, isBackendReady, isHydrated]);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendReady) return;
+        replaceCollection('classes', classes).catch(() => {});
+    }, [classes, isBackendReady, isHydrated]);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendReady) return;
+        replaceCollection('attendance', attendance).catch(() => {});
+    }, [attendance, isBackendReady, isHydrated]);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendReady) return;
+        replaceCollection('payments', payments).catch(() => {});
+    }, [payments, isBackendReady, isHydrated]);
 
     // --- Auth Utilities ---
     const login = (emailOrUsername, password, role) => {
@@ -518,7 +592,9 @@ export const AcademyProvider = ({ children }) => {
                 updateSettings: (newSettings) => {
                     setSettings((prev) => ({ ...prev, ...newSettings }));
                     showToast('Settings Saved', 'System configurations updated successfully.', 'success');
-                }
+                },
+
+                backendReady: isBackendReady
             }}
         >
             {children}
