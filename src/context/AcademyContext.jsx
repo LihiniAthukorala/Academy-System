@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { getStorageItem, setStorageItem, generateId } from '../utils/storage';
 import { apiHealth, fetchCollection, replaceCollection } from '../utils/api';
 import {
@@ -30,6 +30,7 @@ export const AcademyProvider = ({ children }) => {
     const [settings, setSettings] = useState(() => getStorageItem('academy_settings', DEFAULT_SETTINGS));
     const [isBackendReady, setIsBackendReady] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
+    const skipBackendHydrationRef = useRef(false);
 
     // Toasts notifications queue
     const [toasts, setToasts] = useState([]);
@@ -75,7 +76,38 @@ export const AcademyProvider = ({ children }) => {
     }, [settings]);
 
     useEffect(() => {
+        const cleanupFlag = 'academy_seed_cleanup_v1';
+        const alreadyCleaned = window.localStorage.getItem(cleanupFlag) === 'true';
+
+        if (alreadyCleaned) {
+            return;
+        }
+
+        window.localStorage.removeItem('academy_students');
+        window.localStorage.removeItem('academy_classes');
+        window.localStorage.removeItem('academy_payments');
+        window.localStorage.removeItem('academy_attendance');
+
+        setStudents([]);
+        setClasses([]);
+        setPayments([]);
+        setAttendance([]);
+
+        skipBackendHydrationRef.current = true;
+        window.localStorage.setItem(cleanupFlag, 'true');
+
+        setIsBackendReady(true);
+        setIsHydrated(true);
+    }, []);
+
+    useEffect(() => {
         let cancelled = false;
+
+        if (skipBackendHydrationRef.current) {
+            return () => {
+                cancelled = true;
+            };
+        }
 
         const hydrateFromBackend = async () => {
             try {
