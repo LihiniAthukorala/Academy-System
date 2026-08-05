@@ -277,28 +277,28 @@ export const Attendance = () => {
 
                                 {/* Info summary */}
                                 {selectedClassId !== '' && records.length > 0 && (
-                                    <div className="bg-slate-50 dark:bg-slate-850/50 p-3 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-slate-100 dark:border-slate-800 self-end">
-                                            <div className="text-sm font-semibold space-y-1">
-                                                <p className="text-slate-700 dark:text-slate-300">Capacity: <span className="font-bold text-slate-900 dark:text-slate-100">{records.length} enrolled</span></p>
-                                                <p className="text-slate-700 dark:text-slate-300">Status: <span className="font-bold text-indigo-600 dark:text-indigo-400">Log Pending</span></p>
-                                            </div>
-                                            {/* Reset button */}
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    const existing = attendance.find(a => a.classId === selectedClassId && a.date === selectedDate);
-                                                    if (!existing) {
-                                                        setRecords(prev => prev.map(r => ({ ...r, status: 'Present', notes: '' })));
-                                                    } else {
-                                                        triggerToast('Reset to saved status.', 'info');
-                                                    }
-                                                }}
-                                                className="p-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer shadow-xs text-slate-700 dark:text-slate-300"
-                                                title="Clear/Reload"
-                                            >
-                                                <RefreshCw className="w-3.5 h-3.5" />
-                                            </button>
+                                    <div className="bg-blue-950/80 dark:bg-blue-900/90 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-blue-700 shadow-lg shadow-blue-950/40 self-end">
+                                        <div className="text-sm font-semibold space-y-1">
+                                            <p className="text-slate-200">Capacity: <span className="font-bold text-white">{records.length} enrolled</span></p>
+                                            <p className="text-slate-200">Status: <span className="font-bold text-blue-300">Log Pending</span></p>
                                         </div>
+                                        {/* Reset button */}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const existing = attendance.find(a => a.classId === selectedClassId && a.date === selectedDate);
+                                                if (!existing) {
+                                                    setRecords(prev => prev.map(r => ({ ...r, status: 'Present', notes: '' })));
+                                                } else {
+                                                    triggerToast('Reset to saved status.', 'info');
+                                                }
+                                            }}
+                                            className="p-2 border border-blue-600 bg-blue-900 text-slate-100 hover:bg-blue-800 rounded-lg cursor-pointer shadow-sm shadow-blue-900/40"
+                                            title="Clear/Reload"
+                                        >
+                                            <RefreshCw className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         </div>

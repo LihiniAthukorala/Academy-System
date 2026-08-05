@@ -6,6 +6,7 @@ import {
     Calendar,
     DollarSign,
     User,
+    Users,
     Phone,
     Mail,
     Home,
@@ -90,28 +91,21 @@ export const StudentProfile = () => {
             </div>
 
             {/* Main personal banner */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-6 md:p-8 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div className="flex items-center gap-4 flex-col sm:flex-row text-center sm:text-left">
-                    <img
-                        src={student.profileImage}
-                        alt={student.name}
-                        className="w-24 h-24 rounded-2xl object-cover bg-slate-100 ring-4 ring-slate-100 dark:ring-slate-800/80 shadow-md shrink-0"
-                    />
-                    <div>
-                        <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-                            <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 leading-none">
+<div className="bg-gradient-to-r from-indigo-700 via-slate-950 to-cyan-700 rounded-3xl border border-indigo-500/40 p-6 md:p-8 shadow-xl text-white flex flex-col justify-between items-start gap-6">
+                    <div className="space-y-4 text-center sm:text-left">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 justify-center sm:justify-start">
+                            <h3 className="text-2xl font-black text-white leading-none">
                                 {student.name}
                             </h3>
                             <StatusBadge status={student.status} />
                         </div>
-                        <p className="text-xs text-slate-400 font-bold font-mono mt-2">
+                        <p className="text-xs text-slate-100 font-bold font-mono mt-0.5">
                             ID: {student.id} • Registered Grade: {student.grade}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-1">
-                            Enrolled in class: <span className="text-indigo-650 dark:text-indigo-400 font-bold">{studentClass ? studentClass.name : 'None'}</span>
+                        <p className="text-xs text-slate-100/90 font-semibold mt-1">
+                            Enrolled in class: <span className="text-cyan-200 font-bold">{studentClass ? studentClass.name : 'None'}</span>
                         </p>
                     </div>
-                </div>
 
                 {/* Top summary stats */}
                 <div className="grid grid-cols-3 gap-2 w-full md:w-auto self-stretch">
@@ -166,9 +160,9 @@ export const StudentProfile = () => {
                 {activeTab === 'Overview' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Personal credentials */}
-                        <div className="bg-white dark:bg-slate-905 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mb-2">
-                                <User className="w-4 h-4 text-slate-400" />
+                        <div className="bg-slate-950/90 dark:bg-slate-900/90 p-6 rounded-2xl border border-slate-800 dark:border-slate-700 shadow-lg space-y-4">
+                            <h3 className="text-sm font-bold text-slate-100 flex items-center gap-1.5 mb-2">
+                                <User className="w-4 h-4 text-cyan-300" />
                                 Personal Information
                             </h3>
                             <div className="grid grid-cols-2 gap-4 text-xs">
@@ -220,9 +214,9 @@ export const StudentProfile = () => {
                         </div>
 
                         {/* Parent info */}
-                        <div className="bg-white dark:bg-slate-905 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mb-2">
-                                <Users className="w-4 h-4 text-slate-400" />
+                        <div className="bg-slate-950/90 dark:bg-slate-900/90 p-6 rounded-2xl border border-slate-800 dark:border-slate-700 shadow-lg space-y-4">
+                            <h3 className="text-sm font-bold text-slate-100 flex items-center gap-1.5 mb-2">
+                                <Users className="w-4 h-4 text-cyan-300" />
                                 Parent or Guardian Information
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

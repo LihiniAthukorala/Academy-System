@@ -50,6 +50,8 @@ export const Classes = () => {
         handleSubmit,
         setValue,
         reset,
+        setError,
+        clearErrors,
         formState: { errors }
     } = useForm();
 
@@ -96,6 +98,41 @@ export const Classes = () => {
     };
 
     const handleFormSubmit = (data) => {
+        // clear previous schedule errors
+        clearErrors(['startTime', 'endTime']);
+
+        // helper to convert HH:MM to minutes
+        const toMins = (t) => {
+            const [h, m] = (t || '').split(':').map(Number);
+            return (Number.isFinite(h) ? h : 0) * 60 + (Number.isFinite(m) ? m : 0);
+        };
+
+        const newStart = toMins(data.startTime);
+        const newEnd = toMins(data.endTime);
+
+        if (newEnd <= newStart) {
+            setError('endTime', { type: 'manual', message: 'End time must be after start time' });
+            return;
+        }
+
+        // check for overlaps with other classes on same day
+        const conflict = classes.find((c) => {
+            if (editingClassId && c.id === editingClassId) return false; // skip self when editing
+            if (c.day !== data.day) return false;
+            const cStart = toMins(c.startTime);
+            const cEnd = toMins(c.endTime);
+            const overlaps = newStart < cEnd && cStart < newEnd;
+            const sameTeacher = c.teacherId === data.teacherId;
+            const sameRoom = (c.classroom || '').toLowerCase() === (data.classroom || '').toLowerCase();
+            return overlaps && (sameTeacher || sameRoom);
+        });
+
+        if (conflict) {
+            const message = 'Schedule another class at that time';
+            setError('startTime', { type: 'manual', message });
+            setError('endTime', { type: 'manual', message });
+            return;
+        }
         // Find teacher name from list
         const teacher = teachers.find((t) => t.id === data.teacherId);
         const teacherName = teacher ? teacher.name : 'Unknown';
@@ -393,6 +430,7 @@ export const Classes = () => {
                                         type="time"
                                         className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
                                     />
+                                    {errors.startTime && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.startTime.message}</p>}
                                 </div>
 
                                 <div className="space-y-1 font-mono">
@@ -402,6 +440,7 @@ export const Classes = () => {
                                         type="time"
                                         className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
                                     />
+                                    {errors.endTime && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.endTime.message}</p>}
                                 </div>
                             </div>
 
