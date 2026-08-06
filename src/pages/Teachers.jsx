@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAcademy } from '../context/AcademyContext';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
     Search,
     Plus,
@@ -26,6 +26,7 @@ export const Teachers = () => {
         classes
     } = useAcademy();
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     // Search state
     const [searchTerm, setSearchTerm] = useState('');
@@ -217,7 +218,11 @@ export const Teachers = () => {
                                     const assignedClassesList = getTeacherClasses(t.id);
 
                                     return (
-                                        <tr key={t.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-950/35 transition-colors">
+                                        <tr
+                                            key={t.id}
+                                            className="hover:bg-slate-50/80 dark:hover:bg-slate-950/35 transition-colors cursor-pointer"
+                                            onClick={() => navigate(`/teachers/${t.id}`)}
+                                        >
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
@@ -276,14 +281,20 @@ export const Teachers = () => {
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center gap-2">
                                                     <button
-                                                        onClick={() => openEditForm(t)}
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
+                                                            openEditForm(t);
+                                                        }}
                                                         className="p-2 rounded-lg border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-905 text-slate-500 hover:text-amber-500 transition-colors cursor-pointer"
                                                         title="Edit teacher parameters"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5" />
                                                     </button>
                                                     <button
-                                                        onClick={() => confirmDelete(t)}
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
+                                                            confirmDelete(t);
+                                                        }}
                                                         disabled={assignedClassesList.length > 0}
                                                         className={`p-2 rounded-lg border transition-colors cursor-pointer ${assignedClassesList.length > 0
                                                                 ? 'border-slate-101 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'

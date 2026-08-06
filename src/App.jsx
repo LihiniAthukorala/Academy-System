@@ -11,6 +11,7 @@ import { FeePayments } from './pages/FeePayments';
 import { Attendance } from './pages/Attendance';
 import { Classes } from './pages/Classes';
 import { Teachers } from './pages/Teachers';
+import { TeacherProfile } from './pages/TeacherProfile';
 import { Reports } from './pages/Reports';
 import { Notifications } from './pages/Notifications';
 import { Settings } from './pages/Settings';
@@ -115,6 +116,7 @@ export const AppContent = () => {
           {/* Core admin directory teachers */}
           <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
             <Route path="/teachers" element={<Teachers />} />
+            <Route path="/teachers/:id" element={<TeacherProfile />} />
           </Route>
 
           {/* Shared modules */}
