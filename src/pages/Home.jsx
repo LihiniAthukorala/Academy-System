@@ -4,7 +4,7 @@ import { Moon, Sun, Menu } from 'lucide-react';
 import { useAcademy } from '../context/AcademyContext';
 
 export const Home = () => {
-    const { theme, toggleTheme } = useAcademy();
+    const { theme, toggleTheme, login } = useAcademy();
     const navigate = useNavigate();
     const location = useLocation();
     const [heroImageFailed, setHeroImageFailed] = useState(false);
@@ -101,7 +101,11 @@ export const Home = () => {
                         {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
                     </button>
                     <button
-                        onClick={() => navigate('/login')}
+                        onClick={() => {
+                            // quick simulated login and redirect to dashboard
+                            login('admin', 'password123', 'Administrator');
+                            navigate('/dashboard');
+                        }}
                         className="hidden rounded-2xl border border-slate-600 bg-slate-900/80 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-400 hover:bg-slate-800 md:inline-flex"
                     >
                         Login
@@ -135,7 +139,11 @@ export const Home = () => {
                         </div>
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                             <button
-                                onClick={() => navigate('/login')}
+                                onClick={() => {
+                                    // simulate login then go to dashboard
+                                    login('admin', 'password123', 'Administrator');
+                                    navigate('/dashboard');
+                                }}
                                 className="inline-flex items-center justify-center rounded-full bg-amber-400 px-8 py-4 text-sm font-bold text-slate-950 transition hover:shadow-[0_18px_45px_-18px_rgba(251,191,36,0.8)] hover:brightness-110"
                             >
                                 Login to Access

@@ -83,7 +83,7 @@ export const AppContent = () => {
   return (
     <Routes>
       {/* Public Route */}
-      <Route path="/" element={currentUser ? <Navigate to="/dashboard" replace /> : <Home />} />
+      <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />} />
       <Route path="/register" element={<Navigate to="/login" replace />} />
@@ -120,19 +120,11 @@ export const AppContent = () => {
           {/* Shared modules */}
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
-
-          {/* Catch-all relative */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
 
-      {/* Fallback Root Router */}
-      <Route
-        path="/"
-        element={
-          currentUser ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-        }
-      />
+      {/* Catch-all fallback */}
+      <Route path="*" element={currentUser ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} />
     </Routes>
   );
 };
