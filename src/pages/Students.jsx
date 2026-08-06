@@ -30,7 +30,8 @@ export const Students = () => {
         addStudent,
         updateStudent,
         deleteStudent,
-        getStudentOverviewStats
+        getStudentOverviewStats,
+        triggerToast
     } = useAcademy();
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -42,6 +43,7 @@ export const Students = () => {
     const [filterStatus, setFilterStatus] = useState('All');
     const [filterGender, setFilterGender] = useState('All');
     const [filterGrade, setFilterGrade] = useState('All');
+    const [pdfError, setPdfError] = useState('');
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -142,6 +144,112 @@ export const Students = () => {
         setStudentToDelete(null);
     };
 
+    const loadPdfLibrary = async () => {
+        if (window.jspdf?.jsPDF || window.jsPDF) {
+            return window.jspdf?.jsPDF || window.jsPDF;
+        }
+
+        return new Promise((resolve, reject) => {
+            const existingScript = document.querySelector('script[data-js-pdf-loader]');
+            if (existingScript) {
+                existingScript.addEventListener('load', () => {
+                    resolve(window.jspdf?.jsPDF || window.jsPDF);
+                });
+                existingScript.addEventListener('error', () => {
+                    reject(new Error('PDF library failed to load.'));
+                });
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            script.async = true;
+            script.dataset.jsPdfLoader = 'true';
+            script.onload = () => {
+                resolve(window.jspdf?.jsPDF || window.jsPDF);
+            };
+            script.onerror = () => {
+                reject(new Error('PDF library failed to load.'));
+            };
+            document.body.appendChild(script);
+        });
+    };
+
+    const downloadStudentsPdf = async () => {
+        try {
+            setPdfError('');
+            const PdfLib = await loadPdfLibrary();
+            if (!PdfLib) {
+                throw new Error('PDF library not loaded. Please reload the app.');
+            }
+
+            const doc = new PdfLib({ orientation: 'landscape' });
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 16;
+            let y = margin;
+
+            doc.setFontSize(18);
+            doc.text('Student Directory', pageWidth / 2, y, { align: 'center' });
+            y += 10;
+
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, margin, y);
+            y += 12;
+
+            const studentData = students.length > 0 ? students : [];
+            studentData.forEach((std, index) => {
+                if (y + 80 > pageHeight - margin) {
+                    doc.addPage();
+                    y = margin;
+                }
+
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${std.name} (${std.id})`, margin, y);
+                y += 8;
+
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                const className = getClassName(std.classId);
+                const details = [
+                    `Grade: ${std.grade || 'N/A'}`,
+                    `Gender: ${std.gender || 'N/A'}`,
+                    `Status: ${std.status || 'N/A'}`,
+                    `Class: ${className}`,
+                    `Phone: ${std.phone || 'N/A'}`,
+                    `Email: ${std.email || 'N/A'}`,
+                    `Joined: ${std.joinedDate || 'N/A'}`,
+                    `Address: ${std.address || 'N/A'}`,
+                    `Notes: ${std.notes || 'None'}`
+                ];
+
+                details.forEach((line) => {
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                    doc.text(line, margin + 6, y);
+                    y += 7;
+                });
+
+                if (index < studentData.length - 1) {
+                    y += 6;
+                    doc.setDrawColor(200);
+                    doc.line(margin, y, pageWidth - margin, y);
+                    y += 10;
+                }
+            });
+
+            doc.save('student-directory.pdf');
+        } catch (error) {
+            const message = error?.message || 'Unable to generate PDF. Please try again.';
+            setPdfError(message);
+            triggerToast(message, 'error');
+            console.error('PDF export error:', error);
+        }
+    };
+
     // Class mapping helper
     const getClassName = (classId) => {
         const cls = classes.find((c) => c.id === classId);
@@ -187,14 +295,29 @@ export const Students = () => {
                         Manage registrations, edit information profiles, and monitor attendance/payment health.
                     </p>
                 </div>
-                <button
-                    onClick={openAddForm}
-                    className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md cursor-pointer shrink-0 transition-transform active:scale-98"
-                >
-                    <UserPlus className="w-4 h-4" />
-                    Enroll New Student
-                </button>
+                <div className="flex gap-2 flex-wrap">
+                    <button
+                        onClick={openAddForm}
+                        className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md cursor-pointer shrink-0 transition-transform active:scale-98"
+                    >
+                        <UserPlus className="w-4 h-4" />
+                        Enroll New Student
+                    </button>
+                    <button
+                        onClick={downloadStudentsPdf}
+                        className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 dark:text-slate-200 dark:bg-slate-900 dark:border-slate-800 hover:dark:bg-slate-800 shadow-xs cursor-pointer transition-transform active:scale-98"
+                    >
+                        <BookOpen className="w-4 h-4" />
+                        Download PDF
+                    </button>
+                </div>
             </div>
+
+            {pdfError && (
+                <div className="rounded-2xl border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-500/20 dark:bg-rose-950/30 dark:text-rose-200 p-4 text-sm">
+                    {pdfError}
+                </div>
+            )}
 
             {/* Filter and Search Box panel (gold-accented) */}
             <div className="bg-white/5 dark:bg-slate-900/40 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs space-y-4 backdrop-blur-sm">
