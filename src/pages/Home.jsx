@@ -135,10 +135,10 @@ export const Home = () => {
                         </div>
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                             <button
-                                onClick={() => navigate('/register')}
+                                onClick={() => navigate('/login')}
                                 className="inline-flex items-center justify-center rounded-full bg-amber-400 px-8 py-4 text-sm font-bold text-slate-950 transition hover:shadow-[0_18px_45px_-18px_rgba(251,191,36,0.8)] hover:brightness-110"
                             >
-                                Join Academy
+                                Login to Access
                             </button>
                             <button
                                 onClick={() => navigate('/contact')}

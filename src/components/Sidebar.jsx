@@ -123,11 +123,11 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                             className={({ isActive }) =>
                                 `flex items-center gap-3 px-4 py-3 rounded-3xl text-sm font-semibold transition-all duration-200 group relative ${isActive
                                     ? 'bg-violet-100/90 text-violet-700 shadow-[0_10px_30px_-20px_rgba(79,70,229,0.45)] border-l-4 border-violet-500'
-                                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900/80 hover:text-slate-900'
+                                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900/80 dark:hover:text-slate-100'
                                 }`
                             }
                         >
-                            <Icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-violet-600' : 'text-slate-500'}" />
+                            <Icon className="w-5 h-5 shrink-0 text-slate-500 dark:text-slate-400 transition-transform group-hover:scale-110" />
                             {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
 
                             {/* Badge count */}

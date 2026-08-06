@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-
 import { AcademyProvider, useAcademy } from './context/AcademyContext';
 import { Login } from './pages/Login';
 import { Home } from './pages/Home';
-import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Students } from './pages/Students';
 import { EnrollStudent } from './pages/EnrollStudent';
@@ -87,7 +86,7 @@ export const AppContent = () => {
       <Route path="/" element={currentUser ? <Navigate to="/dashboard" replace /> : <Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/register" element={<Navigate to="/login" replace />} />
       <Route path="/contact" element={<Contact />} />
 
       {/* Secured Shell Routes */}

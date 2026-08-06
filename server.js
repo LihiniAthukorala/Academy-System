@@ -16,7 +16,8 @@ const routeHandlers = {
     '/api/classes': classesHandler,
     '/api/attendance': attendanceHandler,
     '/api/payments': paymentsHandler,
-    '/api/teachers': teachersHandler
+    '/api/teachers': teachersHandler,
+    '/api/users': await import('./api/users.js').then((mod) => mod.default)
 };
 
 const sendJson = (res, statusCode, data) => {

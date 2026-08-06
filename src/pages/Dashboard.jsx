@@ -32,6 +32,7 @@ import {
     Area
 } from 'recharts';
 import StatusBadge from '../components/StatusBadge';
+import dashboardImage from '../../dash.jpg';
 import { formatLKR } from '../utils/currency';
 
 export const Dashboard = () => {
@@ -216,10 +217,17 @@ export const Dashboard = () => {
                                     <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-blue-950 text-white shadow-lg shadow-blue-200/10">
                                         <Icon className="w-6 h-6" />
                                     </span>
-                                    <span className="text-sm font-semibold text-slate-700">{item.label}</span>
+                                    <span className="text-sm font-semibold text-slate-100">{item.label}</span>
                                 </button>
                             );
                         })}
+                    </div>
+                    <div className="mt-6 overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900 shadow-lg">
+                        <img
+                            src={dashboardImage}
+                            alt="Dashboard hero"
+                            className="w-full object-cover object-center"
+                        />
                     </div>
                 </div>
 

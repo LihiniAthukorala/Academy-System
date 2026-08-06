@@ -234,7 +234,7 @@ export const Login = () => {
                             </form>
 
                             <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
-                                <p>New here? Register with your academy credentials or contact support for account setup.</p>
+                                <p>Need help logging in? Contact support for account setup or password assistance.</p>
                             </div>
                         </div>
                     </div>
