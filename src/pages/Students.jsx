@@ -299,7 +299,8 @@ export const Students = () => {
                                 return (
                                     <div
                                         key={std.id}
-                                        className="bg-gradient-to-br from-white/60 to-slate-50/30 dark:from-slate-800/60 dark:to-slate-900/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-0.5"
+                                        onClick={() => navigate(`/students/${std.id}`)}
+                                        className="bg-gradient-to-br from-white/60 to-slate-50/30 dark:from-slate-800/60 dark:to-slate-900/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-0.5 cursor-pointer"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-4">
@@ -351,21 +352,30 @@ export const Students = () => {
 
                                         <div className="mt-4 flex justify-end gap-2">
                                             <button
-                                                onClick={() => navigate(`/students/${std.id}`)}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    navigate(`/students/${std.id}`);
+                                                }}
                                                 className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"
                                                 title="View student profile"
                                             >
                                                 <Eye className="w-4 h-4" />
                                             </button>
                                             <button
-                                                onClick={() => openEditForm(std)}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    openEditForm(std);
+                                                }}
                                                 className="p-2 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors"
                                                 title="Edit student"
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button
-                                                onClick={() => confirmDelete(std)}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    confirmDelete(std);
+                                                }}
                                                 className="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
                                                 title="Delete student"
                                             >

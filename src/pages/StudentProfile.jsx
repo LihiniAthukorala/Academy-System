@@ -91,7 +91,7 @@ export const StudentProfile = () => {
             </div>
 
             {/* Main personal banner */}
-<div className="bg-gradient-to-r from-indigo-700 via-slate-950 to-cyan-700 rounded-3xl border border-indigo-500/40 p-6 md:p-8 shadow-xl text-white flex flex-col justify-between items-start gap-6">
+            <div className="bg-gradient-to-r from-teal-700 via-slate-950 to-cyan-600 rounded-3xl border border-teal-500/40 p-6 md:p-8 shadow-xl text-white flex flex-col justify-between items-start gap-6">
                     <div className="space-y-4 text-center sm:text-left">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 justify-center sm:justify-start">
                             <h3 className="text-2xl font-black text-white leading-none">
@@ -108,31 +108,13 @@ export const StudentProfile = () => {
                     </div>
 
                 {/* Top summary stats */}
-                <div className="grid grid-cols-3 gap-2 w-full md:w-auto self-stretch">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-2 w-full md:w-auto self-stretch">
                     <div className="bg-indigo-50/40 dark:bg-indigo-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-indigo-50/20 dark:border-none">
                         <span className="text-lg font-black text-indigo-600 dark:text-indigo-400 font-mono">
                             {stats.attendancePercentage}%
                         </span>
                         <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
                             Attendance
-                        </span>
-                    </div>
-
-                    <div className="bg-emerald-50/40 dark:bg-emerald-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-emerald-50/20 dark:border-none">
-                        <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                            {formatLKR(stats.totalPaid)}
-                        </span>
-                        <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
-                            Total Paid
-                        </span>
-                    </div>
-
-                    <div className="bg-rose-50/40 dark:bg-rose-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-rose-55/10 dark:border-none">
-                        <span className={`text-lg font-black font-mono ${stats.totalOutstanding > 0 ? 'text-rose-600 dark:text-rose-455' : 'text-slate-600 dark:text-slate-400'}`}>
-                            {formatLKR(stats.totalOutstanding)}
-                        </span>
-                        <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
-                            Balance Due
                         </span>
                     </div>
                 </div>
