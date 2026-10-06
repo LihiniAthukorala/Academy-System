@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAcademy } from '../context/AcademyContext';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -89,35 +89,16 @@ export const FeePayments = () => {
         setRemainingBalance(balance >= 0 ? balance : 0);
     }, [watchMonthlyFee, watchRegistrationFee, watchAdditionalCharges, watchDiscount, watchPaidAmount]);
 
-    // Handle open actions from Dashboard quick buttons
-    useEffect(() => {
-        const action = searchParams.get('action');
-        if (action === 'add') {
-            openAddForm();
-            searchParams.delete('action');
-            setSearchParams(searchParams);
-        }
-    }, [searchParams]);
-
-    // Sync Student default parameters when student selected in Form
-    const watchStudentId = watch('studentId');
-    useEffect(() => {
-        if (watchStudentId && watchStudentId !== '') {
-            const student = students.find((s) => s.id === watchStudentId);
-            if (student) {
-                setValue('classId', student.classId || '');
-                setValue('monthlyFee', student.monthlyFee || 120);
-            }
-        }
-    }, [watchStudentId, students, setValue]);
-
-    const openAddForm = () => {
+    const openAddForm = useCallback((studentId = '') => {
+        const student = students.find((item) => item.id === studentId);
+        const studentClass = classes.find((item) => item.id === student?.classId);
+        const today = new Date();
         reset({
-            studentId: '',
-            classId: '',
-            month: 'July',
-            year: '2026',
-            monthlyFee: 120,
+            studentId,
+            classId: student?.classId || '',
+            month: today.toLocaleString('en', { month: 'long' }),
+            year: String(today.getFullYear()),
+            monthlyFee: student?.monthlyFee || studentClass?.monthlyFee || 120,
             registrationFee: 0,
             additionalCharges: 0,
             discount: 0,
@@ -130,7 +111,30 @@ export const FeePayments = () => {
         });
         setEditingPaymentId(null);
         setIsFormOpen(true);
-    };
+    }, [classes, reset, students]);
+
+    // Handle open actions from the dashboard and student directory.
+    useEffect(() => {
+        if (searchParams.get('action') !== 'add') return;
+
+        openAddForm(searchParams.get('studentId') || '');
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('action');
+        nextSearchParams.delete('studentId');
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [openAddForm, searchParams, setSearchParams]);
+
+    // Sync Student defaults when a student is selected in the payment form.
+    const watchStudentId = watch('studentId');
+    useEffect(() => {
+        if (!watchStudentId) return;
+        const student = students.find((item) => item.id === watchStudentId);
+        if (!student) return;
+
+        const studentClass = classes.find((item) => item.id === student.classId);
+        setValue('classId', student.classId || '');
+        setValue('monthlyFee', student.monthlyFee || studentClass?.monthlyFee || 120);
+    }, [watchStudentId, students, classes, setValue]);
 
     const openEditForm = (p) => {
         reset({
@@ -220,7 +224,7 @@ export const FeePayments = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-8">
             {/* Print-Only Styles Injection */}
             <style dangerouslySetInnerHTML={{
                 __html: `
@@ -247,36 +251,42 @@ export const FeePayments = () => {
       `}} />
 
             {/* Header sections */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <div>
-                    <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 my-0">
-                        Fee & Invoicing Ledger
+            <div className="relative flex flex-col gap-5 overflow-hidden rounded-3xl border border-violet-400/15 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/70 p-5 shadow-xl shadow-slate-950/20 sm:p-8 xl:flex-row xl:flex-nowrap xl:items-center xl:justify-between xl:gap-6">
+                <div className="pointer-events-none absolute -right-16 -top-28 h-72 w-72 rounded-full border border-violet-300/10" />
+                <div className="pointer-events-none absolute -right-8 -top-20 h-56 w-56 rounded-full border border-violet-300/10" />
+                <div className="relative min-w-0 flex-1">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/15 bg-violet-300/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-violet-200">
+                        <CreditCard className="h-3.5 w-3.5" />
+                        Academy accounts
+                    </span>
+                    <h2 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+                        Fee &amp; invoicing ledger
                     </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-455 font-semibold mt-0.5">
-                        Track class invoicing charges, settled paid accounts, and outstanding student arrears.
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                        Track class invoices, record payments, and review outstanding balances.
                     </p>
                 </div>
                 <button
                     onClick={openAddForm}
-                    className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md cursor-pointer shrink-0 transition-transform active:scale-98"
+                    className="relative inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/25"
                 >
                     <Plus className="w-4 h-4" />
-                    Create Invoice / Record Payment
+                    Create invoice / record payment
                 </button>
             </div>
 
             {/* Filters ledger board (gold-accented) */}
-            <div className="bg-white/5 dark:bg-slate-900/40 p-4 rounded-2xl border border-[rgba(212,175,55,0.12)] shadow-xs space-y-4 backdrop-blur-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-lg backdrop-blur-sm sm:p-5">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {/* Search ledger */}
                     <div className="relative sm:col-span-2">
-                        <Search className="w-4 h-4 text-[#F6D778] absolute left-3 top-3.5" />
+                        <Search className="absolute left-3 top-3.5 h-4 w-4 text-violet-300" />
                         <input
                             type="text"
                             placeholder="Search receipt ID, student name..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 w-full rounded-xl border border-[#2D3A56] bg-[#0B1020]/60 text-[#F8FAFC] placeholder:text-[#A69A6A] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] transition-colors"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-10 pr-4 text-sm font-medium text-slate-200 placeholder:text-slate-500 transition focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                         />
                     </div>
 
@@ -285,7 +295,7 @@ export const FeePayments = () => {
                         <select
                             value={filterMonth}
                             onChange={(e) => setFilterMonth(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm font-medium text-slate-200 transition focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                         >
                             <option value="All">All Months</option>
                             {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m) => (
@@ -299,7 +309,7 @@ export const FeePayments = () => {
                         <select
                             value={filterClass}
                             onChange={(e) => setFilterClass(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none focus:ring-2"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm font-medium text-slate-200 transition focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                         >
                             <option value="All">All Classes</option>
                             {classes.map((c) => (
@@ -313,7 +323,7 @@ export const FeePayments = () => {
                         <select
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
-                            className="px-3 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-semibold focus:outline-none"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm font-medium text-slate-200 transition focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                         >
                             <option value="All">All Statuses</option>
                             <option value="Paid">Paid</option>
@@ -325,17 +335,18 @@ export const FeePayments = () => {
                 </div>
 
                 {/* Method filter option strip (gold-accented) */}
-                <div className="flex gap-2 items-center flex-wrap pt-1 text-xs">
-                    <span className="font-bold text-[#F6D778] mr-2 uppercase tracking-wider text-[10px]">
+                <div className="flex flex-wrap items-center gap-2 border-t border-slate-800 pt-4 text-xs">
+                    <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                         Payment Method:
                     </span>
                     {['All', 'Cash', 'Bank Transfer', 'Card', 'Online Payment'].map((method) => (
                         <button
                             key={method}
+                            type="button"
                             onClick={() => setFilterMethod(method)}
-                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${filterMethod === method
-                                    ? 'border-[#D4AF37] bg-[#F6D778]/10 text-[#8C641A]'
-                                    : 'border-[#2D3A56] hover:bg-[#F6D778]/6 text-[#E6D8A3]'
+                            className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-all ${filterMethod === method
+                                    ? 'border-violet-300/30 bg-violet-400/10 text-violet-200'
+                                    : 'border-slate-700 text-slate-400 hover:border-slate-500 hover:bg-white/5 hover:text-slate-200'
                                 }`}
                         >
                             {method}
@@ -345,62 +356,66 @@ export const FeePayments = () => {
             </div>
 
             {/* Ledger Table */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 shadow-xl shadow-slate-950/20">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-transparent border-b border-[rgba(212,175,55,0.12)]">
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Receipt No</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Student Name</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Subject Class</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Month Cycle</th>
-                                
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Collected</th>
-                                
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Process Date</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest">Method</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-center">Status</th>
-                                <th className="p-4 text-xs font-bold text-[#F6D778] uppercase tracking-widest text-right">Actions</th>
+                            <tr className="border-b border-slate-700 bg-slate-950/70">
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Receipt no.</th>
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Student</th>
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Class</th>
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Billing month</th>
+                                <th className="whitespace-nowrap p-4 text-right text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Collected</th>
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Payment date</th>
+                                <th className="whitespace-nowrap p-4 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Method</th>
+                                <th className="whitespace-nowrap p-4 text-center text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Status</th>
+                                <th className="whitespace-nowrap p-4 text-right text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-[rgba(212,175,55,0.06)] dark:divide-[rgba(140,100,26,0.06)]">
+                        <tbody className="divide-y divide-slate-800">
                             {currentPaymentsList.length === 0 ? (
                                 <tr>
-                                    <td colSpan="9" className="p-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
-                                        No invoicing transaction logs found matching the filter specs.
+                                    <td colSpan="9" className="p-12 text-center">
+                                        <div className="mx-auto flex max-w-md flex-col items-center">
+                                            <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-700 bg-slate-950 text-slate-500">
+                                                <FileSpreadsheet className="h-5 w-5" />
+                                            </span>
+                                            <span className="mt-3 text-sm font-semibold text-slate-300">No matching payment records</span>
+                                            <span className="mt-1 text-xs text-slate-500">Try changing your search or filters, or create a new invoice.</span>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (
                                 currentPaymentsList.map((p) => (
                                     <tr
                                             key={p.id}
-                                            className="transition-colors hover:bg-[rgba(212,175,55,0.06)] dark:hover:bg-[rgba(212,175,55,0.04)]"
+                                            className="transition-colors hover:bg-white/[0.03]"
                                         >
-                                        <td className="p-4 font-bold text-indigo-605 dark:text-indigo-400 font-mono text-xs">
+                                        <td className="whitespace-nowrap p-4 font-mono text-xs font-semibold text-violet-200">
                                             {p.id}
                                         </td>
                                         <td className="p-4">
-                                                <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-300 leading-none block">
+                                                <span className="block text-sm font-semibold leading-none text-slate-100">
                                                     {p.studentName}
                                                 </span>
-                                            <span className="text-[9px] text-slate-400 font-bold block mt-1 font-mono">
+                                            <span className="mt-1 block font-mono text-[10px] font-medium text-slate-500">
                                                 {p.studentId}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-xs font-semibold text-slate-700 dark:text-slate-350">
+                                        <td className="whitespace-nowrap p-4 text-xs font-medium text-slate-300">
                                             {getClassName(p.classId)}
                                         </td>
-                                        <td className="p-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        <td className="whitespace-nowrap p-4 text-xs font-medium text-slate-300">
                                             {p.month} {p.year}
                                         </td>
-                                        <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right font-mono">
-                                            ${p.paidAmount}
+                                        <td className="whitespace-nowrap p-4 text-right font-mono text-sm font-bold text-emerald-300">
+                                            {formatLKR(p.paidAmount)}
                                         </td>
-                                        <td className="p-4 text-xs font-semibold text-slate-600 dark:text-slate-400 font-mono">
+                                        <td className="whitespace-nowrap p-4 font-mono text-xs font-medium text-slate-400">
                                             {p.paymentDate || '—'}
                                         </td>
-                                        <td className="p-4 text-xs font-semibold text-slate-550 dark:text-slate-400">
-                                            {p.paymentMethod}
+                                        <td className="whitespace-nowrap p-4 text-xs font-medium text-slate-300">
+                                            {p.paymentMethod || '—'}
                                         </td>
                                         <td className="p-4 text-center">
                                             <StatusBadge status={p.status} />
@@ -477,36 +492,38 @@ export const FeePayments = () => {
 
             {/* CRUD Form Modal overlay */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onClick={() => setIsFormOpen(false)}></div>
-                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-850 p-6 md:p-8 animate-slide-in">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+                    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity" onClick={() => setIsFormOpen(false)}></div>
+                    <div className="relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-violet-300/15 bg-[#05091b] shadow-2xl shadow-black/50 animate-slide-in">
 
-                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-850 dark:text-slate-150">
-                                    {editingPaymentId ? 'Modify Payment Record' : 'Record Student Fee Invoice'}
+                        <div className="relative flex shrink-0 items-center justify-between gap-4 overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 px-5 py-5 sm:px-8 sm:py-6">
+                            <div className="pointer-events-none absolute -right-8 -top-20 h-48 w-48 rounded-full border border-violet-300/10" />
+                            <div className="relative">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-200">Payment management</span>
+                                <h3 className="mt-1 text-xl font-black tracking-tight text-white sm:text-2xl">
+                                    {editingPaymentId ? 'Update payment record' : 'Create invoice / record payment'}
                                 </h3>
-                                <p className="text-xs text-slate-455 mt-0.5">
-                                    Set billable parameters and record collected payments. Remainder balance calculations are handled live.
+                                <p className="mt-1 text-sm leading-5 text-slate-400">
+                                    Enter billing details and payment information. Balances update automatically.
                                 </p>
                             </div>
-                            <button onClick={() => setIsFormOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                            <button type="button" onClick={() => setIsFormOpen(false)} aria-label="Close payment form" className="relative rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-400 transition hover:border-violet-300/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/20">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 overflow-y-auto p-5 sm:p-8">
 
                             {/* Row 1: Student and Class */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">
                                         Select Enrolled Student *
                                     </label>
                                     <select
                                         {...register('studentId', { required: 'Student selection is required' })}
                                         disabled={editingPaymentId !== null}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition placeholder:text-slate-500 hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         <option value="">Choose Student</option>
                                         {students.map((s) => (
@@ -515,16 +532,16 @@ export const FeePayments = () => {
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.studentId && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.studentId.message}</p>}
+                                    {errors.studentId && <p className="mt-1 text-xs font-semibold text-rose-400">{errors.studentId.message}</p>}
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350 font-mono">
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">
                                         Target Class / Course
                                     </label>
                                     <select
                                         {...register('classId', { required: 'Class association is required' })}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-752 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     >
                                         <option value="">Select Enrolled Class</option>
                                         {classes.map((c) => (
@@ -537,21 +554,21 @@ export const FeePayments = () => {
                             </div>
 
                             {/* Row 2: Month, Year, Payment Date, Paid Amount */}
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Invoicing Year</label>
+                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Invoicing Year</label>
                                     <input
                                         {...register('year', { required: 'Required' })}
                                         type="number"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition placeholder:text-slate-500 hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     />
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Invoicing Month</label>
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Invoicing Month</label>
                                     <select
                                         {...register('month')}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     >
                                         {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m) => (
                                             <option key={m} value={m}>{m}</option>
@@ -559,17 +576,17 @@ export const FeePayments = () => {
                                     </select>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Payment Date</label>
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Payment Date</label>
                                     <input
                                         {...register('paymentDate')}
                                         type="date"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition [color-scheme:dark] hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     />
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Paid Amount</label>
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Paid Amount</label>
                                     <input
                                         {...register('paidAmount', {
                                             required: 'Paid amount is required',
@@ -577,21 +594,21 @@ export const FeePayments = () => {
                                         })}
                                         type="number"
                                         placeholder="Enter amount paid"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition placeholder:text-slate-500 hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     />
-                                    {errors.paidAmount && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.paidAmount.message}</p>}
+                                    {errors.paidAmount && <p className="mt-1 text-xs font-semibold text-rose-400">{errors.paidAmount.message}</p>}
                                 </div>
                             </div>
 
                             {/* Financial Invoicing Calculator removed as requested */}
 
                             {/* Row 4: Method, Reference, Status */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Payment Method</label>
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Payment Method</label>
                                     <select
                                         {...register('paymentMethod')}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     >
                                         <option value="Cash">Cash</option>
                                         <option value="Bank Transfer">Bank Transfer</option>
@@ -600,21 +617,21 @@ export const FeePayments = () => {
                                     </select>
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Reference Number</label>
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Reference Number</label>
                                     <input
                                         {...register('referenceNumber')}
                                         type="text"
                                         placeholder="e.g. TXN ID, Slip No"
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-205 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition placeholder:text-slate-500 hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     />
                                 </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Billing Status Override</label>
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-bold text-slate-300">Billing Status Override</label>
                                     <select
                                         {...register('status')}
-                                        className="px-3.5 py-2.5 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                        className="w-full rounded-xl border border-slate-600 bg-[#10182a] px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                     >
                                         <option value="Paid">Paid (Settled)</option>
                                         <option value="Partially Paid">Partially Paid</option>
@@ -625,27 +642,28 @@ export const FeePayments = () => {
                             </div>
 
                             {/* Notes */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-350">Add Billing Notes</label>
+                            <div className="space-y-2">
+                                <label className="block text-xs font-bold text-slate-300">Add Billing Notes</label>
                                 <textarea
                                     {...register('notes')}
                                     rows="3"
-                                    className="p-3 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-white dark:bg-slate-900 text-xs font-semibold focus:outline-none"
+                                    placeholder="Add any additional details about this payment..."
+                                    className="w-full resize-y rounded-xl border border-slate-600 bg-[#10182a] p-4 text-sm font-medium text-slate-100 transition placeholder:text-slate-500 hover:border-slate-500 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/10"
                                 ></textarea>
                             </div>
 
                             {/* Footer submission */}
-                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex flex-col-reverse justify-end gap-3 border-t border-white/10 pt-5 sm:flex-row">
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 border border-slate-205 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-705 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                    className="rounded-xl border border-slate-700 px-5 py-3 text-sm font-bold text-slate-300 transition hover:border-slate-500 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/10"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md cursor-pointer"
+                                    className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-950/40 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/25"
                                 >
                                     Save Transaction
                                 </button>
