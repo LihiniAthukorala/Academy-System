@@ -4,7 +4,7 @@ import { Moon, Sun, Menu } from 'lucide-react';
 import { useAcademy } from '../context/AcademyContext';
 
 export const Home = () => {
-    const { theme, toggleTheme } = useAcademy();
+    const { theme, toggleTheme, teachers } = useAcademy();
     const navigate = useNavigate();
     const location = useLocation();
     const [heroImageFailed, setHeroImageFailed] = useState(false);
@@ -12,7 +12,7 @@ export const Home = () => {
 
     const stats = [
         { label: 'Total Students', value: '1.8K+' },
-        { label: 'Coaches', value: '24' },
+        { label: 'Coaches', value: teachers.length },
         { label: 'Years of Experience', value: '12' }
     ];
 
@@ -193,6 +193,43 @@ export const Home = () => {
                         <p className="rounded-3xl border border-white/10 bg-slate-900/75 p-5">Expert-led courses, personalized progress tracking, and live strategy sessions for learners of every level.</p>
                         <p className="rounded-3xl border border-white/10 bg-slate-900/75 p-5">Tournament preparation programs that combine technical mastery with psychological strength.</p>
                     </div>
+                </section>
+
+                <section id="coaches" className="scroll-mt-24 space-y-8 rounded-[2rem] border border-white/10 bg-slate-950/60 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)]">
+                    <div className="space-y-3">
+                        <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Meet the team</p>
+                        <h2 className="text-2xl font-bold text-white">Our registered coaches</h2>
+                        <p className="max-w-2xl text-sm leading-7 text-slate-300">
+                            Meet the coaches helping our students grow their skills and confidence.
+                        </p>
+                    </div>
+                    {teachers.length > 0 ? (
+                        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {teachers.map((teacher) => (
+                                <article key={teacher.id} className="flex items-center gap-4 rounded-3xl border border-white/10 bg-slate-900/75 p-5">
+                                    {teacher.profileImage ? (
+                                        <img
+                                            src={teacher.profileImage}
+                                            alt=""
+                                            className="h-16 w-16 shrink-0 rounded-2xl object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/15 text-lg font-bold text-indigo-200">
+                                            {teacher.name?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'C'}
+                                        </div>
+                                    )}
+                                    <div className="min-w-0">
+                                        <h3 className="truncate font-semibold text-white">{teacher.name}</h3>
+                                        <p className="mt-1 text-sm text-slate-400">{teacher.qualifications || 'Chess Coach'}</p>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="rounded-3xl border border-white/10 bg-slate-900/75 p-6 text-sm text-slate-300">
+                            Coach profiles will appear here once staff have been registered.
+                        </p>
+                    )}
                 </section>
 
                 <section id="contact" className="grid gap-6 rounded-[2rem] border border-white/10 bg-slate-900/70 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)]">
