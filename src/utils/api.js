@@ -1,4 +1,5 @@
 const defaultBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+const collectionWriteQueues = new Map();
 
 const buildUrl = (path) => {
     if (!defaultBaseUrl) return path;
@@ -19,7 +20,14 @@ const requestJson = async (path, options = {}) => {
     });
 
     if (!response.ok) {
-        const message = await response.text();
+        const responseBody = await response.text();
+        let message = responseBody;
+        try {
+            const parsedBody = JSON.parse(responseBody);
+            message = parsedBody.message || responseBody;
+        } catch {
+            // Keep the original response text when the server did not return JSON.
+        }
         throw new Error(message || `Request failed with status ${response.status}`);
     }
 
@@ -34,8 +42,21 @@ export const apiHealth = () => requestJson('/api/health');
 
 export const fetchCollection = (collectionName) => requestJson(`/api/${collectionName}`);
 
-export const replaceCollection = (collectionName, items) =>
-    requestJson(`/api/${collectionName}`, {
-        method: 'PUT',
-        body: { items }
+export const replaceCollection = (collectionName, items) => {
+    const previousWrite = collectionWriteQueues.get(collectionName) || Promise.resolve();
+    const write = previousWrite
+        .catch(() => {})
+        .then(() =>
+            requestJson(`/api/${collectionName}`, {
+                method: 'PUT',
+                body: { items }
+            })
+        );
+
+    collectionWriteQueues.set(collectionName, write);
+    return write.finally(() => {
+        if (collectionWriteQueues.get(collectionName) === write) {
+            collectionWriteQueues.delete(collectionName);
+        }
     });
+};

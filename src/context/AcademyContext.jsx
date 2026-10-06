@@ -100,7 +100,14 @@ export const AcademyProvider = ({ children }) => {
 
         const hydrateFromBackend = async () => {
             try {
-                await apiHealth();
+                const health = await apiHealth();
+                if (health.storage !== 'mongodb') {
+                    showToast(
+                        'MongoDB is not configured',
+                        'The API is saving to local JSON files. Set MONGODB_URI in .env to use MongoDB Atlas.',
+                        'error'
+                    );
+                }
 
                 const [remoteStudents, remoteTeachers, remoteClasses, remoteAttendance, remotePayments] = await Promise.all([
                     fetchCollection('students'),
@@ -112,26 +119,26 @@ export const AcademyProvider = ({ children }) => {
 
                 if (cancelled) return;
 
-                if (Array.isArray(remoteStudents) && remoteStudents.length > 0) {
+                if (Array.isArray(remoteStudents)) {
                     setStudents(remoteStudents);
                 }
 
-                if (Array.isArray(remoteTeachers) && remoteTeachers.length > 0) {
+                if (Array.isArray(remoteTeachers)) {
                     setTeachers(remoteTeachers.map((t) => ({
                         ...t,
                         classes: Array.isArray(t.classes) ? t.classes : []
                     })));
                 }
 
-                if (Array.isArray(remoteClasses) && remoteClasses.length > 0) {
+                if (Array.isArray(remoteClasses)) {
                     setClasses(remoteClasses);
                 }
 
-                if (Array.isArray(remoteAttendance) && remoteAttendance.length > 0) {
+                if (Array.isArray(remoteAttendance)) {
                     setAttendance(remoteAttendance);
                 }
 
-                if (Array.isArray(remotePayments) && remotePayments.length > 0) {
+                if (Array.isArray(remotePayments)) {
                     setPayments(remotePayments);
                 }
 
@@ -139,6 +146,15 @@ export const AcademyProvider = ({ children }) => {
             } catch (error) {
                 if (!cancelled) {
                     setIsBackendReady(false);
+                    console.error('Could not load academy data from the API:', error);
+                    const message = /bad auth|authentication failed/i.test(error.message)
+                        ? 'MongoDB rejected the configured credentials. Update the Atlas username/password in .env, then restart the API.'
+                        : 'Changes are only being kept in this browser until the API connection is restored.';
+                    showToast(
+                        'Data API unavailable',
+                        message,
+                        'error'
+                    );
                 }
             } finally {
                 if (!cancelled) {
@@ -156,27 +172,42 @@ export const AcademyProvider = ({ children }) => {
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
-        replaceCollection('students', students).catch(() => {});
+        replaceCollection('students', students).catch((error) => {
+            console.error('Could not save students:', error);
+            showToast('Save failed', 'Student data could not be saved to the configured database.', 'error');
+        });
     }, [students, isBackendReady, isHydrated]);
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
-        replaceCollection('teachers', teachers).catch(() => {});
+        replaceCollection('teachers', teachers).catch((error) => {
+            console.error('Could not save teachers:', error);
+            showToast('Save failed', 'Teacher data could not be saved to the configured database.', 'error');
+        });
     }, [teachers, isBackendReady, isHydrated]);
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
-        replaceCollection('classes', classes).catch(() => {});
+        replaceCollection('classes', classes).catch((error) => {
+            console.error('Could not save classes:', error);
+            showToast('Save failed', 'Class data could not be saved to the configured database.', 'error');
+        });
     }, [classes, isBackendReady, isHydrated]);
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
-        replaceCollection('attendance', attendance).catch(() => {});
+        replaceCollection('attendance', attendance).catch((error) => {
+            console.error('Could not save attendance:', error);
+            showToast('Save failed', 'Attendance data could not be saved to the configured database.', 'error');
+        });
     }, [attendance, isBackendReady, isHydrated]);
 
     useEffect(() => {
         if (!isHydrated || !isBackendReady) return;
-        replaceCollection('payments', payments).catch(() => {});
+        replaceCollection('payments', payments).catch((error) => {
+            console.error('Could not save payments:', error);
+            showToast('Save failed', 'Payment data could not be saved to the configured database.', 'error');
+        });
     }, [payments, isBackendReady, isHydrated]);
 
     // --- Auth Utilities ---
