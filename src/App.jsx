@@ -14,7 +14,6 @@ import { Teachers } from './pages/Teachers';
 import { TeacherProfile } from './pages/TeacherProfile';
 import { Reports } from './pages/Reports';
 import { Notifications } from './pages/Notifications';
-import { Settings } from './pages/Settings';
 import { Contact } from './pages/Contact';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -121,7 +120,6 @@ export const AppContent = () => {
 
           {/* Shared modules */}
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 

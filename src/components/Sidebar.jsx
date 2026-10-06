@@ -10,7 +10,6 @@ import {
     GraduationCap,
     BarChart3,
     Bell,
-    Settings,
     LogOut,
     ChevronLeft,
     ChevronRight,
@@ -73,12 +72,6 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             icon: Bell,
             roles: ['Administrator', 'Teacher'],
             badge: unreadNotifCount > 0 ? unreadNotifCount : null
-        },
-        {
-            path: '/settings',
-            label: 'Settings',
-            icon: Settings,
-            roles: ['Administrator', 'Teacher']
         }
     ];
 

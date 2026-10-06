@@ -9,7 +9,6 @@ import {
     Menu,
     ChevronDown,
     User,
-    Settings,
     LogOut,
     CheckCircle,
     Inbox
@@ -64,7 +63,6 @@ export const Header = ({ isCollapsed, setIsMobileOpen }) => {
             case '/teachers': return 'Academy Instructor Core';
             case '/reports': return 'Analytics & Reports';
             case '/notifications': return 'System Notifications';
-            case '/settings': return 'System Configurations';
             default: return 'Academy Management';
         }
     };
@@ -230,15 +228,6 @@ export const Header = ({ isCollapsed, setIsMobileOpen }) => {
                                     {currentUser.email}
                                 </p>
                             </div>
-
-                            <Link
-                                to="/settings"
-                                onClick={() => setProfileDropdownOpen(false)}
-                                className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-655 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                            >
-                                <Settings className="w-4 h-4 text-slate-400" />
-                                Settings
-                            </Link>
 
                             <div className="border-t border-slate-100 dark:border-slate-700 my-1"></div>
 
