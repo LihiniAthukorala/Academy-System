@@ -9,7 +9,15 @@ export default async function handler(req, res) {
 
         if (req.method === 'GET') {
             const items = await teachers.find({}).sort({ joinedDate: -1, createdAt: -1 }).toArray();
-            return res.status(200).json(items);
+            const accounts = await db.collection('users').find({ role: 'Teacher' }).toArray();
+            const statusByTeacherId = new Map(accounts.map((account) => [
+                account.teacherId,
+                account.status === 'active' ? 'active' : 'pending'
+            ]));
+            return res.status(200).json(items.map((teacher) => ({
+                ...teacher,
+                activationStatus: statusByTeacherId.get(teacher.id) || 'not_invited'
+            })));
         }
 
         if (req.method === 'POST') {
@@ -32,13 +40,25 @@ export default async function handler(req, res) {
             await teachers.deleteMany({});
 
             if (normalizedItems.length > 0) {
-                const docs = normalizedItems.map((item) => ({
-                    ...item,
-                    updatedAt: new Date(),
-                    createdAt: item.createdAt || new Date()
-                }));
+                const docs = normalizedItems.map((item) => {
+                    const { activationStatus: _ignoredActivationStatus, ...teacher } = item;
+                    return {
+                        ...teacher,
+                        updatedAt: new Date(),
+                        createdAt: item.createdAt || new Date()
+                    };
+                });
                 await teachers.insertMany(docs);
             }
+
+            const teacherIds = new Set(normalizedItems.map((teacher) => teacher.id));
+            const accounts = await db.collection('users').find({ role: 'Teacher' }).toArray();
+            await Promise.all(accounts
+                .filter((account) => !teacherIds.has(account.teacherId))
+                .map((account) => db.collection('users').deleteMany({
+                    teacherId: account.teacherId,
+                    role: 'Teacher'
+                })));
 
             return res.status(200).json({ ok: true, count: normalizedItems.length });
         }

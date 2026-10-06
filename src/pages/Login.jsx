@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAcademy } from '../context/AcademyContext';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Home, Lock, Mail, BookOpenCheck, Shield, GraduationCap, UserCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Home, Lock, Mail, Shield, GraduationCap } from 'lucide-react';
 
 export const Login = () => {
     const { login } = useAcademy();
@@ -13,21 +13,21 @@ export const Login = () => {
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
-            emailOrUsername: 'admin',
-            password: 'password123',
-            rememberMe: true
+            emailOrUsername: '',
+            password: ''
         }
     });
 
     const onSubmit = async (data) => {
-        // Simulate login delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        const success = login(data.emailOrUsername, data.password, selectedRole);
-        if (success) {
+        try {
+            await login(data.emailOrUsername, data.password, selectedRole);
             navigate('/dashboard');
+        } catch (error) {
+            setError('root.server', { message: error.message });
         }
     };
 
@@ -126,7 +126,7 @@ export const Login = () => {
 
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-300">
-                                        Email Address or Username
+                                        {selectedRole === 'Teacher' ? 'Teacher username' : 'Administrator username'}
                                     </label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -141,7 +141,7 @@ export const Login = () => {
                                                 }
                                             })}
                                             type="text"
-                                            placeholder="admin or teacher"
+                                            placeholder={selectedRole === 'Teacher' ? 'Your username' : 'Admin username'}
                                             className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
@@ -160,16 +160,7 @@ export const Login = () => {
                                         <label className="text-xs font-bold text-slate-300">
                                             Account Password
                                         </label>
-                                        <a
-                                            href="#forgot"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                alert('Simulation Note: Default setup passwords are: "admin" / "password123" or "teacher" / "password123".');
-                                            }}
-                                            className="text-xs font-semibold text-indigo-300 hover:text-indigo-100"
-                                        >
-                                            Forgot Password?
-                                        </a>
+                                        <span className="text-xs text-slate-500">Contact the academy administrator for password help.</span>
                                     </div>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -205,17 +196,11 @@ export const Login = () => {
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-2 text-sm text-slate-400">
-                                    <input
-                                        {...register('rememberMe')}
-                                        id="remember_me"
-                                        type="checkbox"
-                                        className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
-                                    />
-                                    <label htmlFor="remember_me" className="font-semibold text-slate-300">
-                                        Remember my credentials on this browser
-                                    </label>
-                                </div>
+                                {errors.root?.server && (
+                                    <p role="alert" className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                                        {errors.root.server.message}
+                                    </p>
+                                )}
 
                                 <button
                                     type="submit"
@@ -233,6 +218,9 @@ export const Login = () => {
                                 </button>
                             </form>
 
+                            <p className="mt-6 text-center text-sm text-slate-400">
+                                New teacher? <Link to="/activate" className="font-semibold text-indigo-300 hover:text-indigo-100">Activate your account</Link>
+                            </p>
                             <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
                                 <p>Need help logging in? Contact support for account setup or password assistance.</p>
                             </div>

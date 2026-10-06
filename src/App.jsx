@@ -15,6 +15,8 @@ import { TeacherProfile } from './pages/TeacherProfile';
 import { Reports } from './pages/Reports';
 import { Notifications } from './pages/Notifications';
 import { Contact } from './pages/Contact';
+import { ActivateTeacher } from './pages/ActivateTeacher';
+import { TeacherDashboard } from './pages/TeacherDashboard';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
@@ -86,6 +88,7 @@ export const AppContent = () => {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />} />
+      <Route path="/activate" element={currentUser ? <Navigate to="/dashboard" replace /> : <ActivateTeacher />} />
       <Route path="/register" element={<Navigate to="/login" replace />} />
       <Route path="/contact" element={<Contact />} />
 
@@ -93,33 +96,20 @@ export const AppContent = () => {
       <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
         <Route element={<Layout />}>
           {/* Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={currentUser?.role === 'Teacher' ? <TeacherDashboard /> : <Dashboard />} />
 
-          {/* Student Management: allow Teachers to enroll and view payments */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
             <Route path="/students" element={<Students />} />
             <Route path="/students/enroll" element={<EnrollStudent />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/fees" element={<FeePayments />} />
-          </Route>
-
-          {/* Attendance Management */}
-          <Route path="/attendance" element={<Attendance />} />
-
-          {/* Scheduling Classes */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="/classes" element={<Classes />} />
             <Route path="/reports" element={<Reports />} />
-          </Route>
-
-          {/* Core admin directory teachers */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
             <Route path="/teachers" element={<Teachers />} />
             <Route path="/teachers/:id" element={<TeacherProfile />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Route>
-
-          {/* Shared modules */}
-          <Route path="/notifications" element={<Notifications />} />
         </Route>
       </Route>
 

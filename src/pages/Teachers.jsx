@@ -23,7 +23,9 @@ export const Teachers = () => {
         addTeacher,
         updateTeacher,
         deleteTeacher,
-        classes
+        classes,
+        inviteTeacher,
+        triggerToast
     } = useAcademy();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -107,13 +109,23 @@ export const Teachers = () => {
         readImageFile(file);
     };
 
-    const handleFormSubmit = (data) => {
+    const handleFormSubmit = async (data) => {
         if (editingTeacherId) {
             updateTeacher(editingTeacherId, data);
         } else {
             addTeacher(data);
         }
         setIsFormOpen(false);
+    };
+
+    const handleInvite = async (teacher) => {
+        try {
+            const result = await inviteTeacher(teacher);
+            updateTeacher(teacher.id, { activationStatus: 'pending' });
+            triggerToast(result.message, 'success');
+        } catch (error) {
+            triggerToast(`Could not send the activation code: ${error.message}`, 'error');
+        }
     };
 
     const confirmDelete = (t) => {
@@ -276,10 +288,31 @@ export const Teachers = () => {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <StatusBadge status={t.status} />
+                                                <div className="space-y-1">
+                                                    <StatusBadge status={t.status} />
+                                                    <p className="text-[10px] font-semibold text-slate-500">
+                                                        {t.activationStatus === 'active'
+                                                            ? 'Account activated'
+                                                            : t.activationStatus === 'pending'
+                                                                ? 'Activation pending'
+                                                                : 'No account invite'}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center gap-2">
+                                                    {t.activationStatus !== 'active' && t.status !== 'Inactive' && (
+                                                        <button
+                                                            onClick={(event) => {
+                                                                event.stopPropagation();
+                                                                handleInvite(t);
+                                                            }}
+                                                            className="rounded-lg border border-emerald-600/30 bg-emerald-500/10 p-2 text-emerald-600 transition-colors hover:bg-emerald-500/20"
+                                                            title={t.activationStatus === 'pending' ? 'Resend email activation code' : 'Send email activation code'}
+                                                        >
+                                                            <Mail className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={(event) => {
                                                             event.stopPropagation();
@@ -415,7 +448,7 @@ export const Teachers = () => {
                                             {...register('email', {
                                                 required: 'Email coordinates are required',
                                                 pattern: {
-                                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                                     message: 'Invalid email format'
                                                 }
                                             })}
@@ -428,17 +461,16 @@ export const Teachers = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-200">Phone number *</label>
+                                        <label className="text-sm font-semibold text-slate-200">Phone number</label>
                                         <input
                                             {...register('phone', {
-                                                required: 'Phone contact is required',
                                                 pattern: {
-                                                    value: /^[0-9+\-\s()]{7,15}$/,
-                                                    message: 'Invalid phone format'
+                                                    value: /^\+?[0-9\s()-]{7,20}$/,
+                                                    message: 'Enter a valid phone number'
                                                 }
                                             })}
                                             type="tel"
-                                            placeholder="+12345678"
+                                            placeholder="Optional"
                                             autoComplete="tel"
                                             className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
                                         />

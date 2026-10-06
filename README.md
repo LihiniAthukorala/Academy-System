@@ -23,3 +23,17 @@ If you are developing a production application, we recommend using TypeScript wi
 4. In separate terminals, run `npm.cmd run api` and `npm.cmd run dev` (use `npm` instead of `npm.cmd` in Command Prompt).
 
 The API stores teachers, classes, students, attendance, and payments in separate MongoDB collections. The browser loads these collections when the API starts and saves changes back to the API. The API health endpoint reports `storage: "mongodb"` when Atlas is configured; without `MONGODB_URI`, it uses local JSON files instead.
+
+## Teacher Gmail activation
+
+Teachers activate their accounts using the Gmail address registered by the administrator. They verify a one-time code, then choose a username and password.
+
+1. For local development, the API accepts the existing demo credentials `admin` and `password123` when `ADMIN_USERNAME` and `ADMIN_PASSWORD` are not set. You can also set them in `.env`. In production, set both variables to private, strong values; the development credentials are disabled there.
+2. Set `AUTH_SECRET` to a private, random value of at least 32 characters. For example, run `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` and put the output in `.env`.
+3. During local development, if `RESEND_API_KEY` and `EMAIL_FROM` are both unset, the API prints each teacher activation code to the API terminal. The OTP is never returned to the browser. This fallback is disabled in production.
+4. To send real email, configure `RESEND_API_KEY` and `EMAIL_FROM` in the server environment. Create a Resend account and verify the sender domain/address first.
+5. Restart `npm.cmd run api` after changing `.env`.
+6. Sign in as the administrator and register a teacher with the Gmail address they will use to activate. From the login screen, the teacher selects **Teacher** → **Activate your account**, enters that registered email, and requests a code. They enter the code, then create a unique username and password of at least 12 characters.
+7. The teacher signs in with the chosen username and password. The teacher dashboard only loads classes assigned to that teacher and students enrolled in those classes. Other API collections require an administrator session.
+
+Without Resend configured, staff can still activate locally by reading the OTP from the API terminal. Production requires Resend configuration and never logs or returns OTPs. The existing demo admin credentials are retained for local development and never require OTP. Keep `.env` out of source control and configure strong, private credentials and a signing secret before production use.

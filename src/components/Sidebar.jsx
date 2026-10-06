@@ -40,7 +40,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/attendance',
             label: 'Attendance',
             icon: CheckSquare,
-            roles: ['Administrator', 'Teacher']
+            roles: ['Administrator']
         },
         {
             path: '/fees',
@@ -52,7 +52,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/classes',
             label: 'Classes',
             icon: BookOpen,
-            roles: ['Administrator', 'Teacher']
+            roles: ['Administrator']
         },
         {
             path: '/teachers',
@@ -64,13 +64,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/reports',
             label: 'Reports',
             icon: BarChart3,
-            roles: ['Administrator', 'Teacher']
+            roles: ['Administrator']
         },
         {
             path: '/notifications',
             label: 'Notifications',
             icon: Bell,
-            roles: ['Administrator', 'Teacher'],
+            roles: ['Administrator'],
             badge: unreadNotifCount > 0 ? unreadNotifCount : null
         }
     ];

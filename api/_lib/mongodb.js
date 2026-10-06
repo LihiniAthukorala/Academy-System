@@ -80,6 +80,33 @@ const createLocalCollection = (collectionName) => ({
         await writeCollectionFile(collectionName, remaining);
         return { deletedCount: items.length - remaining.length };
     },
+    async findOne(filter = {}) {
+        const items = await readCollectionFile(collectionName);
+        return items.find((item) =>
+            Object.entries(filter).every(([key, value]) => item[key] === value)
+        ) || null;
+    },
+    async updateOne(filter, update, options = {}) {
+        const items = await readCollectionFile(collectionName);
+        const index = items.findIndex((item) =>
+            Object.entries(filter).every(([key, value]) => item[key] === value)
+        );
+
+        if (index >= 0) {
+            items[index] = { ...items[index], ...(update.$set || {}) };
+            await writeCollectionFile(collectionName, items);
+            return { matchedCount: 1, modifiedCount: 1, upsertedId: null };
+        }
+
+        if (!options.upsert) {
+            return { matchedCount: 0, modifiedCount: 0, upsertedId: null };
+        }
+
+        const newDocument = { ...filter, ...(update.$set || {}), _id: randomUUID() };
+        items.push(newDocument);
+        await writeCollectionFile(collectionName, items);
+        return { matchedCount: 0, modifiedCount: 0, upsertedId: newDocument._id };
+    },
     async insertOne(document) {
         const items = await readCollectionFile(collectionName);
         const newDocument = {
