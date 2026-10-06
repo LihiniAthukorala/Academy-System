@@ -552,44 +552,47 @@ export const Students = () => {
 
             {/* CRUD Add/Edit Overlay Modal Dialog */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-6">
-                    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={() => setIsFormOpen(false)}></div>
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-md sm:p-5 md:p-6">
+                    <div className="fixed inset-0" onClick={() => setIsFormOpen(false)}></div>
 
-                    <div className="relative z-10 my-4 w-full max-w-6xl overflow-y-auto rounded-[2rem] border border-[#D4AF37]/30 bg-slate-950/96 p-6 shadow-2xl shadow-[#D4AF37]/10 md:my-8 md:p-8 animate-slide-in max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)]">
+                    <div className="relative z-10 my-2 w-full max-w-5xl overflow-y-auto rounded-3xl border border-amber-200/15 bg-slate-950 shadow-2xl shadow-black/40 animate-slide-in max-h-[calc(100vh-1rem)] sm:my-4 sm:max-h-[calc(100vh-2rem)]">
 
-                        <div className="mb-6 flex flex-col gap-4 border-b border-[#D4AF37]/15 pb-5 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <h3 className="text-2xl font-black text-[#F6D778]">
-                                    {editingStudentId ? 'Modify Student Profile' : 'Enroll New Student'}
-                                </h3>
-                                <p className="mt-2 text-sm text-slate-300">
-                                    Create or update a student profile using the same layout as instructor registrations.
-                                </p>
-                            </div>
-
-                            <div className="rounded-3xl border border-slate-700 bg-slate-900/70 px-5 py-4 shadow-sm">
-                                <div className="flex items-center gap-3 text-slate-100">
-                                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white">
-                                        <UserPlus className="w-5 h-5" />
+                        <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-[#24200f] px-5 py-6 sm:px-8">
+                            <div className="absolute -right-8 -top-20 h-56 w-56 rounded-full border border-amber-300/10" />
+                            <div className="relative flex items-start justify-between gap-4">
+                                <div>
+                                    <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-amber-200">
+                                        <UserPlus className="h-3.5 w-3.5" />
+                                        Student admission
                                     </span>
-                                    <div>
-                                        <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Student Account</p>
-                                        <p className="text-sm font-semibold">Fill student details and submit registration instantly.</p>
-                                    </div>
+                                    <h3 className="mt-3 text-2xl font-black tracking-tight text-white">
+                                        {editingStudentId ? 'Update student profile' : 'Enroll a new student'}
+                                    </h3>
+                                    <p className="mt-1.5 max-w-xl text-sm leading-6 text-slate-400">
+                                        Enter personal and academy details. Required fields are marked with an asterisk.
+                                    </p>
                                 </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsFormOpen(false)}
+                                    aria-label="Close student form"
+                                    className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5 p-4 sm:p-7">
 
                             {/* Row 1: Personal Details */}
-                            <section className="space-y-4">
+                            <section className="space-y-4 rounded-2xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
                                 <div className="flex items-center justify-between gap-4">
                                     <div>
-                                        <h2 className="text-lg font-bold text-[#F6D778]">Student details</h2>
-                                        <p className="text-sm text-slate-300">Student name, contact details, and identity information.</p>
+                                        <h2 className="text-base font-bold text-white">Personal details</h2>
+                                        <p className="text-xs text-slate-400">Student identity and contact information</p>
                                     </div>
-                                    <span className="rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#F6D778]">Required fields *</span>
+                                    <span className="rounded-full border border-amber-300/15 bg-amber-300/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-200">* Required</span>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -607,20 +610,6 @@ export const Students = () => {
                                         {errors.name && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.name.message}</p>}
                                     </div>
 
-                                    {/* Name with Initials */}
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            Name with Initials *
-                                        </label>
-                                        <input
-                                            {...register('nameInitials', { required: 'Initials are required' })}
-                                            type="text"
-                                            placeholder="e.g. J. Doe"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                        />
-                                        {errors.nameInitials && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.nameInitials.message}</p>}
-                                    </div>
-
                                     {/* Birth day */}
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
@@ -635,19 +624,22 @@ export const Students = () => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Gender dropdown */}
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            Gender
+                                            Gender *
                                         </label>
                                         <select
-                                            {...register('gender')}
+                                            {...register('gender', { required: 'Gender is required' })}
                                             className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2"
                                         >
+                                            <option value="">Select gender</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
                                         </select>
+                                        {errors.gender && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.gender.message}</p>}
                                     </div>
 
                                     {/* Contact Phone */}
@@ -672,48 +664,17 @@ export const Students = () => {
                                         {errors.phone && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.phone.message}</p>}
                                     </div>
 
-                                    {/* Email */}
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            Email Address *
-                                        </label>
-                                        <input
-                                            {...register('email', {
-                                                required: 'Email address is required',
-                                                pattern: {
-                                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                                    message: 'Invalid email address syntax'
-                                                }
-                                            })}
-                                            type="email"
-                                            placeholder="e.g. john.doe@mail.com"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2"
-                                        />
-                                        {errors.email && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.email.message}</p>}
-                                    </div>
-                                </div>
-
-                                {/* Address block */}
-                                <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-slate-300">Address *</label>
-                                    <input
-                                        {...register('address', { required: 'Home address is required' })}
-                                        type="text"
-                                        placeholder="123 Academic Dr, Campus Block"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none"
-                                    />
-                                    {errors.address && <p className="text-rose-550 text-[10px] font-semibold mt-1">{errors.address.message}</p>}
                                 </div>
                             </section>
 
                             {/* Row 2 removed: Guardian / Parent Profile (no longer used) */}
 
                             {/* Row 3: School details, Class and Fees */}
-                            <section className="space-y-4">
+                            <section className="space-y-4 rounded-2xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
                                 <div className="flex items-center justify-between gap-4">
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-100">Academic Details</h2>
-                                        <p className="text-sm text-slate-400">Grade and class selection.</p>
+                                        <h2 className="text-base font-bold text-white">Academy details</h2>
+                                        <p className="text-xs text-slate-400">School, grade, course, and enrollment information</p>
                                     </div>
                                 </div>
 
@@ -762,10 +723,10 @@ export const Students = () => {
                                     {/* Selected Class */}
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            Select Class / Course *
+                                            Select Class / Course
                                         </label>
                                         <select
-                                            {...register('classId', { required: 'Class selection is required' })}
+                                            {...register('classId')}
                                             className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none"
                                         >
                                             <option value="">Choose Class</option>
@@ -778,7 +739,7 @@ export const Students = () => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Joined Date */}
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-slate-300">Join Date *</label>
@@ -802,29 +763,20 @@ export const Students = () => {
 
                                     {/* Profile image upload removed for students */}
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Notes</label>
-                                    <textarea
-                                        {...register('notes')}
-                                        rows="3"
-                                        placeholder="Add any notes, medical alerts, or special accommodations..."
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none"
-                                    ></textarea>
-                                </div>
                             </section>
 
                             {/* Submit panel */}
-                            <div className="grid gap-3 sm:grid-cols-2 pt-2">
+                            <div className="sticky bottom-0 -mx-4 -mb-4 grid gap-3 border-t border-white/10 bg-slate-950/95 p-4 pt-4 backdrop-blur sm:-mx-7 sm:-mb-7 sm:grid-cols-2 sm:p-7">
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="rounded-2xl border border-[#D4AF37]/30 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
+                                    className="rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm shadow-[#D4AF37]/30 transition hover:bg-[#F6D778]"
+                                    className="rounded-xl bg-gradient-to-r from-amber-300 to-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-400/15 transition hover:brightness-105"
                                 >
                                     {editingStudentId ? 'Save Changes' : 'Confirm Registration'}
                                 </button>

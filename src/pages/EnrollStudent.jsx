@@ -1,40 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAcademy } from '../context/AcademyContext';
-import {
-    X,
-    UserPlus,
-    Phone,
-    Calendar,
-    ArrowLeft
-} from 'lucide-react';
+import { ArrowLeft, Calendar, GraduationCap, UserPlus } from 'lucide-react';
 
 export const EnrollStudent = () => {
     const { classes, addStudent } = useAcademy();
     const navigate = useNavigate();
-    const imageInputRef = useRef(null);
-    const [profilePreview, setProfilePreview] = useState('');
-
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors }
     } = useForm({
         defaultValues: {
             name: '',
-            nameInitials: '',
             dob: '',
-            gender: 'Male',
-            school: '',
-            grade: 'Grade 10',
-            address: '',
+            gender: '',
             phone: '',
+            grade: '',
+            school: '',
+            classId: '',
             joinedDate: new Date().toISOString().split('T')[0],
-            status: 'Active',
-            profileImage: '',
-            notes: ''
+            status: 'Active'
         }
     });
 
@@ -43,258 +30,226 @@ export const EnrollStudent = () => {
         navigate('/students');
     };
 
-    const onCancel = () => {
-        navigate('/students');
-    };
-
-    const readImageFile = (file) => {
-        if (!file || !file.type?.startsWith('image/')) return;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            const imageData = reader.result;
-            setValue('profileImage', imageData, { shouldDirty: true, shouldValidate: true });
-            setProfilePreview(imageData);
-        };
-        reader.readAsDataURL(file);
-    };
-
-    const handleImageDrop = (event) => {
-        event.preventDefault();
-        const file = event.dataTransfer.files?.[0];
-        readImageFile(file);
-    };
-
-    const handleImageChange = (event) => {
-        const file = event.target.files?.[0];
-        readImageFile(file);
-    };
+    const fieldClassName =
+        'w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10';
+    const labelClassName = 'text-sm font-semibold text-slate-200';
+    const sectionClassName = 'rounded-2xl border border-white/10 bg-slate-900/50 p-5 sm:p-6';
 
     return (
-        <div className="py-8">
-            <div className="max-w-6xl mx-auto space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <button
-                            type="button"
-                            onClick={() => navigate('/students')}
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Student Directory
-                        </button>
-                        <h1 className="mt-4 text-3xl font-black text-slate-900">Enroll New Student</h1>
-                        <p className="mt-2 text-sm text-slate-300">Complete the enrollment form to register a new student account into the academy system.</p>
-                    </div>
-                    <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 shadow-sm">
-                        <div className="flex items-center gap-3 text-slate-700">
-                            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white">
-                                <UserPlus className="w-5 h-5" />
-                            </span>
-                            <div>
-                                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Quick Enrollment</p>
-                                <p className="text-sm font-semibold">Fill student details and submit registration instantly.</p>
+        <div className="relative py-8 sm:py-10">
+            <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-80 max-w-5xl rounded-full bg-amber-400/5 blur-3xl" />
+            <div className="mx-auto max-w-5xl space-y-7">
+                <div className="space-y-5">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/students')}
+                        className="inline-flex items-center gap-2 rounded-lg text-sm font-semibold text-slate-400 transition hover:text-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Student Directory
+                    </button>
+                    <div className="relative overflow-hidden rounded-3xl border border-amber-300/20 bg-gradient-to-br from-slate-900 via-slate-900 to-[#24200f] p-6 shadow-xl shadow-black/10 sm:p-8">
+                        <div className="absolute -right-10 -top-16 h-56 w-56 rounded-full border border-amber-300/10" />
+                        <div className="absolute -right-2 -top-8 h-40 w-40 rounded-full border border-amber-300/10" />
+                        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="max-w-xl">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-200">
+                                    <GraduationCap className="h-3.5 w-3.5" />
+                                    Student admission
+                                </span>
+                                <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
+                                    Enroll a new student
+                                </h1>
+                                <p className="mt-2 text-sm leading-6 text-slate-400">
+                                    Add the student's personal and academy details. Required fields are marked with an asterisk.
+                                </p>
+                            </div>
+                            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-amber-200/20 bg-amber-300/10 text-amber-200 shadow-inner">
+                                <UserPlus className="h-7 w-7" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="rounded-[2rem] border border-[#D4AF37]/30 bg-slate-950/95 p-6 shadow-2xl shadow-[#D4AF37]/10">
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                        <section className="space-y-4">
-                            <div className="flex items-center justify-between gap-4">
+                <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/90 shadow-2xl shadow-black/20">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 p-4 sm:p-7">
+                        <section className={sectionClassName}>
+                            <div className="mb-5 flex items-center gap-3 border-b border-white/10 pb-4">
+                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
+                                    <UserPlus className="h-5 w-5" />
+                                </span>
                                 <div>
-                                    <h2 className="text-lg font-bold text-[#F6D778]">Student details</h2>
-                                    <p className="text-sm text-slate-300">Student name, contact details, and identity information.</p>
-                                </div>
-                                <span className="rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#F6D778]">Required fields *</span>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Full Name *</label>
-                                    <input
-                                        {...register('name', { required: 'Full name is required' })}
-                                        type="text"
-                                        placeholder="e.g. Amelia Carter"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    />
-                                    {errors.name && <p className="text-rose-600 text-[11px]">{errors.name.message}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Name with Initials *</label>
-                                    <input
-                                        {...register('nameInitials', { required: 'Initials are required' })}
-                                        type="text"
-                                        placeholder="e.g. A. Carter"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    />
-                                    {errors.nameInitials && <p className="text-rose-600 text-[11px]">{errors.nameInitials.message}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Date of Birth *</label>
-                                    <div className="relative">
-                                        <Calendar className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
-                                        <input
-                                            {...register('dob', { required: 'Date of birth is required' })}
-                                            type="date"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-10 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                        />
-                                    </div>
-                                    {errors.dob && <p className="text-rose-600 text-[11px]">{errors.dob.message}</p>}
+                                    <h2 className="text-base font-bold text-white">Personal details</h2>
+                                    <p className="mt-0.5 text-xs text-slate-400">Basic information and contact</p>
                                 </div>
                             </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Gender *</label>
-                                    <select
-                                        {...register('gender')}
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    >
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Phone Number *</label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
-                                        <input
-                                            {...register('phone', {
-                                                required: 'Phone number is required',
-                                                pattern: {
-                                                    value: /^[0-9+\-\s()]{7,20}$/,
-                                                    message: 'Enter a valid phone number'
-                                                }
-                                            })}
-                                            type="text"
-                                            placeholder="e.g. +1 555 012 345"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-10 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                        />
-                                    </div>
-                                    {errors.phone && <p className="text-rose-600 text-[11px]">{errors.phone.message}</p>}
-                                </div>
-                            </div>
-
+                            <div className="grid grid-cols-1 gap-x-5 gap-y-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold text-slate-300">Address *</label>
+                                <label htmlFor="student-name" className={labelClassName}>
+                                    Full name *
+                                </label>
                                 <input
-                                    {...register('address', { required: 'Address is required' })}
+                                    id="student-name"
+                                    {...register('name', { required: 'Full name is required' })}
                                     type="text"
-                                    placeholder="123 Chess Lane, Academy District"
-                                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    autoComplete="name"
+                                    className={fieldClassName}
                                 />
-                                {errors.address && <p className="text-rose-600 text-[11px]">{errors.address.message}</p>}
-                            </div>
-                        </section>
-
-                        <section className="space-y-4">
-                            <div className="flex items-center justify-between gap-4">
-                                <div>
-                                    <h2 className="text-lg font-bold text-slate-900">Academic Details</h2>
-                                    <p className="text-sm text-slate-500">Grade and class selection.</p>
-                                </div>
+                                {errors.name && <p className="text-xs font-medium text-rose-400">{errors.name.message}</p>}
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Grade *</label>
-                                    <select
-                                        {...register('grade')}
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    >
-                                        <option value="Grade 10">Grade 10</option>
-                                        <option value="Grade 11">Grade 11</option>
-                                        <option value="Grade 12">Grade 12</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Join Date *</label>
-                                    <input
-                                        {...register('joinedDate', { required: 'Join date is required' })}
-                                        type="date"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    />
-                                    {errors.joinedDate && <p className="text-rose-600 text-[11px]">{errors.joinedDate.message}</p>}
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="space-y-4">
-                            <div className="flex items-center justify-between gap-4">
-                                <div>
-                                    <h2 className="text-lg font-bold text-[#F6D778]">Additional Information</h2>
-                                    <p className="text-sm text-slate-500">Optional details and student profile configuration.</p>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Profile Image</label>
-                                    <input {...register('profileImage')} type="hidden" />
-                                    <div
-                                        onClick={() => imageInputRef.current?.click()}
-                                        onDragOver={(event) => event.preventDefault()}
-                                        onDrop={handleImageDrop}
-                                        className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#D4AF37]/35 bg-slate-900 px-5 py-5 text-center transition hover:border-[#F6D778] hover:bg-slate-800/70"
-                                    >
-                                        {profilePreview ? (
-                                            <img
-                                                src={profilePreview}
-                                                alt="Student preview"
-                                                className="mb-4 h-24 w-24 rounded-2xl object-cover ring-2 ring-[#D4AF37]/40"
-                                            />
-                                        ) : (
-                                            <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-sm font-bold text-[#F6D778]">
-                                                Upload
-                                            </div>
-                                        )}
-                                        <p className="text-sm font-semibold text-slate-100">Drag & drop an image here</p>
-                                        <p className="mt-1 text-xs text-slate-400">or click to choose a file from your device</p>
-                                        <p className="mt-3 text-[11px] text-slate-500">PNG, JPG, JPEG, WEBP</p>
-                                    </div>
-                                    <input
-                                        ref={imageInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Status</label>
-                                    <select
-                                        {...register('status')}
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    >
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold text-slate-300">Notes</label>
-                                <textarea
-                                    {...register('notes')}
-                                    rows="4"
-                                    placeholder="Add any notes, medical alerts, or special accommodations..."
-                                    className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                <label htmlFor="student-dob" className={labelClassName}>
+                                    Date of birth *
+                                </label>
+                                <div className="relative">
+                                    <Calendar className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
+                                    <input
+                                        id="student-dob"
+                                        {...register('dob', { required: 'Date of birth is required' })}
+                                        type="date"
+                                        className={`${fieldClassName} pl-10`}
+                                    />
+                                </div>
+                                {errors.dob && <p className="text-xs font-medium text-rose-400">{errors.dob.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-gender" className={labelClassName}>
+                                    Gender *
+                                </label>
+                                <select
+                                    id="student-gender"
+                                    {...register('gender', { required: 'Gender is required' })}
+                                    className={fieldClassName}
+                                >
+                                    <option value="">Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                {errors.gender && <p className="text-xs font-medium text-rose-400">{errors.gender.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-phone" className={labelClassName}>
+                                    Contact number *
+                                </label>
+                                <input
+                                    id="student-phone"
+                                    {...register('phone', {
+                                        required: 'Contact number is required',
+                                        pattern: {
+                                            value: /^[0-9+\-\s()]{7,20}$/,
+                                            message: 'Enter a valid contact number'
+                                        }
+                                    })}
+                                    type="tel"
+                                    autoComplete="tel"
+                                    className={fieldClassName}
                                 />
+                                {errors.phone && <p className="text-xs font-medium text-rose-400">{errors.phone.message}</p>}
+                            </div>
                             </div>
                         </section>
 
-                        <div className="grid gap-3 sm:grid-cols-2">
+                        <section className={sectionClassName}>
+                            <div className="mb-5 flex items-center gap-3 border-b border-white/10 pb-4">
+                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-400/10 text-violet-300">
+                                    <GraduationCap className="h-5 w-5" />
+                                </span>
+                                <div>
+                                    <h2 className="text-base font-bold text-white">Academy details</h2>
+                                    <p className="mt-0.5 text-xs text-slate-400">School, class, and enrollment information</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 gap-x-5 gap-y-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label htmlFor="student-grade" className={labelClassName}>
+                                    Grade *
+                                </label>
+                                <input
+                                    id="student-grade"
+                                    {...register('grade', { required: 'Grade is required' })}
+                                    type="text"
+                                    placeholder="e.g. Grade 10"
+                                    className={fieldClassName}
+                                />
+                                {errors.grade && <p className="text-xs font-medium text-rose-400">{errors.grade.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-school" className={labelClassName}>
+                                    School *
+                                </label>
+                                <input
+                                    id="student-school"
+                                    {...register('school', { required: 'School is required' })}
+                                    type="text"
+                                    autoComplete="organization"
+                                    className={fieldClassName}
+                                />
+                                {errors.school && <p className="text-xs font-medium text-rose-400">{errors.school.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-class" className={labelClassName}>
+                                    Select class / course
+                                </label>
+                                <select id="student-class" {...register('classId')} className={fieldClassName}>
+                                    <option value="">Select a class / course</option>
+                                    {classes.map((academyClass) => (
+                                        <option key={academyClass.id} value={academyClass.id}>
+                                            {academyClass.name}
+                                            {academyClass.subject ? ` - ${academyClass.subject}` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                {classes.length === 0 && <p className="text-xs text-slate-400">No classes or courses are available yet.</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-joined-date" className={labelClassName}>
+                                    Join date *
+                                </label>
+                                <input
+                                    id="student-joined-date"
+                                    {...register('joinedDate', { required: 'Join date is required' })}
+                                    type="date"
+                                    className={fieldClassName}
+                                />
+                                {errors.joinedDate && <p className="text-xs font-medium text-rose-400">{errors.joinedDate.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="student-status" className={labelClassName}>
+                                    Status *
+                                </label>
+                                <select
+                                    id="student-status"
+                                    {...register('status', { required: 'Status is required' })}
+                                    className={fieldClassName}
+                                >
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            </div>
+                        </section>
+
+                        <div className="flex flex-col-reverse gap-3 border-t border-slate-800 px-1 pt-5 sm:flex-row sm:justify-end">
                             <button
                                 type="button"
-                                onClick={onCancel}
-                                className="rounded-2xl border border-[#D4AF37]/30 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
+                                onClick={() => navigate('/students')}
+                                className="rounded-xl border border-slate-700 bg-slate-900 px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm shadow-[#D4AF37]/30 transition hover:bg-[#F6D778]"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-300 to-yellow-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-400/15 transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/30"
                             >
+                                <UserPlus className="h-4 w-4" />
                                 Confirm Registration
                             </button>
                         </div>
