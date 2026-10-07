@@ -72,6 +72,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             icon: Bell,
             roles: ['Administrator'],
             badge: unreadNotifCount > 0 ? unreadNotifCount : null
+        },
+        {
+            path: '/articles',
+            label: 'Articles',
+            icon: BookOpenCheck,
+            roles: ['Administrator']
         }
     ];
 

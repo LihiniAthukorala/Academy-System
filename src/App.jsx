@@ -16,6 +16,8 @@ import { Reports } from './pages/Reports';
 import { Notifications } from './pages/Notifications';
 import { Contact } from './pages/Contact';
 import { ActivateTeacher } from './pages/ActivateTeacher';
+import Articles from './pages/Articles';
+import ArticleReader from './pages/ArticleReader';
 import { TeacherDashboard } from './pages/TeacherDashboard';
 import { StudentDashboard } from './pages/StudentDashboard';
 import Sidebar from './components/Sidebar';
@@ -97,6 +99,7 @@ export const AppContent = () => {
       <Route path="/activate" element={currentUser ? <Navigate to="/dashboard" replace /> : <ActivateTeacher />} />
       <Route path="/register" element={<Navigate to="/login" replace />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/articles/:id" element={<ArticleReader />} />
 
       {/* Secured Shell Routes */}
       <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher', 'Student']} />}>
@@ -121,6 +124,7 @@ export const AppContent = () => {
             <Route path="/teachers" element={<Teachers />} />
             <Route path="/teachers/:id" element={<TeacherProfile />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/articles" element={<Articles />} />
           </Route>
         </Route>
       </Route>

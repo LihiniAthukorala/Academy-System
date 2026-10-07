@@ -125,6 +125,31 @@ const createLocalCollection = (collectionName) => ({
         }));
         await writeCollectionFile(collectionName, [...items, ...docsWithIds]);
         return { insertedCount: docsWithIds.length };
+    },
+    async replaceOne(filter, replacement) {
+        const items = await readCollectionFile(collectionName);
+        const index = items.findIndex((item) =>
+            Object.entries(filter).every(([key, value]) => item[key] === value)
+        );
+        if (index < 0) return { matchedCount: 0, modifiedCount: 0 };
+
+        items[index] = {
+            ...replacement,
+            _id: items[index]._id || replacement._id || randomUUID()
+        };
+        await writeCollectionFile(collectionName, items);
+        return { matchedCount: 1, modifiedCount: 1 };
+    },
+    async deleteOne(filter) {
+        const items = await readCollectionFile(collectionName);
+        const index = items.findIndex((item) =>
+            Object.entries(filter).every(([key, value]) => item[key] === value)
+        );
+        if (index < 0) return { deletedCount: 0 };
+
+        items.splice(index, 1);
+        await writeCollectionFile(collectionName, items);
+        return { deletedCount: 1 };
     }
 });
 

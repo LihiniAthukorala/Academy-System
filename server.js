@@ -8,6 +8,7 @@ import classesHandler from './api/classes.js';
 import attendanceHandler from './api/attendance.js';
 import paymentsHandler from './api/payments.js';
 import teachersHandler from './api/teachers.js';
+import articlesHandler from './api/articles.js';
 import { getSession } from './api/_lib/auth.js';
 
 const port = Number(process.env.PORT || 3001);
@@ -19,7 +20,8 @@ const routeHandlers = {
     '/api/classes': classesHandler,
     '/api/attendance': attendanceHandler,
     '/api/payments': paymentsHandler,
-    '/api/teachers': teachersHandler
+    '/api/teachers': teachersHandler,
+    '/api/articles': articlesHandler
 };
 
 const sendJson = (res, statusCode, data) => {
@@ -82,7 +84,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (pathname !== '/api/health' && pathname !== '/api/auth') {
+    if (pathname !== '/api/health' && pathname !== '/api/auth' && !(pathname === '/api/articles' && req.method === 'GET')) {
         let session;
         try {
             session = getSession(req);

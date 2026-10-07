@@ -64,6 +64,10 @@ const requestJson = async (path, options = {}) => {
 export const apiHealth = () => requestJson('/api/health');
 
 export const fetchCollection = (collectionName) => requestJson(`/api/${collectionName}`);
+export const fetchPublicArticles = () => requestJson('/api/articles');
+export const createArticle = (article) => requestJson('/api/articles', { method: 'POST', body: article });
+export const updateArticle = (article) => requestJson('/api/articles', { method: 'PUT', body: article });
+export const deleteArticle = (id) => requestJson('/api/articles', { method: 'DELETE', body: { id } });
 
 export const loginRequest = (username, password, role) =>
     requestJson('/api/auth', {
