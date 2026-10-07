@@ -218,9 +218,11 @@ export const Login = () => {
                                 </button>
                             </form>
 
-                            <p className="mt-6 text-center text-sm text-slate-400">
-                                New teacher? <Link to="/activate" className="font-semibold text-indigo-300 hover:text-indigo-100">Activate your account</Link>
-                            </p>
+                            {selectedRole === 'Teacher' && (
+                                <p className="mt-6 text-center text-sm text-slate-400">
+                                    New teacher? <Link to="/activate" className="font-semibold text-indigo-300 hover:text-indigo-100">Activate your account</Link>
+                                </p>
+                            )}
                             <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
                                 <p>Need help logging in? Contact support for account setup or password assistance.</p>
                             </div>

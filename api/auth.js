@@ -315,8 +315,30 @@ const teacherWorkspace = async (req, res) => {
     }
     const classes = await db.collection('classes').find({ teacherId: session.teacherId }).toArray();
     const classIds = new Set(classes.map((item) => item.id));
-    const students = (await db.collection('students').find({}).toArray())
+    const assignedStudents = (await db.collection('students').find({}).toArray())
         .filter((student) => classIds.has(student.classId));
+    const assignedStudentIds = new Set(assignedStudents.map((student) => student.id));
+    const payments = (await db.collection('payments').find({}).toArray())
+        .filter((payment) => assignedStudentIds.has(payment.studentId));
+    const paymentsByStudentId = new Map();
+    for (const payment of payments) {
+        const studentPayments = paymentsByStudentId.get(payment.studentId) || [];
+        studentPayments.push(payment);
+        paymentsByStudentId.set(payment.studentId, studentPayments);
+    }
+    const students = assignedStudents.map((student) => {
+        const studentPayments = paymentsByStudentId.get(student.id) || [];
+        const paymentStatus = studentPayments.some((payment) => payment.status === 'Overdue')
+            ? 'Overdue'
+            : studentPayments.some((payment) => payment.status === 'Pending')
+                ? 'Pending'
+                : studentPayments.some((payment) => payment.status === 'Partially Paid')
+                    ? 'Partially Paid'
+                    : studentPayments.length
+                        ? 'Paid'
+                        : 'No payment record';
+        return { ...student, paymentStatus };
+    });
 
     return res.status(200).json({
         teacher: {

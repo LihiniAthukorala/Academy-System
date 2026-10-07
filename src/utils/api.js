@@ -1,4 +1,4 @@
-const defaultBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+const defaultBaseUrl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || '';
 const collectionWriteQueues = new Map();
 
 const buildUrl = (path) => {
@@ -11,15 +11,30 @@ const buildUrl = (path) => {
 
 const requestJson = async (path, options = {}) => {
     const token = localStorage.getItem('academy_token');
-    const response = await fetch(buildUrl(path), {
-        ...options,
-        headers: {
+    if (token && token.length > 8_000) {
+        localStorage.removeItem('academy_token');
+        localStorage.removeItem('academy_user');
+        window.location.assign('/login');
+        throw new Error('Your saved session is too large and has been cleared. Sign in again to continue.');
+    }
+
+    let response;
+    try {
+        response = await fetch(buildUrl(path), {
+            ...options,
+            headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            'Content-Type': 'application/json',
-            ...(options.headers || {})
-        },
-        body: options.body !== undefined ? JSON.stringify(options.body) : undefined
-    });
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            },
+            body: options.body !== undefined ? JSON.stringify(options.body) : undefined
+        });
+    } catch (error) {
+        if (error instanceof TypeError) {
+            throw new Error('The Academy API could not be reached. Make sure the API server is running, then try again.');
+        }
+        throw error;
+    }
 
     if (!response.ok) {
         const responseBody = await response.text();

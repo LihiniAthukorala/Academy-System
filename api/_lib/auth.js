@@ -19,7 +19,12 @@ const sign = (value) =>
 export const createSessionToken = (user) => {
     const issuedAt = Math.floor(Date.now() / 1000);
     const payload = Buffer.from(JSON.stringify({
-        ...user,
+        id: user.id,
+        role: user.role,
+        ...(user.teacherId ? { teacherId: user.teacherId } : {}),
+        ...(user.username ? { username: user.username } : {}),
+        ...(user.name ? { name: user.name } : {}),
+        ...(user.email ? { email: user.email } : {}),
         iat: issuedAt,
         exp: issuedAt + sessionLifetimeSeconds
     })).toString('base64url');
