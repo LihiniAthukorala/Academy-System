@@ -20,6 +20,7 @@ import { TeacherDashboard } from './pages/TeacherDashboard';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
+import LoadingScreen from './components/LoadingScreen';
 
 // Role Guard Component
 const ProtectedRoute = ({ allowedRoles }) => {
@@ -80,7 +81,11 @@ const Layout = () => {
 };
 
 export const AppContent = () => {
-  const { currentUser } = useAcademy();
+  const { currentUser, isHydrated } = useAcademy();
+
+  if (!isHydrated) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Routes>

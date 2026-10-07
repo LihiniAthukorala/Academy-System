@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAcademy } from '../context/AcademyContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,10 +9,13 @@ export const Login = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher'
+    const usernameFieldFocused = useRef(false);
+    const passwordFieldFocused = useRef(false);
 
     const {
         register,
         handleSubmit,
+        setValue,
         setError,
         formState: { errors, isSubmitting }
     } = useForm({
@@ -142,6 +145,12 @@ export const Login = () => {
                                             })}
                                             type="text"
                                             placeholder={selectedRole === 'Teacher' ? 'Your username' : 'Admin username'}
+                                            onFocus={() => {
+                                                if (!usernameFieldFocused.current) {
+                                                    setValue('emailOrUsername', '');
+                                                    usernameFieldFocused.current = true;
+                                                }
+                                            }}
                                             className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
@@ -176,6 +185,12 @@ export const Login = () => {
                                             })}
                                             type={showPassword ? 'text' : 'password'}
                                             placeholder="••••••••"
+                                            onFocus={() => {
+                                                if (!passwordFieldFocused.current) {
+                                                    setValue('password', '');
+                                                    passwordFieldFocused.current = true;
+                                                }
+                                            }}
                                             className={`pl-10 pr-10 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.password
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'

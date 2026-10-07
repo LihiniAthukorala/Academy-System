@@ -728,6 +728,7 @@ export const AcademyProvider = ({ children }) => {
                 toggleTheme: () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light')),
 
                 currentUser,
+                isHydrated,
                 login,
                 inviteTeacher: inviteTeacherRequest,
                 logout,
