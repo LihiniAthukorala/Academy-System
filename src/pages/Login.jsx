@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAcademy } from '../context/AcademyContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,13 +9,9 @@ export const Login = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher'
-    const usernameFieldFocused = useRef(false);
-    const passwordFieldFocused = useRef(false);
-
     const {
         register,
         handleSubmit,
-        setValue,
         setError,
         formState: { errors, isSubmitting }
     } = useForm({
@@ -44,13 +40,13 @@ export const Login = () => {
             <div className="absolute inset-0 bg-[url('/bc.png')] bg-center bg-cover opacity-10 pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(79,70,229,0.08),transparent_35%)] pointer-events-none" />
             <div className="absolute inset-0 bg-chessboard opacity-6 pointer-events-none" />
-            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-4 py-6">
+            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-start justify-center px-3 py-4 sm:items-center sm:px-4 sm:py-6">
                 <div className="grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-slate-950/40">
+                    <div className="relative hidden overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-slate-950/40 lg:block">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.1),transparent_40%)] opacity-80" />
                         <div className="absolute right-[-8%] top-1/4 h-[260px] w-[260px] rounded-full bg-[#4F46E5]/10 blur-3xl" />
                         <div className="absolute left-[-8%] bottom-10 h-[240px] w-[240px] rounded-full bg-[#D4AF37]/10 blur-3xl" />
-                        <div className="relative z-10 flex min-h-auto flex-col justify-between gap-4">
+                        <div className="relative z-10 flex min-h-0 flex-col justify-between gap-4">
                             <div>
                                 <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.26em] text-slate-300">
                                     <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy" className="h-8 w-8 rounded-xl object-cover" />
@@ -76,7 +72,7 @@ export const Login = () => {
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-slate-950/40">
+                    <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-slate-950/95 p-4 shadow-2xl shadow-slate-950/40 sm:rounded-[2rem] sm:p-6 lg:max-w-none lg:p-8">
                         <button
                             type="button"
                             onClick={() => navigate('/home')}
@@ -88,15 +84,15 @@ export const Login = () => {
                         </button>
 
                         <div className="relative z-10">
-                            <div className="mb-8 flex items-center gap-4">
-                                <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="h-14 w-14 rounded-2xl object-cover ring-2 ring-white/10" />
+                            <div className="mb-6 flex items-center gap-3 sm:mb-8 sm:gap-4">
+                                <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="h-12 w-12 shrink-0 rounded-2xl object-cover ring-2 ring-white/10 sm:h-14 sm:w-14" />
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Ratnapura Chess Academy</p>
-                                    <h2 className="text-3xl font-extrabold text-white">Welcome back</h2>
+                                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.28em]">Ratnapura Chess Academy</p>
+                                    <h2 className="text-2xl font-extrabold text-white sm:text-3xl">Welcome back</h2>
                                 </div>
                             </div>
 
-                            <p className="max-w-xl text-sm leading-6 text-slate-300/80 mb-8">
+                            <p className="mb-6 max-w-xl text-sm leading-6 text-slate-300/80 sm:mb-8">
                                 Log in to your academy workspace and run attendance, fees, grades and notifications with royal precision.
                             </p>
 
@@ -144,14 +140,9 @@ export const Login = () => {
                                                 }
                                             })}
                                             type="text"
+                                            autoComplete="username"
                                             placeholder={selectedRole === 'Teacher' ? 'Your username' : 'Admin username'}
-                                            onFocus={() => {
-                                                if (!usernameFieldFocused.current) {
-                                                    setValue('emailOrUsername', '');
-                                                    usernameFieldFocused.current = true;
-                                                }
-                                            }}
-                                            className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
+                                            className={`w-full rounded-3xl border bg-slate-900/80 py-3 pl-10 pr-4 text-base text-white shadow-sm transition-all sm:text-sm ${errors.emailOrUsername
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
                                             }`}
@@ -165,11 +156,11 @@ export const Login = () => {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                                         <label className="text-xs font-bold text-slate-300">
                                             Account Password
                                         </label>
-                                        <span className="text-xs text-slate-500">Contact the academy administrator for password help.</span>
+                                        <span className="text-xs leading-5 text-slate-500">Contact the academy administrator for password help.</span>
                                     </div>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -184,14 +175,9 @@ export const Login = () => {
                                                 }
                                             })}
                                             type={showPassword ? 'text' : 'password'}
+                                            autoComplete="current-password"
                                             placeholder="••••••••"
-                                            onFocus={() => {
-                                                if (!passwordFieldFocused.current) {
-                                                    setValue('password', '');
-                                                    passwordFieldFocused.current = true;
-                                                }
-                                            }}
-                                            className={`pl-10 pr-10 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.password
+                                            className={`w-full rounded-3xl border bg-slate-900/80 py-3 pl-10 pr-10 text-base text-white shadow-sm transition-all sm:text-sm ${errors.password
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
                                             }`}
@@ -238,7 +224,7 @@ export const Login = () => {
                                     New teacher? <Link to="/activate" className="font-semibold text-indigo-300 hover:text-indigo-100">Activate your account</Link>
                                 </p>
                             )}
-                            <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
+                            <div className="mt-8 border-t border-white/10 pt-5 text-sm leading-6 text-slate-500 sm:mt-10 sm:pt-6">
                                 <p>Need help logging in? Contact support for account setup or password assistance.</p>
                             </div>
                         </div>
