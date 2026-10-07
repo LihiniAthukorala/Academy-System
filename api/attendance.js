@@ -1,8 +1,10 @@
 import { getDb } from './_lib/mongodb.js';
+import { requireAdministrator } from './_lib/authorization.js';
 
 const collectionName = 'attendance';
 
 export default async function handler(req, res) {
+    if (!requireAdministrator(req, res)) return;
     try {
         const db = await getDb();
         const attendance = db.collection(collectionName);

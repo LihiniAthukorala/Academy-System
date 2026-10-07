@@ -17,6 +17,7 @@ import { Notifications } from './pages/Notifications';
 import { Contact } from './pages/Contact';
 import { ActivateTeacher } from './pages/ActivateTeacher';
 import { TeacherDashboard } from './pages/TeacherDashboard';
+import { StudentDashboard } from './pages/StudentDashboard';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
@@ -98,10 +99,16 @@ export const AppContent = () => {
       <Route path="/contact" element={<Contact />} />
 
       {/* Secured Shell Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher']} />}>
+      <Route element={<ProtectedRoute allowedRoles={['Administrator', 'Teacher', 'Student']} />}>
         <Route element={<Layout />}>
           {/* Dashboard */}
-          <Route path="/dashboard" element={currentUser?.role === 'Teacher' ? <TeacherDashboard /> : <Dashboard />} />
+          <Route path="/dashboard" element={
+            currentUser?.role === 'Teacher'
+              ? <TeacherDashboard />
+              : currentUser?.role === 'Student'
+                ? <StudentDashboard />
+                : <Dashboard />
+          } />
 
           <Route element={<ProtectedRoute allowedRoles={['Administrator']} />}>
             <Route path="/students" element={<Students />} />

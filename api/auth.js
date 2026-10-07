@@ -100,8 +100,30 @@ const sendOtpEmail = async (email, otp, teacherName) => {
 
 const login = async (req, res, body) => {
     if (typeof body.username !== 'string' || typeof body.password !== 'string' || body.password.length > 128 ||
-        !['Administrator', 'Teacher'].includes(body.role)) {
+        !['Administrator', 'Teacher', 'Student'].includes(body.role)) {
         return res.status(400).json({ message: 'Enter your username and password.' });
+    }
+
+    if (body.role === 'Student') {
+        const username = normalizeUsername(body.username);
+        const db = await getDb();
+        const account = await db.collection('users').findOne({ username, role: 'Student' });
+        if (!account || account.status !== 'active' || !verifyPassword(body.password, account.passwordHash)) {
+            return res.status(401).json({ message: 'Username or password is incorrect, or the student account has not been set up.' });
+        }
+
+        const student = await db.collection('students').findOne({ id: account.studentId });
+        if (!student || student.status !== 'Active') {
+            return res.status(403).json({ message: 'This student account is unavailable. Contact the academy administrator.' });
+        }
+
+        const user = {
+            id: student.id,
+            username: account.username,
+            name: student.name,
+            role: 'Student'
+        };
+        return res.status(200).json({ user, token: createSessionToken(user) });
     }
 
     if (body.role === 'Teacher') {
@@ -353,6 +375,134 @@ const teacherWorkspace = async (req, res) => {
     });
 };
 
+const studentAccount = async (req, res, body) => {
+    const session = getSession(req);
+    if (!session || session.role !== 'Administrator') {
+        return res.status(401).json({ message: 'Administrator sign-in is required to manage student accounts.' });
+    }
+    if (typeof body.studentId !== 'string' || !body.studentId.trim()) {
+        return res.status(400).json({ message: 'A student ID is required.' });
+    }
+
+    const db = await getDb();
+    const student = await db.collection('students').findOne({ id: body.studentId });
+    if (!student) {
+        return res.status(404).json({ message: 'Student could not be found.' });
+    }
+
+    const users = db.collection('users');
+    if (body.action === 'studentAccountStatus') {
+        const account = await users.findOne({ studentId: student.id, role: 'Student' });
+        return res.status(200).json({
+            configured: account?.status === 'active',
+            username: account?.status === 'active' ? account.username : ''
+        });
+    }
+
+    if (student.status !== 'Active') {
+        return res.status(400).json({ message: 'Only active students can have login accounts.' });
+    }
+
+    const username = normalizeUsername(body.username);
+    const password = typeof body.password === 'string' ? body.password : '';
+    if (!/^[a-z0-9._-]{3,32}$/.test(username) || password.length < 12 || password.length > 128) {
+        return res.status(400).json({ message: 'Use a username of 3-32 letters, numbers, dots, underscores, or hyphens and a password of at least 12 characters.' });
+    }
+
+    const adminCredentials = getAdminCredentials();
+    const existingAccounts = await users.find({}).toArray();
+    if (username === normalizeUsername(adminCredentials.username) ||
+        existingAccounts.some((account) =>
+            normalizeUsername(account.username) === username && account.studentId !== student.id
+        )) {
+        return res.status(409).json({ message: 'That username is already in use. Choose another one.' });
+    }
+
+    await users.updateOne(
+        { studentId: student.id, role: 'Student' },
+        {
+            $set: {
+                studentId: student.id,
+                username,
+                role: 'Student',
+                status: 'active',
+                passwordHash: hashPassword(password),
+                updatedAt: new Date()
+            },
+            $setOnInsert: { createdAt: new Date() }
+        },
+        { upsert: true }
+    );
+    return res.status(200).json({
+        configured: true,
+        username,
+        message: 'Student login credentials saved. Share the username and initial password securely with the student.'
+    });
+};
+
+const studentWorkspace = async (req, res) => {
+    const session = getSession(req);
+    if (!session || session.role !== 'Student' || !session.id || !session.username) {
+        return res.status(401).json({ message: 'A valid student session is required.' });
+    }
+
+    const db = await getDb();
+    const account = await db.collection('users').findOne({
+        studentId: session.id,
+        username: session.username,
+        role: 'Student',
+        status: 'active'
+    });
+    const student = account
+        ? await db.collection('students').findOne({ id: session.id, status: 'Active' })
+        : null;
+    if (!student) {
+        return res.status(403).json({ message: 'This student account is no longer active.' });
+    }
+
+    const studentClass = student.classId
+        ? await db.collection('classes').findOne({ id: student.classId })
+        : null;
+    const attendanceLogs = await db.collection('attendance').find({}).toArray();
+    const attendance = attendanceLogs.flatMap((log) => {
+        const record = Array.isArray(log.records)
+            ? log.records.find((item) => item.studentId === student.id)
+            : null;
+        return record ? [{ date: log.date, className: log.className, status: record.status }] : [];
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const payments = await db.collection('payments').find({ studentId: student.id }).toArray();
+
+    return res.status(200).json({
+        student: {
+            id: student.id,
+            name: student.name,
+            grade: student.grade,
+            school: student.school,
+            joinedDate: student.joinedDate
+        },
+        class: studentClass ? {
+            name: studentClass.name,
+            subject: studentClass.subject,
+            day: studentClass.day,
+            startTime: studentClass.startTime,
+            endTime: studentClass.endTime,
+            classroom: studentClass.classroom,
+            teacherName: studentClass.teacherName,
+            monthlyFee: studentClass.monthlyFee
+        } : null,
+        attendance,
+        payments: payments.map((payment) => ({
+            month: payment.month,
+            year: payment.year,
+            totalAmount: payment.totalAmount,
+            paidAmount: payment.paidAmount,
+            balance: payment.balance,
+            status: payment.status,
+            paymentDate: payment.paymentDate
+        }))
+    });
+};
+
 export default async function handler(req, res) {
     try {
         if (req.method !== 'POST') {
@@ -361,6 +511,10 @@ export default async function handler(req, res) {
 
         const body = req.body || {};
         if (body.action === 'login') return await login(req, res, body);
+        if (body.action === 'studentAccountStatus' || body.action === 'configureStudentAccount') {
+            return await studentAccount(req, res, body);
+        }
+        if (body.action === 'studentWorkspace') return await studentWorkspace(req, res);
         if (body.action === 'publicCoaches') {
             const db = await getDb();
             const teachers = await db.collection('teachers').find({}).toArray();

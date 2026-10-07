@@ -37,3 +37,14 @@ Teachers activate their accounts using the Gmail address registered by the admin
 7. The teacher signs in with the chosen username and password. The teacher dashboard only loads classes assigned to that teacher and students enrolled in those classes. Other API collections require an administrator session.
 
 Without Resend configured, staff can still activate locally by reading the OTP from the API terminal. Production requires Resend configuration and never logs or returns OTPs. The existing demo admin credentials are retained for local development and never require OTP. Keep `.env` out of source control and configure strong, private credentials and a signing secret before production use.
+
+## Student portal
+
+Administrators can create student login credentials from an individual student profile:
+
+1. Sign in as an administrator and open **Students**.
+2. Open a student profile and use the **Student login account** section.
+3. Create a username and a strong initial password of at least 12 characters, then share them securely with the student.
+4. Students select **Student** on the login screen and sign in with those credentials.
+
+The student dashboard only exposes the signed-in student's class, attendance records, and fee history. Student accounts are disabled automatically when the associated student record is inactive.

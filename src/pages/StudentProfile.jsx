@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAcademy } from '../context/AcademyContext';
 import {
@@ -13,12 +13,15 @@ import {
     GraduationCap,
     Clock,
     BookOpen,
-    FileText,
     Edit,
-    ClipboardList
+    ClipboardList,
+    KeyRound,
+    CheckCircle2,
+    AlertCircle
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import { formatLKR } from '../utils/currency';
+import { configureStudentAccount, fetchStudentAccountStatus } from '../utils/api';
 
 export const StudentProfile = () => {
     const { id } = useParams();
@@ -28,14 +31,59 @@ export const StudentProfile = () => {
         students,
         classes,
         payments,
+        currentUser,
         getAttendanceSummaryByStudent,
         getStudentOverviewStats
     } = useAcademy();
 
     const [activeTab, setActiveTab] = useState('Overview');
+    const [accountStatus, setAccountStatus] = useState(null);
+    const [accountUsername, setAccountUsername] = useState('');
+    const [accountPassword, setAccountPassword] = useState('');
+    const [accountError, setAccountError] = useState('');
+    const [accountMessage, setAccountMessage] = useState('');
+    const [isSavingAccount, setIsSavingAccount] = useState(false);
 
     // Find the student
     const student = students.find((s) => s.id === id);
+
+    useEffect(() => {
+        if (currentUser?.role !== 'Administrator' || !student?.id) return undefined;
+        let cancelled = false;
+        setAccountStatus(null);
+        setAccountError('');
+        fetchStudentAccountStatus(student.id)
+            .then((status) => {
+                if (!cancelled) {
+                    setAccountStatus(status);
+                    setAccountUsername(status.username || '');
+                }
+            })
+            .catch((error) => {
+                if (!cancelled) setAccountError(error.message);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [currentUser?.role, student?.id]);
+
+    const saveStudentAccount = async (event) => {
+        event.preventDefault();
+        setIsSavingAccount(true);
+        setAccountError('');
+        setAccountMessage('');
+        try {
+            const result = await configureStudentAccount(student.id, accountUsername, accountPassword);
+            setAccountStatus({ configured: true, username: result.username });
+            setAccountUsername(result.username);
+            setAccountPassword('');
+            setAccountMessage(result.message);
+        } catch (error) {
+            setAccountError(error.message);
+        } finally {
+            setIsSavingAccount(false);
+        }
+    };
 
     if (!student) {
         return (
@@ -58,7 +106,7 @@ export const StudentProfile = () => {
     const studentPayments = payments.filter((p) => p.studentId === student.id);
     const studentClass = classes.find((c) => c.id === student.classId);
 
-    const tabs = ['Overview', 'Attendance', 'Fee Payments', 'Classes', 'Notes'];
+    const tabs = ['Overview', 'Attendance', 'Fee Payments', 'Classes'];
 
     return (
         <div className="space-y-6">
@@ -91,34 +139,93 @@ export const StudentProfile = () => {
             </div>
 
             {/* Main personal banner */}
-            <div className="bg-gradient-to-r from-teal-700 via-slate-950 to-cyan-600 rounded-3xl border border-teal-500/40 p-6 md:p-8 shadow-xl text-white flex flex-col justify-between items-start gap-6">
-                    <div className="space-y-4 text-center sm:text-left">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 justify-center sm:justify-start">
-                            <h3 className="text-2xl font-black text-white leading-none">
-                                {student.name}
-                            </h3>
+            <div className="relative overflow-hidden rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 p-5 text-white shadow-xl shadow-cyan-950/10 sm:p-7">
+                <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-cyan-400/15 blur-3xl" />
+                <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+                    <div className="space-y-4">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <h3 className="text-2xl font-black leading-none sm:text-3xl">{student.name}</h3>
                             <StatusBadge status={student.status} />
                         </div>
-                        <p className="text-xs text-slate-100 font-bold font-mono mt-0.5">
-                            ID: {student.id} • Registered Grade: {student.grade}
-                        </p>
-                        <p className="text-xs text-slate-100/90 font-semibold mt-1">
-                            Enrolled in class: <span className="text-cyan-200 font-bold">{studentClass ? studentClass.name : 'None'}</span>
-                        </p>
+                        <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-slate-300">
+                            <span className="font-mono">ID: {student.id}</span>
+                            <span>Grade: {student.grade || '—'}</span>
+                            <span>Class: <strong className="text-cyan-200">{studentClass?.name || 'Not assigned'}</strong></span>
+                        </div>
                     </div>
-
-                {/* Top summary stats */}
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-2 w-full md:w-auto self-stretch">
-                    <div className="bg-indigo-50/40 dark:bg-indigo-950/20 p-4 rounded-2xl text-center flex flex-col justify-center border border-indigo-50/20 dark:border-none">
-                        <span className="text-lg font-black text-indigo-600 dark:text-indigo-400 font-mono">
-                            {stats.attendancePercentage}%
-                        </span>
-                        <span className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-wider mt-1.5">
-                            Attendance
-                        </span>
+                    <div className="flex min-w-[170px] items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 lg:min-w-[190px] lg:flex-col lg:gap-1 lg:px-7">
+                        <span className="text-3xl font-black tracking-tight text-indigo-300">{stats.attendancePercentage}%</span>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Attendance</span>
                     </div>
                 </div>
             </div>
+
+            {currentUser?.role === 'Administrator' && (
+                <section className="overflow-hidden rounded-3xl border border-indigo-200/70 bg-white shadow-sm dark:border-indigo-500/20 dark:bg-slate-900">
+                    <div className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-white p-5 dark:border-slate-800 dark:from-indigo-950/40 dark:to-slate-900 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                        <div className="flex items-start gap-3">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+                                <KeyRound className="h-5 w-5" />
+                            </span>
+                            <div>
+                                <h3 className="font-bold text-slate-900 dark:text-white">Student login account</h3>
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            {accountStatus?.configured
+                                ? `Account active as ${accountStatus.username}. Set a new password to update the login details.`
+                                : 'Create a username and initial password for this student.'}
+                                </p>
+                            </div>
+                        </div>
+                        {accountStatus?.configured && (
+                            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                <CheckCircle2 className="h-3.5 w-3.5" /> Account active
+                            </span>
+                        )}
+                    </div>
+                    <form onSubmit={saveStudentAccount} className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
+                        <label className="space-y-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Username
+                            <input
+                                required
+                                minLength={3}
+                                maxLength={32}
+                                pattern="[a-zA-Z0-9._-]+"
+                                autoComplete="off"
+                                value={accountUsername}
+                                onChange={(event) => setAccountUsername(event.target.value)}
+                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-base font-normal normal-case tracking-normal text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                placeholder="letters, numbers, . _ -"
+                            />
+                        </label>
+                        <label className="space-y-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Initial / new password
+                            <input
+                                required
+                                minLength={12}
+                                maxLength={128}
+                                type="password"
+                                autoComplete="new-password"
+                                value={accountPassword}
+                                onChange={(event) => setAccountPassword(event.target.value)}
+                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-base font-normal normal-case tracking-normal text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                placeholder="At least 12 characters"
+                            />
+                        </label>
+                        {accountError && <p role="alert" className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300 sm:col-span-2"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{accountError}</p>}
+                        {accountMessage && <p role="status" className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300 sm:col-span-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{accountMessage}</p>}
+                        <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+                            <button
+                                type="submit"
+                                disabled={isSavingAccount || student.status !== 'Active'}
+                                className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isSavingAccount ? 'Saving account…' : accountStatus?.configured ? 'Update student credentials' : 'Create student login'}
+                            </button>
+                            {student.status !== 'Active' && <p className="text-xs text-amber-600">Activate the student record before creating a login.</p>}
+                        </div>
+                    </form>
+                </section>
+            )}
 
             {/* Tabs navigation */}
             <div className="border-b border-slate-100 dark:border-slate-800 flex gap-2 overflow-x-auto no-scrollbar scroll-smooth">
@@ -439,24 +546,6 @@ export const StudentProfile = () => {
                     </div>
                 )}
 
-                {/* Tab 5: Notes */}
-                {activeTab === 'Notes' && (
-                    <div className="bg-white dark:bg-slate-905 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-4">
-                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 pb-2 border-b border-slate-50 dark:border-slate-800">
-                            <FileText className="w-4 h-4 text-slate-400" />
-                            Academy Observations & Support Notes
-                        </h3>
-                        {student.notes ? (
-                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-semibold italic bg-slate-50/50 dark:bg-slate-850/40 p-4 rounded-xl">
-                                "{student.notes}"
-                            </p>
-                        ) : (
-                            <p className="text-xs text-slate-400 font-semibold italic text-center py-6">
-                                No observations or custom support records posted for this profile.
-                            </p>
-                        )}
-                    </div>
-                )}
             </div>
         </div>
     );

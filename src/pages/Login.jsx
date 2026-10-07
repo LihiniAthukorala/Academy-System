@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAcademy } from '../context/AcademyContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Home, Lock, Mail, Shield, GraduationCap } from 'lucide-react';
+import { Eye, EyeOff, Home, Lock, Mail, Shield, GraduationCap, UserRound } from 'lucide-react';
 
 export const Login = () => {
     const { login } = useAcademy();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher'
+    const [selectedRole, setSelectedRole] = useState('Administrator');
     const {
         register,
         handleSubmit,
@@ -32,7 +32,8 @@ export const Login = () => {
 
     const roles = [
         { id: 'Administrator', label: 'Admin', icon: Shield, desc: 'Full control' },
-        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' }
+        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' },
+        { id: 'Student', label: 'Student', icon: UserRound, desc: 'Your learning' }
     ];
 
     return (
@@ -101,7 +102,7 @@ export const Login = () => {
                                     <label className="block text-xs font-bold uppercase tracking-[0.24em] text-slate-400 mb-3 text-center sm:text-left">
                                         Select Your Role
                                     </label>
-                                    <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-3">
+                                    <div className="mx-auto grid w-full max-w-md grid-cols-3 gap-2 sm:gap-3">
                                         {roles.map((role) => {
                                             const Icon = role.icon;
                                             const isSelected = selectedRole === role.id;
@@ -110,7 +111,7 @@ export const Login = () => {
                                                     key={role.id}
                                                     type="button"
                                                     onClick={() => setSelectedRole(role.id)}
-                                                    className={`flex flex-col items-center justify-center gap-2 rounded-[1.75rem] border px-4 py-4 text-center text-sm font-semibold transition-all duration-200 ${isSelected
+                                                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center text-xs font-semibold transition-all duration-200 sm:rounded-[1.75rem] sm:px-4 sm:py-4 sm:text-sm ${isSelected
                                                         ? 'border-indigo-500 bg-indigo-500/15 text-indigo-100 shadow-lg shadow-indigo-500/10'
                                                         : 'border-slate-700 bg-slate-900/80 text-slate-300 hover:border-slate-500 hover:bg-slate-900/95'
                                                     }`}
@@ -125,7 +126,7 @@ export const Login = () => {
 
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-300">
-                                        {selectedRole === 'Teacher' ? 'Teacher username' : 'Administrator username'}
+                                        {selectedRole === 'Teacher' ? 'Teacher username' : selectedRole === 'Student' ? 'Student username' : 'Administrator username'}
                                     </label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -141,7 +142,7 @@ export const Login = () => {
                                             })}
                                             type="text"
                                             autoComplete="username"
-                                            placeholder={selectedRole === 'Teacher' ? 'Your username' : 'Admin username'}
+                                            placeholder={selectedRole === 'Administrator' ? 'Admin username' : 'Your username'}
                                             className={`w-full rounded-3xl border bg-slate-900/80 py-3 pl-10 pr-4 text-base text-white shadow-sm transition-all sm:text-sm ${errors.emailOrUsername
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'

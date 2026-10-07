@@ -71,6 +71,18 @@ export const loginRequest = (username, password, role) =>
         body: { action: 'login', username, password, role }
     });
 
+export const fetchStudentAccountStatus = (studentId) =>
+    requestJson('/api/auth', {
+        method: 'POST',
+        body: { action: 'studentAccountStatus', studentId }
+    });
+
+export const configureStudentAccount = (studentId, username, password) =>
+    requestJson('/api/auth', {
+        method: 'POST',
+        body: { action: 'configureStudentAccount', studentId, username, password }
+    });
+
 export const fetchPublicCoaches = () =>
     requestJson('/api/auth', {
         method: 'POST',
@@ -105,6 +117,12 @@ export const fetchTeacherWorkspace = () =>
     requestJson('/api/auth', {
         method: 'POST',
         body: { action: 'teacherWorkspace' }
+    });
+
+export const fetchStudentWorkspace = () =>
+    requestJson('/api/auth', {
+        method: 'POST',
+        body: { action: 'studentWorkspace' }
     });
 
 export const replaceCollection = (collectionName, items) => {

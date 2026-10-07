@@ -28,7 +28,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
             path: '/dashboard',
             label: 'Dashboard',
             icon: LayoutDashboard,
-            roles: ['Administrator', 'Teacher']
+            roles: ['Administrator', 'Teacher', 'Student']
         },
         {
             path: '/students',

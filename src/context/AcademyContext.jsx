@@ -139,6 +139,20 @@ export const AcademyProvider = ({ children }) => {
             };
         }
 
+        if (currentUser.role === 'Student') {
+            setStudents([]);
+            setTeachers([]);
+            setClasses([]);
+            setPayments([]);
+            setAttendance([]);
+            setNotifications([]);
+            setIsBackendReady(false);
+            setIsHydrated(true);
+            return () => {
+                cancelled = true;
+            };
+        }
+
         const hydrateFromBackend = async () => {
             try {
                 if (currentUser.role === 'Teacher') {
@@ -290,7 +304,7 @@ export const AcademyProvider = ({ children }) => {
     const login = async (username, password, role) => {
         const { user, token } = await loginRequest(username, password, role);
         localStorage.setItem('academy_token', token);
-        if (user.role === 'Teacher') {
+        if (user.role !== 'Administrator') {
             for (const key of [
                 'academy_students',
                 'academy_teachers',
