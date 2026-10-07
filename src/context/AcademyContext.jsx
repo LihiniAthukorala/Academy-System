@@ -411,7 +411,7 @@ export const AcademyProvider = ({ children }) => {
             nameInitials: studentData.nameInitials || studentData.name,
             joinedDate: studentData.joinedDate || new Date().toISOString().split('T')[0],
             status: studentData.status || 'Active',
-            profileImage: studentData.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(studentData.name)}`
+            profileImage: studentData.profileImage || '/default-avatar.png'
         };
 
         setStudents((prev) => [newStudent, ...prev]);

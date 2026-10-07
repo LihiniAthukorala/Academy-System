@@ -83,7 +83,7 @@ export const Attendance = () => {
                 return {
                     studentId: r.studentId,
                     studentName: std ? std.name : r.studentName,
-                    profileImage: std ? std.profileImage : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+                    profileImage: '/default-avatar.png',
                     status: r.status,
                     notes: r.notes || ''
                 };
@@ -98,7 +98,7 @@ export const Attendance = () => {
             const mapped = enrolledStudents.map((s) => ({
                 studentId: s.id,
                 studentName: s.name,
-                profileImage: s.profileImage,
+                profileImage: '/default-avatar.png',
                 status: 'Present', // Default status is present
                 notes: ''
             }));
@@ -377,9 +377,7 @@ export const Attendance = () => {
                                                         <td className="p-4">
                                                             <div className="flex items-center gap-3">
                                                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-sky-300/15 bg-slate-950">
-                                                                    <span className="text-sm font-black text-sky-200">
-                                                                        {r.studentName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
-                                                                    </span>
+                                                                    <img src="/default-avatar.png" alt="" className="h-full w-full object-cover" />
                                                                 </div>
                                                                 <span className="text-sm font-semibold text-slate-100">
                                                                     {r.studentName}

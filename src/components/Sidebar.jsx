@@ -147,7 +147,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
                     <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                         <img
-                            src={currentUser.avatarUrl || 'https://via.placeholder.com/150'}
+                            src={currentUser.avatarUrl || '/default-avatar.png'}
                             alt={currentUser.name}
                             className="w-9 h-9 rounded-full object-cover shadow-sm bg-slate-200 ring-2 ring-white dark:ring-slate-700"
                         />

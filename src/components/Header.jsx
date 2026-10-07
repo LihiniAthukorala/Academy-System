@@ -202,7 +202,7 @@ export const Header = ({ isCollapsed, setIsMobileOpen }) => {
                         className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-105 dark:hover:bg-slate-850 hover:shadow-2xs transition-all pointer-events-auto cursor-pointer"
                     >
                         <img
-                            src={currentUser.avatarUrl || 'https://via.placeholder.com/150'}
+                            src={currentUser.avatarUrl || '/default-avatar.png'}
                             alt={currentUser.name}
                             className="w-8 h-8 rounded-xl object-cover ring-2 ring-indigo-500/10"
                         />

@@ -429,9 +429,7 @@ export const Students = () => {
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-4">
                                                 <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#D4AF37]/25 bg-slate-900 ring-2 ring-[#D4AF37]/10">
-                                                    <span className="text-sm font-black text-[#F6D778]">
-                                                        {std.name?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
-                                                    </span>
+                                                    <img src="/default-avatar.png" alt="" className="h-full w-full object-cover" />
                                                 </div>
                                                 <div>
                                                     <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
