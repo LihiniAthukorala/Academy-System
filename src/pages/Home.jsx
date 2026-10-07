@@ -7,7 +7,6 @@ export const Home = () => {
     const { theme, toggleTheme, teachers } = useAcademy();
     const navigate = useNavigate();
     const location = useLocation();
-    const [heroImageFailed, setHeroImageFailed] = useState(false);
     const aboutSectionRef = useRef(null);
 
     const stats = [
@@ -164,10 +163,9 @@ export const Home = () => {
                             <div className="absolute -right-8 top-8 h-24 w-24 rounded-full bg-gradient-to-br from-violet-500/20 to-sky-400/10 blur-3xl" />
                             <div className="relative h-[420px] w-full overflow-hidden rounded-[1.5rem] bg-[#0A1025]">
                                 <img
-                                    src={heroImageFailed ? '/src/assets/hero.png' : '/home.jpg'}
-                                    alt="Chess board"
-                                    className="h-full w-full object-cover object-center"
-                                    onError={() => setHeroImageFailed(true)}
+                                    src="/bc.png"
+                                    alt="Gold chess pieces on a chessboard"
+                                    className="h-full w-full object-cover object-[65%_center]"
                                 />
                                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,16,37,0.08)_0%,rgba(10,16,37,0.22)_45%,rgba(10,16,37,0.52)_100%)]" />
                                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.16),transparent_48%),radial-gradient(circle_at_top_right,rgba(246,215,120,0.12),transparent_24%)] mix-blend-screen" />
