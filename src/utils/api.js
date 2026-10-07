@@ -1,4 +1,8 @@
-const defaultBaseUrl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || '';
+const configuredBaseUrl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || '';
+const defaultBaseUrl =
+    import.meta.env.PROD && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/i.test(configuredBaseUrl)
+        ? ''
+        : configuredBaseUrl;
 const collectionWriteQueues = new Map();
 
 const buildUrl = (path) => {
