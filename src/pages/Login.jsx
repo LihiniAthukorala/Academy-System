@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAcademy } from '../context/AcademyContext';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Home, Lock, Mail, Shield, GraduationCap, UserRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Home, Lock, Mail, BookOpenCheck, Shield, GraduationCap, UserCircle } from 'lucide-react';
 
 export const Login = () => {
     const { login } = useAcademy();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedRole, setSelectedRole] = useState('Administrator');
+    const [selectedRole, setSelectedRole] = useState('Administrator'); // 'Administrator' | 'Teacher'
+
     const {
         register,
         handleSubmit,
-        setError,
         formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
-            emailOrUsername: '',
-            password: ''
+            emailOrUsername: 'admin',
+            password: 'password123',
+            rememberMe: true
         }
     });
 
     const onSubmit = async (data) => {
-        try {
-            await login(data.emailOrUsername, data.password, selectedRole);
+        // Simulate login delay
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        const success = login(data.emailOrUsername, data.password, selectedRole);
+        if (success) {
             navigate('/dashboard');
-        } catch (error) {
-            setError('root.server', { message: error.message });
         }
     };
 
     const roles = [
         { id: 'Administrator', label: 'Admin', icon: Shield, desc: 'Full control' },
-        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' },
-        { id: 'Student', label: 'Student', icon: UserRound, desc: 'Your learning' }
+        { id: 'Teacher', label: 'Teacher', icon: GraduationCap, desc: 'Attendance & classes' }
     ];
 
     return (
@@ -41,13 +41,13 @@ export const Login = () => {
             <div className="absolute inset-0 bg-[url('/bc.png')] bg-center bg-cover opacity-10 pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(79,70,229,0.08),transparent_35%)] pointer-events-none" />
             <div className="absolute inset-0 bg-chessboard opacity-6 pointer-events-none" />
-            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-start justify-center px-3 py-4 sm:items-center sm:px-4 sm:py-6">
+            <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-4 py-6">
                 <div className="grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                    <div className="relative hidden overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-slate-950/40 lg:block">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-slate-950/40">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.1),transparent_40%)] opacity-80" />
                         <div className="absolute right-[-8%] top-1/4 h-[260px] w-[260px] rounded-full bg-[#4F46E5]/10 blur-3xl" />
                         <div className="absolute left-[-8%] bottom-10 h-[240px] w-[240px] rounded-full bg-[#D4AF37]/10 blur-3xl" />
-                        <div className="relative z-10 flex min-h-0 flex-col justify-between gap-4">
+                        <div className="relative z-10 flex min-h-auto flex-col justify-between gap-4">
                             <div>
                                 <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.26em] text-slate-300">
                                     <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy" className="h-8 w-8 rounded-xl object-cover" />
@@ -73,7 +73,7 @@ export const Login = () => {
                         </div>
                     </div>
 
-                    <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-slate-950/95 p-4 shadow-2xl shadow-slate-950/40 sm:rounded-[2rem] sm:p-6 lg:max-w-none lg:p-8">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-slate-950/40">
                         <button
                             type="button"
                             onClick={() => navigate('/home')}
@@ -85,15 +85,15 @@ export const Login = () => {
                         </button>
 
                         <div className="relative z-10">
-                            <div className="mb-6 flex items-center gap-3 sm:mb-8 sm:gap-4">
-                                <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="h-12 w-12 shrink-0 rounded-2xl object-cover ring-2 ring-white/10 sm:h-14 sm:w-14" />
+                            <div className="mb-8 flex items-center gap-4">
+                                <img src="/ratnapura-logo.jpeg" alt="Ratnapura Chess Academy logo" className="h-14 w-14 rounded-2xl object-cover ring-2 ring-white/10" />
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.28em]">Ratnapura Chess Academy</p>
-                                    <h2 className="text-2xl font-extrabold text-white sm:text-3xl">Welcome back</h2>
+                                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Ratnapura Chess Academy</p>
+                                    <h2 className="text-3xl font-extrabold text-white">Welcome back</h2>
                                 </div>
                             </div>
 
-                            <p className="mb-6 max-w-xl text-sm leading-6 text-slate-300/80 sm:mb-8">
+                            <p className="max-w-xl text-sm leading-6 text-slate-300/80 mb-8">
                                 Log in to your academy workspace and run attendance, fees, grades and notifications with royal precision.
                             </p>
 
@@ -102,7 +102,7 @@ export const Login = () => {
                                     <label className="block text-xs font-bold uppercase tracking-[0.24em] text-slate-400 mb-3 text-center sm:text-left">
                                         Select Your Role
                                     </label>
-                                    <div className="mx-auto grid w-full max-w-md grid-cols-3 gap-2 sm:gap-3">
+                                    <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-3">
                                         {roles.map((role) => {
                                             const Icon = role.icon;
                                             const isSelected = selectedRole === role.id;
@@ -111,7 +111,7 @@ export const Login = () => {
                                                     key={role.id}
                                                     type="button"
                                                     onClick={() => setSelectedRole(role.id)}
-                                                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center text-xs font-semibold transition-all duration-200 sm:rounded-[1.75rem] sm:px-4 sm:py-4 sm:text-sm ${isSelected
+                                                    className={`flex flex-col items-center justify-center gap-2 rounded-[1.75rem] border px-4 py-4 text-center text-sm font-semibold transition-all duration-200 ${isSelected
                                                         ? 'border-indigo-500 bg-indigo-500/15 text-indigo-100 shadow-lg shadow-indigo-500/10'
                                                         : 'border-slate-700 bg-slate-900/80 text-slate-300 hover:border-slate-500 hover:bg-slate-900/95'
                                                     }`}
@@ -126,7 +126,7 @@ export const Login = () => {
 
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-300">
-                                        {selectedRole === 'Teacher' ? 'Teacher username' : selectedRole === 'Student' ? 'Student username' : 'Administrator username'}
+                                        Email Address or Username
                                     </label>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -141,9 +141,8 @@ export const Login = () => {
                                                 }
                                             })}
                                             type="text"
-                                            autoComplete="username"
-                                            placeholder={selectedRole === 'Administrator' ? 'Admin username' : 'Your username'}
-                                            className={`w-full rounded-3xl border bg-slate-900/80 py-3 pl-10 pr-4 text-base text-white shadow-sm transition-all sm:text-sm ${errors.emailOrUsername
+                                            placeholder="admin or teacher"
+                                            className={`pl-10 pr-4 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.emailOrUsername
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
                                             }`}
@@ -157,11 +156,20 @@ export const Login = () => {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-center justify-between">
                                         <label className="text-xs font-bold text-slate-300">
                                             Account Password
                                         </label>
-                                        <span className="text-xs leading-5 text-slate-500">Contact the academy administrator for password help.</span>
+                                        <a
+                                            href="#forgot"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                alert('Simulation Note: Default setup passwords are: "admin" / "password123" or "teacher" / "password123".');
+                                            }}
+                                            className="text-xs font-semibold text-indigo-300 hover:text-indigo-100"
+                                        >
+                                            Forgot Password?
+                                        </a>
                                     </div>
                                     <div className="relative">
                                         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
@@ -176,9 +184,8 @@ export const Login = () => {
                                                 }
                                             })}
                                             type={showPassword ? 'text' : 'password'}
-                                            autoComplete="current-password"
                                             placeholder="••••••••"
-                                            className={`w-full rounded-3xl border bg-slate-900/80 py-3 pl-10 pr-10 text-base text-white shadow-sm transition-all sm:text-sm ${errors.password
+                                            className={`pl-10 pr-10 py-3 w-full rounded-3xl border bg-slate-900/80 text-sm text-white shadow-sm transition-all ${errors.password
                                                 ? 'border-rose-500 ring-2 ring-rose-500/10'
                                                 : 'border-slate-700 focus:border-indigo-500 ring-1 ring-transparent focus:ring-indigo-500/20'
                                             }`}
@@ -198,11 +205,17 @@ export const Login = () => {
                                     )}
                                 </div>
 
-                                {errors.root?.server && (
-                                    <p role="alert" className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                                        {errors.root.server.message}
-                                    </p>
-                                )}
+                                <div className="flex items-center gap-2 text-sm text-slate-400">
+                                    <input
+                                        {...register('rememberMe')}
+                                        id="remember_me"
+                                        type="checkbox"
+                                        className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
+                                    />
+                                    <label htmlFor="remember_me" className="font-semibold text-slate-300">
+                                        Remember my credentials on this browser
+                                    </label>
+                                </div>
 
                                 <button
                                     type="submit"
@@ -220,12 +233,7 @@ export const Login = () => {
                                 </button>
                             </form>
 
-                            {selectedRole === 'Teacher' && (
-                                <p className="mt-6 text-center text-sm text-slate-400">
-                                    New teacher? <Link to="/activate" className="font-semibold text-indigo-300 hover:text-indigo-100">Activate your account</Link>
-                                </p>
-                            )}
-                            <div className="mt-8 border-t border-white/10 pt-5 text-sm leading-6 text-slate-500 sm:mt-10 sm:pt-6">
+                            <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500">
                                 <p>Need help logging in? Contact support for account setup or password assistance.</p>
                             </div>
                         </div>

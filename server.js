@@ -1,34 +1,30 @@
 import 'dotenv/config';
+import 'dotenv/config';
 import http from 'node:http';
 import { parse } from 'node:url';
 import healthHandler from './api/health.js';
-import authHandler from './api/auth.js';
 import studentsHandler from './api/students.js';
 import classesHandler from './api/classes.js';
 import attendanceHandler from './api/attendance.js';
 import paymentsHandler from './api/payments.js';
 import teachersHandler from './api/teachers.js';
-import articlesHandler from './api/articles.js';
-import { getSession } from './api/_lib/auth.js';
 
 const port = Number(process.env.PORT || 3001);
 
 const routeHandlers = {
     '/api/health': healthHandler,
-    '/api/auth': authHandler,
     '/api/students': studentsHandler,
     '/api/classes': classesHandler,
     '/api/attendance': attendanceHandler,
     '/api/payments': paymentsHandler,
-    '/api/teachers': teachersHandler,
-    '/api/articles': articlesHandler
+    '/api/teachers': teachersHandler
 };
 
 const sendJson = (res, statusCode, data) => {
     res.statusCode = statusCode;
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.end(JSON.stringify(data));
 };
 
@@ -71,7 +67,7 @@ const server = http.createServer(async (req, res) => {
         res.statusCode = 204;
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         res.end();
         return;
     }
@@ -82,25 +78,6 @@ const server = http.createServer(async (req, res) => {
     if (!handler) {
         sendJson(res, 404, { message: 'Not found' });
         return;
-    }
-
-    if (pathname !== '/api/health' && pathname !== '/api/auth' && !(pathname === '/api/articles' && req.method === 'GET')) {
-        let session;
-        try {
-            session = getSession(req);
-        } catch {
-            sendJson(res, 503, { message: 'Authentication is not configured on the server.' });
-            return;
-        }
-
-        if (!session) {
-            sendJson(res, 401, { message: 'Sign in is required to access this resource.' });
-            return;
-        }
-        if (session.role !== 'Administrator') {
-            sendJson(res, 403, { message: 'This resource is only available to administrators.' });
-            return;
-        }
     }
 
     try {
