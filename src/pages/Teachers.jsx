@@ -23,7 +23,9 @@ export const Teachers = () => {
         addTeacher,
         updateTeacher,
         deleteTeacher,
-        classes
+        classes,
+        inviteTeacher,
+        triggerToast
     } = useAcademy();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -80,7 +82,7 @@ export const Teachers = () => {
             profileImage: t.profileImage || ''
         });
         setProfilePreview(t.profileImage || '');
-        setEditingTeacherId(t.id || t._id);
+        setEditingTeacherId(t.id);
         setIsFormOpen(true);
     };
 
@@ -107,13 +109,23 @@ export const Teachers = () => {
         readImageFile(file);
     };
 
-    const handleFormSubmit = (data) => {
+    const handleFormSubmit = async (data) => {
         if (editingTeacherId) {
             updateTeacher(editingTeacherId, data);
         } else {
             addTeacher(data);
         }
         setIsFormOpen(false);
+    };
+
+    const handleInvite = async (teacher) => {
+        try {
+            const result = await inviteTeacher(teacher);
+            updateTeacher(teacher.id, { activationStatus: 'pending' });
+            triggerToast(result.message, 'success');
+        } catch (error) {
+            triggerToast(`Could not send the activation code: ${error.message}`, 'error');
+        }
     };
 
     const confirmDelete = (t) => {
@@ -123,7 +135,7 @@ export const Teachers = () => {
 
     const handleDeleteConfirm = () => {
         if (teacherToDelete) {
-            deleteTeacher(teacherToDelete.id || teacherToDelete._id);
+            deleteTeacher(teacherToDelete.id);
         }
         setDeleteModalOpen(false);
         setTeacherToDelete(null);
@@ -276,10 +288,31 @@ export const Teachers = () => {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <StatusBadge status={t.status} />
+                                                <div className="space-y-1">
+                                                    <StatusBadge status={t.status} />
+                                                    <p className="text-[10px] font-semibold text-slate-500">
+                                                        {t.activationStatus === 'active'
+                                                            ? 'Account activated'
+                                                            : t.activationStatus === 'pending'
+                                                                ? 'Activation pending'
+                                                                : 'No account invite'}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center gap-2">
+                                                    {t.activationStatus !== 'active' && t.status !== 'Inactive' && (
+                                                        <button
+                                                            onClick={(event) => {
+                                                                event.stopPropagation();
+                                                                handleInvite(t);
+                                                            }}
+                                                            className="rounded-lg border border-emerald-600/30 bg-emerald-500/10 p-2 text-emerald-600 transition-colors hover:bg-emerald-500/20"
+                                                            title={t.activationStatus === 'pending' ? 'Resend email activation code' : 'Send email activation code'}
+                                                        >
+                                                            <Mail className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={(event) => {
                                                             event.stopPropagation();
@@ -354,152 +387,163 @@ export const Teachers = () => {
 
             {/* CRUD Edit/Add Overlay Modal dialog */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-6">
-                    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={() => setIsFormOpen(false)}></div>
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-md sm:p-5 md:p-6">
+                    <div className="fixed inset-0" onClick={() => setIsFormOpen(false)}></div>
 
-                    <div className="relative z-10 my-4 w-full max-w-6xl overflow-y-auto rounded-[2rem] border border-[#D4AF37]/30 bg-slate-950/96 p-6 shadow-2xl shadow-[#D4AF37]/10 md:my-8 md:p-8 animate-slide-in max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)]">
-                        <div className="mb-6 flex flex-col gap-4 border-b border-[#D4AF37]/15 pb-5 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <h3 className="text-2xl font-black text-[#F6D778]">
-                                    {editingTeacherId ? 'Modify Teacher Info' : 'Enroll Teacher Account'}
-                                </h3>
-                                <p className="mt-2 text-sm text-slate-300">
-                                    Create or update an instructor profile with the same structure used for student registration.
-                                </p>
-                            </div>
-
-                            <div className="rounded-3xl border border-slate-700 bg-slate-900/70 px-5 py-4 shadow-sm">
-                                <div className="flex items-center gap-3 text-slate-100">
-                                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white">
-                                        <UserPlus className="w-5 h-5" />
+                    <div className="relative z-10 my-2 w-full max-w-5xl overflow-y-auto rounded-3xl border border-amber-200/15 bg-slate-950 shadow-2xl shadow-black/40 animate-slide-in max-h-[calc(100vh-1rem)] sm:my-4 sm:max-h-[calc(100vh-2rem)]">
+                        <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-[#24200f] px-5 py-6 sm:px-8">
+                            <div className="absolute -right-8 -top-20 h-56 w-56 rounded-full border border-amber-300/10" />
+                            <div className="relative flex items-start justify-between gap-4">
+                                <div>
+                                    <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-amber-200">
+                                        <GraduationCap className="h-3.5 w-3.5" />
+                                        Staff registration
                                     </span>
-                                    <div>
-                                        <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Teacher Account</p>
-                                        <p className="text-sm font-semibold">Fill teacher details and submit registration instantly.</p>
-                                    </div>
+                                    <h3 className="mt-3 text-2xl font-black tracking-tight text-white">
+                                        {editingTeacherId ? 'Update teacher profile' : 'Register a teacher'}
+                                    </h3>
+                                    <p className="mt-1.5 max-w-xl text-sm leading-6 text-slate-400">
+                                        Add contact, qualification, and account details. Required fields are marked with an asterisk.
+                                    </p>
                                 </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsFormOpen(false)}
+                                    aria-label="Close teacher form"
+                                    className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
-                            <section className="space-y-4">
-                                <div className="flex items-center justify-between gap-4">
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5 p-4 sm:p-7">
+                            <section className="space-y-4 rounded-2xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
+                                <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
+                                        <UserPlus className="h-5 w-5" />
+                                    </span>
                                     <div>
-                                        <h2 className="text-lg font-bold text-[#F6D778]">Teacher details</h2>
-                                        <p className="text-sm text-slate-300">Teacher name, contact details, and qualification information.</p>
+                                        <h2 className="text-base font-bold text-white">Personal details</h2>
+                                        <p className="mt-0.5 text-xs text-slate-400">Teacher name, contact, and qualifications</p>
                                     </div>
-                                    <span className="rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#F6D778]">Required fields *</span>
                                 </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 gap-x-5 gap-y-4 md:grid-cols-2">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-300">Full Name *</label>
+                                        <label className="text-sm font-semibold text-slate-200">Full name *</label>
                                         <input
                                             {...register('name', { required: 'Teacher Name is required' })}
                                             type="text"
                                             placeholder="e.g. Dr. Walter White"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                            autoComplete="name"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
                                         />
-                                        {errors.name && <p className="text-rose-400 text-[11px]">{errors.name.message}</p>}
+                                        {errors.name && <p className="text-xs font-medium text-rose-400">{errors.name.message}</p>}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-300">Email Address *</label>
+                                        <label className="text-sm font-semibold text-slate-200">Email address *</label>
                                         <input
                                             {...register('email', {
                                                 required: 'Email coordinates are required',
                                                 pattern: {
-                                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                                     message: 'Invalid email format'
                                                 }
                                             })}
                                             type="email"
                                             placeholder="walter@academy.com"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                            autoComplete="email"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
                                         />
-                                        {errors.email && <p className="text-rose-400 text-[11px]">{errors.email.message}</p>}
+                                        {errors.email && <p className="text-xs font-medium text-rose-400">{errors.email.message}</p>}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-300">Phone Number *</label>
+                                        <label className="text-sm font-semibold text-slate-200">Phone number</label>
                                         <input
                                             {...register('phone', {
-                                                required: 'Phone contact is required',
                                                 pattern: {
-                                                    value: /^[0-9+\-\s()]{7,15}$/,
-                                                    message: 'Invalid phone format'
+                                                    value: /^\+?[0-9\s()-]{7,20}$/,
+                                                    message: 'Enter a valid phone number'
                                                 }
                                             })}
-                                            type="text"
-                                            placeholder="+12345678"
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                            type="tel"
+                                            placeholder="Optional"
+                                            autoComplete="tel"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
                                         />
-                                        {errors.phone && <p className="text-rose-400 text-[11px]">{errors.phone.message}</p>}
+                                        {errors.phone && <p className="text-xs font-medium text-rose-400">{errors.phone.message}</p>}
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Qualifications</label>
-                                    <input
-                                        {...register('qualifications')}
-                                        type="text"
-                                        placeholder="e.g. BSc, PhD in Pure Math"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    />
-                                </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-200">Qualifications</label>
+                                        <input
+                                            {...register('qualifications')}
+                                            type="text"
+                                            placeholder="e.g. BSc, PhD in Pure Math"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
+                                        />
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-300">Residential Physical Address</label>
-                                    <input
-                                        {...register('address')}
-                                        type="text"
-                                        placeholder="308 Negra Arroyo Lane, Albuquerque"
-                                        className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
-                                    />
+                                    <div className="space-y-2 md:col-span-2">
+                                        <label className="text-sm font-semibold text-slate-200">Residential address</label>
+                                        <input
+                                            {...register('address')}
+                                            type="text"
+                                            placeholder="Street, city"
+                                            autoComplete="street-address"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
+                                        />
+                                    </div>
                                 </div>
                             </section>
 
-                            <section className="space-y-4">
-                                <div className="flex items-center justify-between gap-4">
+                            <section className="space-y-4 rounded-2xl border border-white/10 bg-slate-900/45 p-4 sm:p-6">
+                                <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-400/10 text-violet-300">
+                                        <GraduationCap className="h-5 w-5" />
+                                    </span>
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-100">Teaching account settings</h2>
-                                        <p className="text-sm text-slate-400">Status and any optional account configuration for the teacher profile.</p>
+                                        <h2 className="text-base font-bold text-white">Teaching account</h2>
+                                        <p className="mt-0.5 text-xs text-slate-400">Set account availability and profile image</p>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-300">Teaching account status</label>
+                                        <label className="text-sm font-semibold text-slate-200">Account status</label>
                                         <select
                                             {...register('status')}
-                                            className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                                            className="w-full rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-sm transition hover:border-slate-600 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/10"
                                         >
                                             <option value="Active">Active</option>
                                             <option value="Inactive">Inactive</option>
                                         </select>
                                     </div>
 
-                                    <div className="space-y-2 lg:col-span-2">
-                                        <label className="text-xs font-semibold text-slate-300">Profile Image</label>
+                                    <div className="space-y-2 md:col-span-2">
+                                        <label className="text-sm font-semibold text-slate-200">Profile image</label>
                                         <input {...register('profileImage')} type="hidden" />
                                         <div
                                             onClick={() => imageInputRef.current?.click()}
                                             onDragOver={(event) => event.preventDefault()}
                                             onDrop={handleImageDrop}
-                                            className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#D4AF37]/35 bg-slate-900 px-5 py-5 text-center transition hover:border-[#F6D778] hover:bg-slate-800/70"
+                                            className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-5 py-5 text-center transition hover:border-amber-300/70 hover:bg-slate-800/70"
                                         >
                                             {profilePreview ? (
                                                 <img
                                                     src={profilePreview}
                                                     alt="Teacher preview"
-                                                    className="mb-4 h-24 w-24 rounded-2xl object-cover ring-2 ring-[#D4AF37]/40"
+                                                    className="mb-4 h-24 w-24 rounded-2xl object-cover ring-2 ring-amber-300/40"
                                                 />
                                             ) : (
-                                                <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-sm font-bold text-[#F6D778]">
+                                                <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-amber-300/10 text-sm font-bold text-amber-200">
                                                     Upload
                                                 </div>
                                             )}
-                                            <p className="text-sm font-semibold text-slate-100">Drag & drop an image here</p>
+                                            <p className="text-sm font-semibold text-slate-100">Drop a profile image here</p>
                                             <p className="mt-1 text-xs text-slate-400">or click to choose a file from your device</p>
                                             <p className="mt-3 text-[11px] text-slate-500">PNG, JPG, JPEG, WEBP</p>
                                         </div>
@@ -514,19 +558,19 @@ export const Teachers = () => {
                                 </div>
                             </section>
 
-                            <div className="grid gap-3 sm:grid-cols-2 pt-2">
+                            <div className="sticky bottom-0 -mx-4 -mb-4 grid gap-3 border-t border-white/10 bg-slate-950/95 p-4 pt-4 backdrop-blur sm:-mx-7 sm:-mb-7 sm:grid-cols-2 sm:p-7">
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="rounded-2xl border border-[#D4AF37]/30 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
+                                    className="rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm shadow-[#D4AF37]/30 transition hover:bg-[#F6D778]"
+                                    className="rounded-xl bg-gradient-to-r from-amber-300 to-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-400/15 transition hover:brightness-105"
                                 >
-                                    Save Teacher Account
+                                    {editingTeacherId ? 'Save changes' : 'Register teacher'}
                                 </button>
                             </div>
                         </form>

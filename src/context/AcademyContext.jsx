@@ -1,6 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getStorageItem, setStorageItem, generateId } from '../utils/storage';
-import { apiHealth, fetchCollection, replaceCollection } from '../utils/api';
+import {
+    apiHealth,
+    fetchPublicCoaches,
+    fetchCollection,
+    fetchTeacherWorkspace,
+    inviteTeacherRequest,
+    loginRequest,
+    replaceCollection
+} from '../utils/api';
 import {
     SAMPLE_STUDENTS,
     SAMPLE_TEACHERS,
@@ -18,19 +26,20 @@ export const AcademyProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => getStorageItem('academy_theme', 'light'));
 
     // Auth state
-    const [currentUser, setCurrentUser] = useState(() => getStorageItem('academy_user', null));
+    const [currentUser, setCurrentUser] = useState(() =>
+        localStorage.getItem('academy_token') ? getStorageItem('academy_user', null) : null
+    );
 
     // Entities state loaded from LocalStorage or Fallback Mock Data
-    const [students, setStudents] = useState(() => getStorageItem('academy_students', SAMPLE_STUDENTS));
-    const [teachers, setTeachers] = useState(() => getStorageItem('academy_teachers', SAMPLE_TEACHERS));
-    const [classes, setClasses] = useState(() => getStorageItem('academy_classes', SAMPLE_CLASSES));
-    const [payments, setPayments] = useState(() => getStorageItem('academy_payments', SAMPLE_PAYMENTS));
-    const [attendance, setAttendance] = useState(() => getStorageItem('academy_attendance', SAMPLE_ATTENDANCE));
-    const [notifications, setNotifications] = useState(() => getStorageItem('academy_notifications', SAMPLE_NOTIFICATIONS));
-    const [settings, setSettings] = useState(() => getStorageItem('academy_settings', DEFAULT_SETTINGS));
+    const [students, setStudents] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_students', SAMPLE_STUDENTS) : []);
+    const [teachers, setTeachers] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_teachers', SAMPLE_TEACHERS) : []);
+    const [classes, setClasses] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_classes', SAMPLE_CLASSES) : []);
+    const [payments, setPayments] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_payments', SAMPLE_PAYMENTS) : []);
+    const [attendance, setAttendance] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_attendance', SAMPLE_ATTENDANCE) : []);
+    const [notifications, setNotifications] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_notifications', SAMPLE_NOTIFICATIONS) : []);
+    const [settings, setSettings] = useState(() => currentUser?.role === 'Administrator' ? getStorageItem('academy_settings', DEFAULT_SETTINGS) : DEFAULT_SETTINGS);
     const [isBackendReady, setIsBackendReady] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
-    const skipBackendHydrationRef = useRef(false);
 
     // Toasts notifications queue
     const [toasts, setToasts] = useState([]);
@@ -48,32 +57,39 @@ export const AcademyProvider = ({ children }) => {
 
     // Sync state data to LocalStorage on updates
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_students', students);
-    }, [students]);
+    }, [students, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_teachers', teachers);
-    }, [teachers]);
+    }, [teachers, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_classes', classes);
-    }, [classes]);
+    }, [classes, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_payments', payments);
-    }, [payments]);
+    }, [payments, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_attendance', attendance);
-    }, [attendance]);
+    }, [attendance, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_notifications', notifications);
-    }, [notifications]);
+    }, [notifications, currentUser]);
 
     useEffect(() => {
+        if (currentUser?.role !== 'Administrator') return;
         setStorageItem('academy_settings', settings);
-    }, [settings]);
+    }, [settings, currentUser]);
 
     useEffect(() => {
         const cleanupFlag = 'academy_seed_cleanup_v2';
@@ -90,27 +106,75 @@ export const AcademyProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        if (!localStorage.getItem('academy_token')) {
+            setCurrentUser(null);
+            localStorage.removeItem('academy_user');
+        }
+    }, []);
+
+    useEffect(() => {
         let cancelled = false;
 
-        if (skipBackendHydrationRef.current) {
+        if (!currentUser) {
+            fetchPublicCoaches()
+                .then((coaches) => {
+                    if (!cancelled) setTeachers(coaches);
+                })
+                .catch((error) => {
+                    if (!cancelled) console.error('Could not load public coach profiles:', error);
+                })
+                .finally(() => {
+                    if (!cancelled) setIsHydrated(true);
+                });
             return () => {
                 cancelled = true;
             };
         }
 
-        const normalizeRemoteItem = (item) => {
-            if (!item || typeof item !== 'object') return item;
-            const normalizedId = item.id || (item._id ? item._id.toString?.() || item._id : undefined);
-            if (normalizedId) {
-                const { _id, ...rest } = item;
-                return { ...rest, id: normalizedId };
-            }
-            return { ...item };
-        };
+        if (!localStorage.getItem('academy_token')) {
+            setCurrentUser(null);
+            setIsHydrated(true);
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        if (currentUser.role === 'Student') {
+            setStudents([]);
+            setTeachers([]);
+            setClasses([]);
+            setPayments([]);
+            setAttendance([]);
+            setNotifications([]);
+            setIsBackendReady(false);
+            setIsHydrated(true);
+            return () => {
+                cancelled = true;
+            };
+        }
 
         const hydrateFromBackend = async () => {
             try {
-                await apiHealth();
+                if (currentUser.role === 'Teacher') {
+                    const workspace = await fetchTeacherWorkspace();
+                    if (cancelled) return;
+                    setStudents(workspace.students);
+                    setClasses(workspace.classes);
+                    setTeachers([workspace.teacher]);
+                    setAttendance([]);
+                    setPayments([]);
+                    setNotifications([]);
+                    return;
+                }
+
+                const health = await apiHealth();
+                if (health.storage !== 'mongodb') {
+                    showToast(
+                        'MongoDB is not configured',
+                        'The API is saving to local JSON files. Set MONGODB_URI in .env to use MongoDB Atlas.',
+                        'error'
+                    );
+                }
 
                 const [remoteStudents, remoteTeachers, remoteClasses, remoteAttendance, remotePayments] = await Promise.all([
                     fetchCollection('students'),
@@ -123,32 +187,64 @@ export const AcademyProvider = ({ children }) => {
                 if (cancelled) return;
 
                 if (Array.isArray(remoteStudents)) {
-                    setStudents(remoteStudents.map(normalizeRemoteItem));
+                    setStudents(remoteStudents);
                 }
 
                 if (Array.isArray(remoteTeachers)) {
                     setTeachers(remoteTeachers.map((t) => ({
-                        ...normalizeRemoteItem(t),
+                        ...t,
                         classes: Array.isArray(t.classes) ? t.classes : []
                     })));
                 }
 
                 if (Array.isArray(remoteClasses)) {
-                    setClasses(remoteClasses.map(normalizeRemoteItem));
+                    setClasses(remoteClasses);
                 }
 
                 if (Array.isArray(remoteAttendance)) {
-                    setAttendance(remoteAttendance.map(normalizeRemoteItem));
+                    setAttendance(remoteAttendance);
                 }
 
                 if (Array.isArray(remotePayments)) {
-                    setPayments(remotePayments.map(normalizeRemoteItem));
+                    setPayments(remotePayments);
                 }
 
                 setIsBackendReady(true);
             } catch (error) {
                 if (!cancelled) {
                     setIsBackendReady(false);
+                    console.error('Could not load academy data from the API:', error);
+                    if (error.statusCode === 401 || error.statusCode === 403) {
+                        localStorage.removeItem('academy_token');
+                        localStorage.removeItem('academy_user');
+                        for (const key of [
+                            'academy_students',
+                            'academy_teachers',
+                            'academy_classes',
+                            'academy_payments',
+                            'academy_attendance',
+                            'academy_notifications',
+                            'academy_settings'
+                        ]) {
+                            localStorage.removeItem(key);
+                        }
+                        setCurrentUser(null);
+                        setStudents([]);
+                        setTeachers([]);
+                        setClasses([]);
+                        setPayments([]);
+                        setAttendance([]);
+                        setNotifications([]);
+                        setSettings(DEFAULT_SETTINGS);
+                    }
+                    const message = /bad auth|authentication failed/i.test(error.message)
+                        ? 'MongoDB rejected the configured credentials. Update the Atlas username/password in .env, then restart the API.'
+                        : 'Changes are only being kept in this browser until the API connection is restored.';
+                    showToast(
+                        'Data API unavailable',
+                        message,
+                        'error'
+                    );
                 }
             } finally {
                 if (!cancelled) {
@@ -162,61 +258,102 @@ export const AcademyProvider = ({ children }) => {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [currentUser]);
 
     useEffect(() => {
-        if (!isHydrated || !isBackendReady) return;
-        replaceCollection('students', students).catch(() => {});
-    }, [students, isBackendReady, isHydrated]);
+        if (!isHydrated || !isBackendReady || currentUser?.role !== 'Administrator') return;
+        replaceCollection('students', students).catch((error) => {
+            console.error('Could not save students:', error);
+            showToast('Save failed', 'Student data could not be saved to the configured database.', 'error');
+        });
+    }, [students, isBackendReady, isHydrated, currentUser]);
 
     useEffect(() => {
-        if (!isHydrated || !isBackendReady) return;
-        replaceCollection('teachers', teachers).catch(() => {});
-    }, [teachers, isBackendReady, isHydrated]);
+        if (!isHydrated || !isBackendReady || currentUser?.role !== 'Administrator') return;
+        replaceCollection('teachers', teachers).catch((error) => {
+            console.error('Could not save teachers:', error);
+            showToast('Save failed', 'Teacher data could not be saved to the configured database.', 'error');
+        });
+    }, [teachers, isBackendReady, isHydrated, currentUser]);
 
     useEffect(() => {
-        if (!isHydrated || !isBackendReady) return;
-        replaceCollection('classes', classes).catch(() => {});
-    }, [classes, isBackendReady, isHydrated]);
+        if (!isHydrated || !isBackendReady || currentUser?.role !== 'Administrator') return;
+        replaceCollection('classes', classes).catch((error) => {
+            console.error('Could not save classes:', error);
+            showToast('Save failed', 'Class data could not be saved to the configured database.', 'error');
+        });
+    }, [classes, isBackendReady, isHydrated, currentUser]);
 
     useEffect(() => {
-        if (!isHydrated || !isBackendReady) return;
-        replaceCollection('attendance', attendance).catch(() => {});
-    }, [attendance, isBackendReady, isHydrated]);
+        if (!isHydrated || !isBackendReady || currentUser?.role !== 'Administrator') return;
+        replaceCollection('attendance', attendance).catch((error) => {
+            console.error('Could not save attendance:', error);
+            showToast('Save failed', 'Attendance data could not be saved to the configured database.', 'error');
+        });
+    }, [attendance, isBackendReady, isHydrated, currentUser]);
 
     useEffect(() => {
-        if (!isHydrated || !isBackendReady) return;
-        replaceCollection('payments', payments).catch(() => {});
-    }, [payments, isBackendReady, isHydrated]);
+        if (!isHydrated || !isBackendReady || currentUser?.role !== 'Administrator') return;
+        replaceCollection('payments', payments).catch((error) => {
+            console.error('Could not save payments:', error);
+            showToast('Save failed', 'Payment data could not be saved to the configured database.', 'error');
+        });
+    }, [payments, isBackendReady, isHydrated, currentUser]);
 
     // --- Auth Utilities ---
-    const login = (emailOrUsername, password, role) => {
-        // Basic validation / Simulation
-        // Accept any valid-looking credentials, assigning the selected role
-        let email = emailOrUsername;
-        if (!email.includes('@')) {
-            email = `${emailOrUsername.toLowerCase()}@academy.com`;
+    const login = async (username, password, role) => {
+        const { user, token } = await loginRequest(username, password, role);
+        localStorage.setItem('academy_token', token);
+        if (user.role !== 'Administrator') {
+            for (const key of [
+                'academy_students',
+                'academy_teachers',
+                'academy_classes',
+                'academy_payments',
+                'academy_attendance',
+                'academy_notifications',
+                'academy_settings'
+            ]) {
+                localStorage.removeItem(key);
+            }
+            setStudents([]);
+            setTeachers([]);
+            setClasses([]);
+            setPayments([]);
+            setAttendance([]);
+            setNotifications([]);
+            setSettings(DEFAULT_SETTINGS);
+            setIsBackendReady(false);
         }
-
-        const userData = {
-            username: emailOrUsername.split('@')[0],
-            email: email,
-            role: role, // 'Administrator' | 'Teacher'
-            name: role === 'Administrator' ? 'Principal Admin' : 'Dr. Robert Carter',
-            avatarUrl: role === 'Teacher'
-                ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
-                : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
-        };
-
-        setCurrentUser(userData);
-        setStorageItem('academy_user', userData);
-        showToast('Success', `Successfully logged in as ${role}`, 'success');
+        setCurrentUser(user);
+        setStorageItem('academy_user', user);
+        showToast('Success', `Successfully logged in as ${user.role}`, 'success');
         return true;
     };
 
     const logout = () => {
         setCurrentUser(null);
+        localStorage.removeItem('academy_token');
         localStorage.removeItem('academy_user');
+        for (const key of [
+            'academy_students',
+            'academy_teachers',
+            'academy_classes',
+            'academy_payments',
+            'academy_attendance',
+            'academy_notifications',
+            'academy_settings'
+        ]) {
+            localStorage.removeItem(key);
+        }
+        setStudents([]);
+        setTeachers([]);
+        setClasses([]);
+        setPayments([]);
+        setAttendance([]);
+        setNotifications([]);
+        setSettings(DEFAULT_SETTINGS);
+        setIsBackendReady(false);
         showToast('Info', 'Successfully logged out', 'info');
     };
 
@@ -271,9 +408,10 @@ export const AcademyProvider = ({ children }) => {
         const newStudent = {
             ...studentData,
             id: newId,
+            nameInitials: studentData.nameInitials || studentData.name,
             joinedDate: studentData.joinedDate || new Date().toISOString().split('T')[0],
             status: studentData.status || 'Active',
-            profileImage: studentData.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(studentData.name)}`
+            profileImage: studentData.profileImage || '/default-avatar.png'
         };
 
         setStudents((prev) => [newStudent, ...prev]);
@@ -299,17 +437,16 @@ export const AcademyProvider = ({ children }) => {
     // --- Teacher CRUD ---
     const addTeacher = (teacherData) => {
         let newId = generateId('TCH');
-        while (teachers.some((t) => t.id === newId || t._id === newId)) {
+        while (teachers.some((t) => t.id === newId)) {
             newId = generateId('TCH');
         }
 
         const { subject: _ignoredSubject, ...teacherPayload } = teacherData;
-        const normalizedId = teacherPayload.id || (teacherPayload._id ? teacherPayload._id.toString?.() || teacherPayload._id : undefined) || newId;
 
         const newTeacher = {
             ...teacherPayload,
-            id: normalizedId,
-            _id: teacherPayload._id || normalizedId,
+            phone: (teacherPayload.phone || '').replace(/[\s()-]/g, ''),
+            id: newId,
             joinedDate: teacherPayload.joinedDate || new Date().toISOString().split('T')[0],
             status: teacherPayload.status || 'Active',
             profileImage: teacherPayload.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(teacherPayload.name)}`,
@@ -324,18 +461,14 @@ export const AcademyProvider = ({ children }) => {
     const updateTeacher = (id, updatedData) => {
         const { subject: _ignoredSubject, ...teacherPayload } = updatedData;
         setTeachers((prev) =>
-            prev.map((t) =>
-                t.id === id || t._id === id
-                    ? { ...t, ...teacherPayload, id: t.id || t._id }
-                    : t
-            )
+            prev.map((t) => (t.id === id ? { ...t, ...teacherPayload } : t))
         );
         showToast('Teacher Updated', 'Teacher details updated.', 'success');
     };
 
     const deleteTeacher = (id) => {
-        const teacher = teachers.find((t) => t.id === id || t._id === id);
-        setTeachers((prev) => prev.filter((t) => t.id !== id && t._id !== id));
+        const teacher = teachers.find((t) => t.id === id);
+        setTeachers((prev) => prev.filter((t) => t.id !== id));
         showToast('Teacher Removed', `${teacher ? teacher.name : 'Teacher'} deleted.`, 'success');
     };
 
@@ -609,7 +742,9 @@ export const AcademyProvider = ({ children }) => {
                 toggleTheme: () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light')),
 
                 currentUser,
+                isHydrated,
                 login,
+                inviteTeacher: inviteTeacherRequest,
                 logout,
 
                 toasts,
