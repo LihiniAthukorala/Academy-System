@@ -11,6 +11,6 @@ export default async function handler(req, res) {
             storage: process.env.MONGODB_URI ? 'mongodb' : 'local-json'
         });
     } catch (error) {
-        return res.status(500).json({ ok: false, message: error.message });
+        return res.status(error.statusCode || 500).json({ ok: false, message: error.message });
     }
 }

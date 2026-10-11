@@ -169,8 +169,19 @@ export async function getDb() {
         if (cachedDb) return cachedDb;
 
         if (!cachedClient) {
-            cachedClient = new MongoClient(uri);
-            await cachedClient.connect();
+            cachedClient = new MongoClient(uri, {
+                serverSelectionTimeoutMS: 5_000,
+                connectTimeoutMS: 5_000
+            });
+            try {
+                await cachedClient.connect();
+            } catch (cause) {
+                cachedClient = undefined;
+                const error = new Error('The database service could not be reached. Check MongoDB Atlas network access and credentials.');
+                error.statusCode = 503;
+                error.cause = cause;
+                throw error;
+            }
         }
 
         cachedDb = cachedClient.db(dbName);
