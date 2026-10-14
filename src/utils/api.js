@@ -99,6 +99,12 @@ export const inviteTeacherRequest = (teacher) =>
         body: { action: 'inviteTeacher', teacher }
     });
 
+export const resetTeacherAccountRequest = (teacherId) =>
+    requestJson('/api/auth', {
+        method: 'POST',
+        body: { action: 'resetTeacherAccount', teacherId }
+    });
+
 export const requestTeacherOtp = (email) =>
     requestJson('/api/auth', {
         method: 'POST',

@@ -231,6 +231,51 @@ const sendTeacherOtp = async (req, res, body, adminInitiated = false) => {
     return res.status(200).json({ message });
 };
 
+const resetTeacherAccount = async (req, res, body) => {
+    const session = getSession(req);
+    if (!session || session.role !== 'Administrator') {
+        return res.status(401).json({ message: 'Administrator sign-in is required to reset a teacher account.' });
+    }
+
+    const teacherId = typeof body.teacherId === 'string' ? body.teacherId : '';
+    const db = await getDb();
+    const teacher = await db.collection('teachers').findOne({ id: teacherId });
+    if (!teacher || teacher.status === 'Inactive') {
+        return res.status(404).json({ message: 'An active teacher with this account could not be found.' });
+    }
+
+    const email = normalizeEmail(teacher.email);
+    if (!email) {
+        return res.status(400).json({ message: 'This teacher does not have a valid email address for account recovery.' });
+    }
+
+    const users = db.collection('users');
+    const account = await users.findOne({ teacherId, role: 'Teacher' });
+    if (!account) {
+        return res.status(404).json({ message: 'This teacher has not started account activation yet.' });
+    }
+
+    await users.updateOne(
+        { teacherId, role: 'Teacher' },
+        {
+            $set: {
+                email,
+                username: null,
+                passwordHash: null,
+                status: 'pending',
+                verificationTokenHash: null,
+                verificationTokenExpiresAt: null,
+                otpHash: null,
+                otpExpiresAt: null,
+                attempts: 0,
+                sentAt: null
+            }
+        }
+    );
+
+    return sendTeacherOtp(req, res, { teacher: { ...teacher, email } }, true);
+};
+
 const verifyTeacherOtp = async (req, res, body) => {
     const email = normalizeEmail(body.email);
     const otp = typeof body.otp === 'string' ? body.otp.trim() : '';
@@ -524,6 +569,7 @@ export default async function handler(req, res) {
             return res.status(200).json(coaches);
         }
         if (body.action === 'inviteTeacher') return await sendTeacherOtp(req, res, body, true);
+        if (body.action === 'resetTeacherAccount') return await resetTeacherAccount(req, res, body);
         if (body.action === 'requestTeacherOtp') return await sendTeacherOtp(req, res, body);
         if (body.action === 'verifyTeacherOtp') return await verifyTeacherOtp(req, res, body);
         if (body.action === 'completeTeacherActivation') return await completeTeacherActivation(req, res, body);

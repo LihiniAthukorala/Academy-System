@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmationModal from '../components/ConfirmationModal';
+import { resetTeacherAccountRequest } from '../utils/api';
 
 export const Teachers = () => {
     const {
@@ -125,6 +126,17 @@ export const Teachers = () => {
             triggerToast(result.message, 'success');
         } catch (error) {
             triggerToast(`Could not send the activation code: ${error.message}`, 'error');
+        }
+    };
+
+    const handleResetAccount = async (teacher) => {
+        if (!window.confirm(`Reset the login for ${teacher.name}? They will need to create a new username and password.`)) return;
+        try {
+            const result = await resetTeacherAccountRequest(teacher.id);
+            updateTeacher(teacher.id, { activationStatus: 'pending' });
+            triggerToast(result.message, 'success');
+        } catch (error) {
+            triggerToast(`Could not reset the teacher account: ${error.message}`, 'error');
         }
     };
 
@@ -311,6 +323,18 @@ export const Teachers = () => {
                                                             title={t.activationStatus === 'pending' ? 'Resend email activation code' : 'Send email activation code'}
                                                         >
                                                             <Mail className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    )}
+                                                    {t.activationStatus === 'active' && t.status !== 'Inactive' && (
+                                                        <button
+                                                            onClick={(event) => {
+                                                                event.stopPropagation();
+                                                                handleResetAccount(t);
+                                                            }}
+                                                            className="rounded-lg border border-amber-600/30 bg-amber-500/10 p-2 text-amber-600 transition-colors hover:bg-amber-500/20"
+                                                            title="Reset teacher login"
+                                                        >
+                                                            <UserPlus className="h-3.5 w-3.5" />
                                                         </button>
                                                     )}
                                                     <button
