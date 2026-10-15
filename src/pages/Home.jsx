@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, ChevronRight, Menu, Moon, Sparkles, Sun, Trophy, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, Menu, Moon, Sun, X } from 'lucide-react';
 import { useAcademy } from '../context/AcademyContext';
 import { fetchPublicArticles } from '../utils/api';
 
@@ -34,51 +34,10 @@ export const Home = () => {
 
     return (
         <div className="min-h-screen overflow-hidden bg-[#07111f] text-white selection:bg-amber-300 selection:text-slate-950">
-            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-                <div className="neon-piece neon-piece-king neon-pink neon-float-a" style={{ top: '18%', left: '5%' }}>
-                    <span className="piece-base" />
-                    <span className="piece-body" />
-                    <span className="piece-top" />
-                    <span className="piece-cross-h" />
-                    <span className="piece-cross-v" />
-                </div>
-
-                <div className="neon-piece neon-piece-knight neon-blue neon-float-b" style={{ top: '56%', right: '6%' }}>
-                    <span className="piece-base" />
-                    <span className="piece-body" />
-                    <span className="piece-head" />
-                </div>
-
-                <div className="neon-piece neon-piece-bishop neon-cyan neon-float-c" style={{ bottom: '8%', left: '16%' }}>
-                    <span className="piece-base" />
-                    <span className="piece-body" />
-                    <span className="piece-head" />
-                    <span className="piece-slit" />
-                </div>
-
-                <div className="neon-piece neon-piece-queen neon-cyan neon-float-b" style={{ top: '14%', right: '24%' }}>
-                    <span className="piece-base" />
-                    <span className="piece-body" />
-                    <span className="piece-crown" />
-                    <span className="piece-tip piece-tip-left" />
-                    <span className="piece-tip piece-tip-mid" />
-                    <span className="piece-tip piece-tip-right" />
-                </div>
-
-                <div className="neon-piece neon-piece-rook neon-pink neon-float-a" style={{ bottom: '14%', right: '20%' }}>
-                    <span className="piece-base" />
-                    <span className="piece-body" />
-                    <span className="piece-top" />
-                    <span className="piece-notch piece-notch-a" />
-                    <span className="piece-notch piece-notch-b" />
-                    <span className="piece-notch piece-notch-c" />
-                </div>
-            </div>
-
             <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.12),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(251,191,36,0.09),_transparent_30%)]" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-96 bg-[radial-gradient(circle_at_bottom_right,_rgba(30,64,175,0.14),_transparent_28%)]" />
 
-            <header className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
+            <header className="home-nav relative z-30 mx-auto flex max-w-7xl items-center justify-between border-b border-white/10 px-5 py-5 backdrop-blur-xl lg:px-8">
                 <a
                     href="https://share.google/ZPkYpwJZXGbxIyoAU"
                     target="_blank"
@@ -134,16 +93,16 @@ export const Home = () => {
                 </nav>
             )}
 
-            <main id="home" className="relative z-20 mx-auto flex max-w-7xl flex-col gap-20 px-5 py-10 lg:px-8 lg:py-16">
-                <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <main id="home" className="relative z-20 mx-auto flex max-w-7xl flex-col gap-24 px-5 py-10 lg:px-8 lg:py-20">
+                <div className="home-hero grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
                     <div className="space-y-8 home-hero-copy">
-                        <div className="inline-flex home-reveal home-reveal-delay-1 items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-amber-200">
-                            <Sparkles className="h-3.5 w-3.5" />
-                            Think deeper. Play stronger.
+                        <div className="home-reveal home-reveal-delay-1 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-amber-200">
+                            <span className="h-px w-8 bg-amber-300" />
+                            Ratnapura's chess community since 2012
                         </div>
                         <div className="space-y-6">
-                            <h1 className="home-reveal home-reveal-delay-2 max-w-3xl text-5xl font-black leading-[0.98] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-                                Your next move starts <span className="text-amber-300">here.</span>
+                            <h1 className="home-reveal home-reveal-delay-2 max-w-3xl text-5xl font-black leading-[0.94] tracking-[-0.055em] text-white sm:text-6xl lg:text-[5.8rem]">
+                                Think clearly.<br /><span className="home-gradient-text">Play boldly.</span>
                             </h1>
                             <p className="home-reveal home-reveal-delay-3 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
                                 Structured chess coaching for curious beginners, ambitious competitors, and every player ready to grow with confidence.
@@ -152,9 +111,9 @@ export const Home = () => {
                         <div className="home-reveal home-reveal-delay-4 flex flex-col gap-4 sm:flex-row sm:items-center">
                             <button
                                 onClick={() => navigate('/login')}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-300 px-6 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-200"
+                                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-amber-300 px-6 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-200"
                             >
-                                Enter academy <ArrowRight className="h-4 w-4" />
+                                Enter academy <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </button>
                             <button
                                 onClick={() => navigate('/contact')}
@@ -164,10 +123,10 @@ export const Home = () => {
                             </button>
                         </div>
 
-                        <div className="home-reveal home-reveal-delay-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        <div className="home-reveal home-reveal-delay-5 grid gap-3 sm:grid-cols-3">
                             {stats.map((item) => (
                                 <div key={item.label} className="home-stat-card rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-xl transition hover:border-amber-300/30">
-                                    <p className="text-2xl font-black text-white">{item.value}</p>
+                                    <p className="text-3xl font-black tracking-tight text-white">{item.value}</p>
                                     <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{item.label}</p>
                                 </div>
                             ))}
@@ -176,7 +135,7 @@ export const Home = () => {
 
                     <div className="relative flex items-center justify-center home-hero-art">
                         <div className="home-hero-glow absolute h-[80%] w-[80%] rounded-full bg-amber-300/10 blur-3xl" />
-                        <div className="home-hero-frame relative overflow-hidden rounded-[2rem] border border-amber-200/20 bg-slate-950/80 p-3 shadow-2xl shadow-black/40">
+                        <div className="home-hero-frame relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-3 shadow-2xl shadow-black/40">
                             <div className="absolute -right-8 top-8 h-24 w-24 rounded-full bg-gradient-to-br from-violet-500/20 to-sky-400/10 blur-3xl" />
                             <div className="relative h-[390px] w-full overflow-hidden rounded-[1.5rem] bg-[#0A1025] sm:h-[480px]">
                                 <img
@@ -186,16 +145,16 @@ export const Home = () => {
                                 />
                                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,16,37,0.08)_0%,rgba(10,16,37,0.22)_45%,rgba(10,16,37,0.52)_100%)]" />
                                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.16),transparent_48%),radial-gradient(circle_at_top_right,rgba(246,215,120,0.12),transparent_24%)] mix-blend-screen" />
-                                <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-xl border border-white/15 bg-slate-950/75 px-4 py-3 backdrop-blur-md">
-                                    <span className="text-xs font-semibold text-white">Build skill. Build character.</span>
-                                    <Trophy className="h-4 w-4 text-amber-300" />
+                                <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-xl border border-white/15 bg-slate-950/75 px-4 py-3 text-xs font-semibold text-white backdrop-blur-md">
+                                    <span>Build skill. Build character.</span>
+                                    <span className="text-amber-300">01 / 03</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <section id="about" ref={aboutSectionRef} className="home-section-reveal grid gap-10 rounded-[2rem] border border-white/10 bg-slate-950/60 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] lg:grid-cols-2 scroll-mt-24">
+                <section id="about" ref={aboutSectionRef} className="home-section-reveal home-about grid gap-10 rounded-[2rem] border border-white/10 bg-slate-950/60 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] lg:grid-cols-2 scroll-mt-24">
                     <div className="space-y-4">
                         <p className="text-xs uppercase tracking-[0.35em] text-slate-400">About the academy</p>
                         <h2 className="text-3xl font-black tracking-tight text-white">More than a game. A way of thinking.</h2>
@@ -209,7 +168,7 @@ export const Home = () => {
                     </div>
                 </section>
 
-                <section id="tournaments" className="scroll-mt-24 space-y-8">
+                <section id="tournaments" className="home-section-reveal scroll-mt-24 space-y-8">
                     <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                         <div>
                             <p className="text-xs font-bold uppercase tracking-[0.35em] text-amber-300">The academy path</p>
@@ -219,20 +178,19 @@ export const Home = () => {
                     </div>
                     <div className="grid gap-4 md:grid-cols-3">
                         {(articles.length > 0 ? articles.slice(0, 3) : [
-                            ['01', 'Foundation', 'Learn the rules, patterns, and habits that make every move count.', '♟'],
-                            ['02', 'Performance', 'Sharpen calculation, tactics, and decision-making with expert feedback.', '♞'],
-                            ['03', 'Competition', 'Prepare for the clock, the board, and the pressure of tournament day.', '♛'],
+                            ['01', 'Foundation', 'Learn the rules, patterns, and habits that make every move count.'],
+                            ['02', 'Performance', 'Sharpen calculation, tactics, and decision-making with expert feedback.'],
+                            ['03', 'Competition', 'Prepare for the clock, the board, and the pressure of tournament day.'],
                         ]).map((item, index) => {
                             const isArticle = !Array.isArray(item);
                             const number = isArticle ? String(index + 1).padStart(2, '0') : item[0];
                             const title = isArticle ? item.title : item[1];
                             const description = isArticle ? item.excerpt : item[2];
-                            const piece = isArticle ? '♜' : item[3];
                             return (
-                            <article key={isArticle ? item.id : title} className="home-program-card group rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-1 hover:border-amber-300/30">
+                            <article key={isArticle ? item.id : title} className="home-program-card group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-1 hover:border-amber-300/30">
                                 <div className="flex items-start justify-between">
                                     <span className="text-xs font-bold tracking-[0.25em] text-amber-300">{number}</span>
-                                    <span className="text-3xl text-amber-200/70">{piece}</span>
+                                    <span className="h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_18px_rgba(252,211,77,0.6)]" />
                                 </div>
                                 <h3 className="mt-8 text-xl font-bold text-white">{title}</h3>
                                 <p className="mt-3 text-sm leading-6 text-slate-400">{description}</p>
@@ -243,7 +201,7 @@ export const Home = () => {
                     </div>
                 </section>
 
-                <section id="coaches" className="scroll-mt-24 space-y-10 rounded-[2rem] border border-slate-700/60 bg-[#050d1c] px-6 py-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] sm:px-10 sm:py-10">
+                <section id="coaches" className="home-section-reveal scroll-mt-24 space-y-10 rounded-[2rem] border border-slate-700/60 bg-[#050d1c] px-6 py-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)] sm:px-10 sm:py-10">
                     <div className="space-y-3">
                         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Meet the team</p>
                         <h2 className="text-3xl font-black tracking-tight text-white">Our registered coaches</h2>
@@ -280,7 +238,7 @@ export const Home = () => {
                     )}
                 </section>
 
-                <section id="contact" className="grid gap-6 rounded-[2rem] border border-white/10 bg-slate-900/70 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)]">
+                <section id="contact" className="home-contact home-section-reveal grid gap-6 rounded-[2rem] border border-white/10 bg-slate-900/70 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.85)]">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Ready to begin?</p>
